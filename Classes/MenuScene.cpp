@@ -50,83 +50,63 @@ void MenuScene::addBackgroundSprite()
 //添加Menu
 void MenuScene::addMenuSprites()
 {
-	//1 single game
+	//1 start game
 	//设置菜单的正常图片
-	Scale9Sprite * NormalButton = Scale9Sprite::create(NORMAL_MENU);
+	Scale9Sprite * NormalButton1 = Scale9Sprite::create(NORMAL_MENU);
 	//设置菜单按下图片
-	Scale9Sprite * PressButton = Scale9Sprite::create(PRESS_MENU);
+	Scale9Sprite * PressButton1 = Scale9Sprite::create(PRESS_MENU);
 	//创建菜单所需要的Label对象
-	LabelTTF * singleGameTTF = LabelTTF::create("single game", "arial", 25);
+	LabelTTF * startGameTTF = LabelTTF::create("start game", "arial", 25);
 	//创建controlButton
-	ControlButton * singleGameBtn = ControlButton::create(singleGameTTF, NormalButton);
+	ControlButton * startGameBtn = ControlButton::create(startGameTTF, NormalButton1);
 	//添加singleButton菜单按下的效果图片
-	singleGameBtn->setBackgroundSpriteForState(PressButton, Control::State::SELECTED);
+	startGameBtn->setBackgroundSpriteForState(PressButton1, Control::State::SELECTED);
 	//设置单机游戏菜单项的位置
-	singleGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.65);
+	startGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.58);
 	//设置点击的回调方法
-	singleGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
+	startGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
 	//设置菜单按钮的Tag
-	singleGameBtn->setTag(1);
+	startGameBtn->setTag(STRAT_GAME);
 	//添加Menu到场景
-	addChild(singleGameBtn);
+	addChild(startGameBtn);
 
-	//2 multi game
+	//2 introdunction
 	//设置菜单的正常图片
 	Scale9Sprite * NormalButton2 = Scale9Sprite::create(NORMAL_MENU);
 	//设置菜单按下图片
 	Scale9Sprite * PressButton2 = Scale9Sprite::create(PRESS_MENU);
 	//创建菜单所需要的Label对象
-	LabelTTF * multiGameTTF = LabelTTF::create("multi game", "arial", 25);
+	LabelTTF * introGameTTF = LabelTTF::create("introdunction", "arial", 25);
 	//创建controlButton
-	ControlButton * multiGameBtn = ControlButton::create(multiGameTTF, NormalButton2);
+	ControlButton * introGameBtn = ControlButton::create(introGameTTF, NormalButton2);
 	//添加singleButton菜单按下的效果图片
-	multiGameBtn->setBackgroundSpriteForState(PressButton2, Control::State::SELECTED);
+	introGameBtn->setBackgroundSpriteForState(PressButton2, Control::State::SELECTED);
 	//设置单机游戏菜单项的位置
-	multiGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.52);
+	introGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.45);
 	//设置点击的回调方法
-	multiGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
+	introGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
 	//设置菜单按钮的Tag
-	multiGameBtn->setTag(2);
+	introGameBtn->setTag(INTRODUCTION);
 	//添加Menu到场景
-	addChild(multiGameBtn);
+	addChild(introGameBtn);
 
-	//3 introdunction
+	//3 quit game
 	//设置菜单的正常图片
 	Scale9Sprite * NormalButton3 = Scale9Sprite::create(NORMAL_MENU);
 	//设置菜单按下图片
 	Scale9Sprite * PressButton3 = Scale9Sprite::create(PRESS_MENU);
 	//创建菜单所需要的Label对象
-	LabelTTF * introGameTTF = LabelTTF::create("introdunction", "arial", 25);
-	//创建controlButton
-	ControlButton * introGameBtn = ControlButton::create(introGameTTF, NormalButton3);
-	//添加singleButton菜单按下的效果图片
-	introGameBtn->setBackgroundSpriteForState(PressButton3, Control::State::SELECTED);
-	//设置单机游戏菜单项的位置
-	introGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.39);
-	//设置点击的回调方法
-	introGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
-	//设置菜单按钮的Tag
-	multiGameBtn->setTag(3);
-	//添加Menu到场景
-	addChild(introGameBtn);
-
-	//4 quit game
-	//设置菜单的正常图片
-	Scale9Sprite * NormalButton4 = Scale9Sprite::create(NORMAL_MENU);
-	//设置菜单按下图片
-	Scale9Sprite * PressButton4 = Scale9Sprite::create(PRESS_MENU);
-	//创建菜单所需要的Label对象
 	LabelTTF * quitGameTTF = LabelTTF::create("quit game", "arial", 25);
 	//创建controlButton
-	ControlButton * quitGameBtn = ControlButton::create(quitGameTTF, NormalButton4);
+	ControlButton * quitGameBtn = ControlButton::create(quitGameTTF, NormalButton3);
 	//添加singleButton菜单按下的效果图片
-	quitGameBtn->setBackgroundSpriteForState(PressButton4, Control::State::SELECTED);
+	quitGameBtn->setBackgroundSpriteForState(PressButton3, Control::State::SELECTED);
 	//设置单机游戏菜单项的位置
-	quitGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.26);
+	quitGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.32);
 	//设置点击的回调方法
 	quitGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
 	//设置菜单按钮的Tag
-	multiGameBtn->setTag(4);
+	quitGameBtn->setTag(QUIT_GAME);
 	//添加Menu到场景
 	addChild(quitGameBtn);
 }
@@ -138,22 +118,25 @@ void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
 	int tag = button->getTag();
 	switch (tag)
 	{
-		case 1:
+		case STRAT_GAME:    
 		{
 
+			break;
 		}
-		case 2:
+		case INTRODUCTION:
 		{
-
+			scheduleOnce(schedule_selector(MenuScene::jumpToIntroduction), 0.5);
+			break;
 		}
-		case 3:
+		case QUIT_GAME:
 		{
-
-		}
-		case 4:
-		{
-
+			break;
 		}
 		break;
 	}
+}
+
+void MenuScene::jumpToIntroduction(float dt)
+{
+	
 }
