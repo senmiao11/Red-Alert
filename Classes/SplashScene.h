@@ -1,3 +1,5 @@
+//片头动画
+
 #ifndef __SplashScene_H_
 #define __SplashScene_H_
 #include"cocos2d.h"
@@ -9,7 +11,6 @@ USING_NS_CC;
 class SplashScene :Layer
 {
 public:
-	//methods
 	bool init();                        //初始化场景
 	CREATE_FUNC(SplashScene);           //完成create方法代码的生成
 	static Scene * createScene();       //创建场景
@@ -20,7 +21,7 @@ public:
 	void startMoveSprite(float dt);     //开始移动方法
 	void spriteFadeOut();               //场景消失方法
 	void gotoMenuScene();               //动画结束后进入MenuScene方法
-	//variable
+private:
 	Sprite* hong_Sprite;                //hong.png精灵
 	Sprite* se_Sprite;                  //se.png精灵
 	Sprite* jing_Sprite;                //jing.png精灵

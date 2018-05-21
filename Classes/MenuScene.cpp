@@ -1,5 +1,4 @@
 #include"MenuScene.h"
-
 //初始化场景
 bool MenuScene::init()
 {
@@ -56,7 +55,7 @@ void MenuScene::addMenuSprites()
 	//设置菜单按下图片
 	Scale9Sprite * PressButton1 = Scale9Sprite::create(PRESS_MENU);
 	//创建菜单所需要的Label对象
-	LabelTTF * startGameTTF = LabelTTF::create("start game", "arial", 25);
+	LabelTTF * startGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("开始游戏"), "华文行楷", 25);
 	//创建controlButton
 	ControlButton * startGameBtn = ControlButton::create(startGameTTF, NormalButton1);
 	//添加singleButton菜单按下的效果图片
@@ -76,7 +75,7 @@ void MenuScene::addMenuSprites()
 	//设置菜单按下图片
 	Scale9Sprite * PressButton2 = Scale9Sprite::create(PRESS_MENU);
 	//创建菜单所需要的Label对象
-	LabelTTF * introGameTTF = LabelTTF::create("introdunction", "arial", 25);
+	LabelTTF * introGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("游戏介绍"), "华文行楷", 25);
 	//创建controlButton
 	ControlButton * introGameBtn = ControlButton::create(introGameTTF, NormalButton2);
 	//添加singleButton菜单按下的效果图片
@@ -96,7 +95,7 @@ void MenuScene::addMenuSprites()
 	//设置菜单按下图片
 	Scale9Sprite * PressButton3 = Scale9Sprite::create(PRESS_MENU);
 	//创建菜单所需要的Label对象
-	LabelTTF * quitGameTTF = LabelTTF::create("quit game", "arial", 25);
+	LabelTTF * quitGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("退出游戏"), "华文行楷", 25);
 	//创建controlButton
 	ControlButton * quitGameBtn = ControlButton::create(quitGameTTF, NormalButton3);
 	//添加singleButton菜单按下的效果图片
@@ -111,6 +110,40 @@ void MenuScene::addMenuSprites()
 	addChild(quitGameBtn);
 }
 
+
+
+void MenuScene::popupQuitLayer()
+{
+	//根据背景创建对话框
+	PopupLayer* popDialog = PopupLayer::create(DIALOG_BG);
+	//设置对话框大小
+	popDialog->setContentSize(CCSizeMake(350,200));
+	//设置对话框标题，显示内容
+	popDialog->setTitle("提示",18);
+	popDialog->setContentText("确认退出游戏？",22,20,100);
+	//在对话框中添加确定和取消的Menu按键，并设置各自的tag
+	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON2, "是", 1);
+	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON2, "否", 0);
+	//设置对话框的按键相应方法
+	popDialog->setCallbackFunc(this, callfuncN_selector(MenuScene::quitButtonCallback));
+	this->addChild(popDialog);
+}
+
+void MenuScene::quitButtonCallback(Node* pNode)
+{
+	//根据按键的tag调用相应的方法
+	if (pNode->getTag() == 1)
+	{
+		//点击确定，则退出
+		Director::getInstance()->end();
+	}
+	else
+	{
+		//点击取消，则关闭对话框
+		pNode->getParent()->removeFromParent();
+	}
+}
+
 //Menu点击回调方法
 void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
 {
@@ -118,25 +151,26 @@ void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
 	int tag = button->getTag();
 	switch (tag)
 	{
-		case STRAT_GAME:    
-		{
-
-			break;
-		}
-		case INTRODUCTION:
-		{
-			scheduleOnce(schedule_selector(MenuScene::jumpToIntroduction), 0.5);
-			break;
-		}
-		case QUIT_GAME:
-		{
-			break;
-		}
+	case STRAT_GAME:
+	{
 		break;
+	}
+	case INTRODUCTION:
+	{
+		scheduleOnce(schedule_selector(MenuScene::jumpToIntroduction), 0.5);
+		break;
+	}
+	case QUIT_GAME:
+	{
+		popupQuitLayer();
+		break;
+	}
+	break;
 	}
 }
 
+//跳转到IntroScene
 void MenuScene::jumpToIntroduction(float dt)
 {
-	
+
 }

@@ -47,6 +47,7 @@ void SplashScene::initMoveSprite()
 	se_Sprite->setAnchorPoint(ccp(0, 0.5));
 	jing_Sprite->setAnchorPoint(ccp(0, 0.5));
 	jie_Sprite->setAnchorPoint(ccp(0, 0.5));
+
 	//添加精灵到场景
 	this->addChild(hong_Sprite);
 	this->addChild(se_Sprite);
