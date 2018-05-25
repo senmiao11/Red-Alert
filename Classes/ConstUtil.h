@@ -1,4 +1,5 @@
 //资源类
+
 #ifndef __Resources_H_
 #define __Resources_H_
 //定义红色警戒图片资源
