@@ -17,7 +17,7 @@ class GameScene :public Layer
 {
 public:
 
-	static Scene *creatScene();
+	static Scene *createScene();
 	virtual bool init();
 	virtual void onEnter();
 	virtual void onExit();

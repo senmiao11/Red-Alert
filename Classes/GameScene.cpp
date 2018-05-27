@@ -1,7 +1,7 @@
 #include"GameScene.h"
 
 
-Scene * GameScene::creatScene()
+Scene * GameScene::createScene()
 {
 	Scene *scene = Scene::create();
 	auto layer = GameScene::create();

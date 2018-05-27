@@ -21,6 +21,23 @@ bool ServerScene::init()
 	addBackgroundSprite();
 	//添加Menu
 	addMenuSprites();
+
+	auto inputbox = ui::EditBox::create(Size(80, 60), ui::Scale9Sprite::create(INPUT_IP));
+	inputbox->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y + visibleSize.height - inputbox->getContentSize().height));
+	inputbox->setTextHorizontalAlignment(TextHAlignment::CENTER);
+	inputbox->setMaxLength(7);
+	inputbox->setFontColor(Color3B::WHITE);
+	inputbox->setFontName("/fonts/AGENCYR.TTF");
+	inputbox->setFontSize(20);
+	inputbox->setText("8008");
+	inputbox->setInputMode(ui::EditBox::InputMode::NUMERIC);
+	//inputbox->setDelegate(this);
+	this->addChild(inputbox, 1);
+
+	connection_msg_ = Label::createWithTTF("", "/fonts/arial.ttf", 18);
+	connection_msg_->setAnchorPoint(Vec2(0.5, 0));
+	connection_msg_->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y));
+	addChild(connection_msg_);
 	return true;
 }
 
@@ -41,7 +58,7 @@ void ServerScene::addBackgroundSprite()
 	MenuBackgroundSprite->setScaleX(winx / backgroundx);
 	MenuBackgroundSprite->setScaleY(winy / backgroundy);
 	//添加背景至场景
-	this->addChild(MenuBackgroundSprite);
+	this->addChild(MenuBackgroundSprite,-5);
 }
 
 //添加Menu
@@ -66,7 +83,6 @@ void ServerScene::addMenuSprites()
 	//添加Menu到场景
 	addChild(startGameBtn);
 
-	//2 introdunction
 	//设置菜单的正常图片
 	Scale9Sprite * NormalButton2 = Scale9Sprite::create(NORMAL_MENU);
 	//设置菜单按下图片
@@ -85,6 +101,41 @@ void ServerScene::addMenuSprites()
 	introGameBtn->setTag(START_GAME);
 	//添加Menu到场景
 	addChild(introGameBtn);
+
+	//设置菜单的正常图片
+	Scale9Sprite * NormalButton3 = Scale9Sprite::create(NORMAL_MENU);
+	//设置菜单按下图片
+	Scale9Sprite * PressButton3 = Scale9Sprite::create(PRESS_MENU);
+	//创建菜单所需要的Label对象
+	LabelTTF * backTTF = LabelTTF::create(MyUtility::gbk_2_utf8("返回"), "华文行楷", 25);
+	//创建controlButton
+	ControlButton * backBtn = ControlButton::create(backTTF, NormalButton3);
+	//添加singleButton菜单按下的效果图片
+	backBtn->setBackgroundSpriteForState(PressButton3, Control::State::SELECTED);
+	//设置单机游戏菜单项的位置
+	backBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.32);
+	//设置点击的回调方法
+	backBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ServerScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
+	//设置菜单按钮的Tag
+	backBtn->setTag(GO_BACK);
+	//添加Menu到场景
+	addChild(backBtn);
+}
+
+void ServerScene::editBoxReturn(EditBox* editBox)
+{
+	log(editBox->getText());
+	int port = atoi(editBox->getText());
+}
+
+void ServerScene::connectionSchdeule(float f)
+{
+	/*********************
+	if (socket_server_->connection_num())
+		connection_msg_->setString("Total connection num: " + std::to_string(socket_server_->connection_num()));
+	else
+		connection_msg_->setString("Port already used, please change another one");
+	************************/
 }
 
 void ServerScene::menuTouchDown(Object *pSender, Control::EventType event)
@@ -95,24 +146,54 @@ void ServerScene::menuTouchDown(Object *pSender, Control::EventType event)
 	{
 	case START_SERVER:
 	{
-		//待填
+		/****************
+		if (!socket_server_)
+		{
+			socket_server_ = SocketServer::create();
+			socket_client_ = SocketClient::create();
+			log("create server and client on 8008");
+			schedule(schedule_selector(ServerMenu::connectionSchdeule), 0.1);
+		}
+		***************/
 		break;
 	}
 	case START_GAME:
 	{
-		scheduleOnce(schedule_selector(ServerScene::jumpToGameScene), 0.5);
+		auto sc = GameScene::createScene();
+		auto reScene = TransitionFadeTR::create(0.5f, sc);
+		Director::getInstance()->pushScene(reScene);
+		/**************************
+		if (socket_server_)
+		{
+			socket_server_->button_start();
+			auto scene = BattleScene::createScene(socket_client_, socket_server_);
+			Director::getInstance()->replaceScene(TransitionSplitCols::create(0.5, scene));
+			log("start game");
+		}
+		**********************************/
 		break;
+	}
+	case GO_BACK:
+	{
+		/****************
+		if (socket_server_)
+		{
+			unscheduleAllCallbacks();
+			socket_client_->close();
+			delete socket_client_;
+			socket_client_ = nullptr;
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+			socket_server_->close();
+			delete socket_server_;
+			socket_server_ = nullptr;
+		}
+		********************/
+		Director::getInstance()->popScene();
 	}
 	break;
 	}
 }
 
-void ServerScene::jumpToGameScene(float dt)
-{
-	//待填
-	/*auto sc = GameScene::createScene();
-	auto reScene = TransitionFadeTR::create(0.5f, sc);
-	Director::getInstance()->pushScene(reScene);*/
-}
+
 
 

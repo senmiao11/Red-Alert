@@ -21,6 +21,35 @@ bool ClientScene::init()
 	addBackgroundSprite();
 	//添加Menu
 	addMenuSprites();
+	//IP_box
+	auto ip_box = ui::EditBox::create(Size(150, 60), ui::Scale9Sprite::create(INPUT_IP));
+	ip_box->setPosition(Vec2(origin.x + visibleSize.width / 2 - ip_box->getContentSize().width / 2,origin.y + visibleSize.height - ip_box->getContentSize().height));
+	ip_box->setTextHorizontalAlignment(TextHAlignment::CENTER);
+	ip_box->setFontName("/fonts/AGENCYR.TTF");
+	ip_box->setFontSize(20);
+	ip_box->setMaxLength(20);
+	ip_box->setFontColor(Color3B::WHITE);
+	ip_box->setText("127.0.0.1");
+	ip_box->setTag(1);
+	//PORT_box
+	auto port_box = ui::EditBox::create(Size(80, 60), ui::Scale9Sprite::create(INPUT_PORT));
+	port_box->setPosition(Vec2(origin.x + visibleSize.width / 2 + port_box->getContentSize().width,origin.y + visibleSize.height - port_box->getContentSize().height));
+	port_box->setTextHorizontalAlignment(TextHAlignment::CENTER);
+	port_box->setFontName("/fonts/AGENCYR.TTF");
+	port_box->setFontSize(20);
+	port_box->setMaxLength(20);
+	port_box->setFontColor(Color3B::WHITE);
+	port_box->setText("8008");
+	//	inputbox->setPlaceHolder("8008");
+	port_box->setInputMode(ui::EditBox::InputMode::NUMERIC);
+	//	portbox->setDelegate(this);
+	port_box->setTag(2);
+	this->addChild(ip_box, 1);
+	this->addChild(port_box, 1);
+	connection_msg_ = Label::createWithTTF("", "/fonts/arial.ttf", 18);
+	connection_msg_->setAnchorPoint(Vec2(0.5, 0));
+	connection_msg_->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y));
+	addChild(connection_msg_);
 	return true;
 }
 
@@ -41,7 +70,7 @@ void ClientScene::addBackgroundSprite()
 	MenuBackgroundSprite->setScaleX(winx / backgroundx);
 	MenuBackgroundSprite->setScaleY(winy / backgroundy);
 	//添加背景至场景
-	this->addChild(MenuBackgroundSprite);
+	this->addChild(MenuBackgroundSprite,-5);
 }
 
 //添加Menu
@@ -87,6 +116,44 @@ void ClientScene::addMenuSprites()
 	addChild(introGameBtn);
 }
 
+void ClientScene::waitStart()
+{
+	/***********
+	//socket_client_->camp();
+	unscheduleAllCallbacks();
+	log("get the camp");
+	log("start game");
+	auto scene = BattleScene::createScene(socket_client_, nullptr);
+	//	auto scene = BattleScene::createScene(socket_client_);
+	Director::getInstance()->replaceScene(TransitionSplitCols::create(0.5, scene));
+	**************/
+}
+
+void ClientScene::startSchedule(float f)
+{
+	/**************
+	if (socket_client_->error())
+	{
+		unscheduleAllCallbacks();
+		socket_client_->close();
+		delete socket_client_;
+		socket_client_ = nullptr;
+		connection_msg_->setString("Cannot connect to the server, please try again");
+		return;
+	}
+	switch ((timer_++ % 32) / 4)
+	{
+	case 0: connection_msg_->setString("Connected, wait for server"); break;
+	case 1: connection_msg_->setString("Connected, wait for server."); break;
+	case 2: connection_msg_->setString("Connected, wait for server.."); break;
+	case 3: connection_msg_->setString("Connected, wait for server..."); break;
+	default: break;
+	}
+	if (socket_client_->started())
+		waitStart();
+	****************/
+}
+
 void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
 {
 	ControlButton * button = (ControlButton*)pSender;
@@ -95,11 +162,33 @@ void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
 	{
 	case JOIN_GAME:
 	{
-		//待填
+		/***********
+		if (!socket_client_)
+		{
+			auto ip_box = static_cast<ui::EditBox*>(getChildByTag(1));
+			std::string ip = ip_box->getText();
+			auto port_box = static_cast<ui::EditBox*>(getChildByTag(2));
+			int port = atoi(port_box->getText());
+			log("ip:%s, port:%d", ip.c_str(), port);
+			socket_client_ = SocketClient::create(ip, port);
+			schedule(schedule_selector(ClientMenu::startSchedule), 0.1);
+			//	std::async(&ClientMenu::wait_start, this);
+			//	wait_start();	
+		}
+		************/
 		break;
 	}
 	case GO_BACK:
 	{
+		/**********
+		if (socket_client_)
+		{
+			unscheduleAllSelectors();
+			socket_client_->close();
+			delete socket_client_;
+			socket_client_ = nullptr;
+		}
+		************/
 		Director::getInstance()->popScene();
 		break;
 	}
