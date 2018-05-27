@@ -10,8 +10,9 @@
 #include"MyUtility.h"
 USING_NS_CC_EXT;
 USING_NS_CC;
-#define START_SERVER 1
-#define START_GAME 2
+#define START_SERVER 10
+#define START_GAME 11
+#define GO_BACK 12
 
 class ServerScene :public Layer
 {
@@ -24,8 +25,9 @@ private:
 	Size visibleSize;                                                 //窗口尺寸
 	void addBackgroundSprite();                                       //添加场景背景
 	void menuTouchDown(Object *pSender, Control::EventType event);    //Menu点击回调方法
-	void jumpToGameScene(float dt);                                   //跳转到GameScene
-	void showServer();
+	void editBoxReturn(EditBox* editBox);
+	void connectionSchdeule(float f);
+	Label* connection_msg_;
 };
 
 #endif // !__ServerScene_H_

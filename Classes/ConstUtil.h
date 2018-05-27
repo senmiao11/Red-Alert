@@ -11,6 +11,8 @@
 #define MENU_BACKGROUND  "menubackground.png"
 #define NORMAL_MENU "normalmenu.png"              //150*60
 #define PRESS_MENU "pressmenu.png"                //180*80
+#define INPUT_IP   "InputIP.png"
+#define INPUT_PORT "InputPort.png"
 //¶Ô»°¿ò
 #define DIALOG_BG "popuplayer/dialogbackground.png"
 #define DIALOG_BUTTON "popuplayer/dialogbutton.png"
