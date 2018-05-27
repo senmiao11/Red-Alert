@@ -38,7 +38,7 @@ public:
 	//退出对话框时调用
 	virtual void onExit();      
 	//按钮点击时调用此方法，然后调用到传入的回调方法
-	void buttonCallBack(CCObject * pSender);                                        
+	void buttonCallBack(CCObject * pSender);
 
 private:
 	POP_TYPE pop_type;                                                               //对话框类型变量

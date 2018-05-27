@@ -15,6 +15,19 @@ bool SplashScene::init()
 	initMoveSprite();
 	//创建定时器，场景开始一秒后动画开始播放
 	scheduleOnce(schedule_selector(SplashScene::startMoveSprite), 1);
+
+	//创建跳过动画进入MenuScene的菜单
+	auto jumpLable = LabelTTF::create(MyUtility::gbk_2_utf8("跳过"), "华文行楷", 15);
+	auto jumpMenu = MenuItemLabel::create(jumpLable, CC_CALLBACK_1(SplashScene::jumpToMenuScen, this));
+	float jump_x = jumpMenu->getContentSize().width;
+	float jump_y = jumpMenu->getContentSize().height;
+	jumpMenu->setPosition(Vec2(origin.x + visibleSize.width - jump_x, origin.y + jump_y));
+	auto *mn = Menu::create(jumpMenu, NULL);
+	mn->setPosition(Vec2::ZERO);
+	addChild(mn);
+
+
+
 	return true;
 }
 
@@ -114,4 +127,15 @@ void SplashScene::spriteFadeOut()
 void SplashScene::gotoMenuScene()
 {
 	Director::getInstance()->replaceScene(MenuScene::createScene());
+}
+
+//跳过动画到MenuScene
+void SplashScene::jumpToMenuScen(Ref *pSender)
+{
+	//进入MenuScene，并且伴随按行分割动画
+	Scene *sc = Scene::create();
+	auto layer = MenuScene::create();
+	sc->addChild(layer);
+	auto reScene = TransitionSplitRows::create(1.0f, sc);
+	Director::getInstance()->replaceScene(reScene);
 }

@@ -9,11 +9,6 @@ PopupLayer::~PopupLayer()
 }
 bool PopupLayer::init()
 {
-	//若初始化失败，返回false
-	if (!Layer::init())
-	{
-		return false;
-	}
 	//初始化默认值
 	m_pMenu = NULL;
 	m_callback = NULL;
@@ -28,14 +23,19 @@ bool PopupLayer::init()
 	setMenuButton(menu);
 	//添加触摸响应
 	auto listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
 	listener->onTouchBegan = [](Touch * t,Event *e)
 	{
 		log("touch");
 		return true;
 	};
-	listener->setSwallowTouches(true);
-	//屏蔽下层事件相应，达到模态效果 
+	listener->onTouchEnded = [](Touch *t, Event *e)
+	{
+		log("touch end");
+	};
+	//屏蔽下层事件相应，达到模态效果  写作_eventDispatcher->addEventListenerWithSceneGraphPriority(listener,layer)将会屏蔽自身？？
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+	//_eventDispatcher->addEventListenerWithFixedPriority(listener, -1);
 	return true;
 }
 
@@ -70,7 +70,7 @@ bool PopupLayer::addButton(const char*normalImage, const char*selectedImage, con
 {
 	Size winSize = Director::getInstance()->getWinSize();
 	//创建MenuItem按钮，并设置按钮tag，位置以及回调方法为buttonCallback
-	auto  menuImage = MenuItemImage::create(normalImage, selectedImage, CC_CALLBACK_1(PopupLayer::buttonCallBack, this));
+	MenuItemImage* menuImage = MenuItemImage::create(normalImage, selectedImage, this, menu_selector(PopupLayer::buttonCallBack));
 	menuImage->setTag(tag);
 	menuImage->setPosition(ccp(winSize.width / 2, winSize.height / 2));
 	//给MenuItem添加文字，设置颜色，位置
@@ -80,7 +80,7 @@ bool PopupLayer::addButton(const char*normalImage, const char*selectedImage, con
 	//设置文字在MenuItem中的位置
 	ttf->setPosition(ccp(imenu.width / 2, imenu.height / 2));
 	menuImage->addChild(ttf);
-	getMenuButton()->addChild(menuImage,3);
+	getMenuButton()->addChild(menuImage);
 	return true;
 }
 
@@ -146,7 +146,7 @@ void PopupLayer::onEnter()
 		}
 	}
 	//对话框弹出效果，由大变小，再由小变大
-	Action *popupactions = Sequence::create(ScaleTo::create(0.0, 0.0), ScaleTo::create(0.15, 1.05), ScaleTo::create(0.08, 0.95), ScaleTo::create(0.08, 1.0),NULL);
+	Action *popupactions = Sequence::create(ScaleTo::create(0.0, 0.0), ScaleTo::create(0.06, 1.05), ScaleTo::create(0.08, 0.95), ScaleTo::create(0.08, 1.0),NULL);
 	this->runAction(popupactions);
 }
 

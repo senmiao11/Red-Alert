@@ -49,6 +49,7 @@ void MenuScene::addBackgroundSprite()
 //添加Menu
 void MenuScene::addMenuSprites()
 {
+	
 	//1 start game
 	//设置菜单的正常图片
 	Scale9Sprite * NormalButton1 = Scale9Sprite::create(NORMAL_MENU);
@@ -65,7 +66,7 @@ void MenuScene::addMenuSprites()
 	//设置点击的回调方法
 	startGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
 	//设置菜单按钮的Tag
-	startGameBtn->setTag(STRAT_GAME);
+	startGameBtn->setTag(START_GAME);
 	//添加Menu到场景
 	addChild(startGameBtn);
 
@@ -110,7 +111,43 @@ void MenuScene::addMenuSprites()
 	addChild(quitGameBtn);
 }
 
+//Menu点击回调方法
+void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
+{
+	ControlButton * button = (ControlButton*)pSender;
+	int tag = button->getTag();
+	switch (tag)
+	{
+		case START_GAME:    
+		{
+			//进入GameScene，并且伴随按行分割动画
+			Scene *sc = Scene::create();
+			auto layer = GameScene::create();
+			sc->addChild(layer);
+			auto reScene = TransitionSplitRows::create(1.0f, sc);
+			Director::getInstance()->replaceScene(reScene);
+			break;
+		}
+		case INTRODUCTION:
+		{
+			scheduleOnce(schedule_selector(MenuScene::jumpToIntroduction), 0.5);
+			Director::getInstance()->replaceScene(SplashScene::createScene());
+			break;
+		}
+		case QUIT_GAME:
+		{
+			popupQuitLayer();
+			break;
+		}
+		break;
+	}
+}
 
+//跳转到IntroScene
+void MenuScene::jumpToIntroduction(float dt)
+{
+
+}
 
 void MenuScene::popupQuitLayer()
 {
@@ -142,47 +179,4 @@ void MenuScene::quitButtonCallback(Node* pNode)
 		//点击取消，则关闭对话框
 		pNode->getParent()->removeFromParent();
 	}
-}
-
-//Menu点击回调方法
-void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
-{
-	ControlButton * button = (ControlButton*)pSender;
-	int tag = button->getTag();
-	switch (tag)
-	{
-	case STRAT_GAME:
-	{
-		scheduleOnce(schedule_selector(MenuScene::jumpToRoomScene), 0.5);
-		break;
-	}
-	case INTRODUCTION:
-	{
-		scheduleOnce(schedule_selector(MenuScene::jumpToIntroduction), 0.5);
-		break;
-	}
-	case QUIT_GAME:
-	{
-		popupQuitLayer();
-		break;
-	}
-	break;
-	}
-}
-
-//跳转到IntroScene
-void MenuScene::jumpToIntroduction(float dt)
-{
-	//待填
-	/*auto sc = IntroScene::createScene();
-	auto reScene = TransitionFadeTR::create(0.5f, sc);
-	Director::getInstance()->pushScene(reScene);*/
-}
-
-//跳转到RoomScene
-void MenuScene::jumpToRoomScene(float dt)
-{
-	auto sc = RoomScene::createScene();
-	auto reScene = TransitionFadeTR::create(0.5f, sc);
-	Director::getInstance()->pushScene(reScene);
 }

@@ -6,6 +6,8 @@
 #include<iostream>
 #include"ConstUtil.h"
 #include"MenuScene.h"
+
+#include"MyUtility.h"//改写地方
 USING_NS_CC;
 
 class SplashScene :Layer
@@ -21,6 +23,7 @@ public:
 	void startMoveSprite(float dt);     //开始移动方法
 	void spriteFadeOut();               //场景消失方法
 	void gotoMenuScene();               //动画结束后进入MenuScene方法
+
 private:
 	Sprite* hong_Sprite;                //hong.png精灵
 	Sprite* se_Sprite;                  //se.png精灵
@@ -28,6 +31,8 @@ private:
 	Sprite* jie_Sprite;                 //jie.png精灵
 	Size visibleSize;                   //窗口大小
 	Size spriteSize;                    //图片的尺寸大小
+
+	void jumpToMenuScen(Ref *pSender);
 
 };
 #endif // !__SplashScene_H_
