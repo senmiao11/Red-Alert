@@ -22,6 +22,8 @@ public:
 	virtual void onEnter();
 	virtual void onExit();
 	CREATE_FUNC(GameScene);
+	void update(float dt);
+	void scrollMap();
 
 private:
 	//EventListenerTouchOneByOne * touchBuildingListener;
@@ -37,6 +39,9 @@ private:
 	void moneyUpdate(float dt);//实时刷新金钱
 
 	int Money;//金钱
+	TMXTiledMap * _tiledMap1;
+	Point crusor_position{ 0, 0 };
+	void onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEvent);
 };
 
 

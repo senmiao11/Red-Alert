@@ -18,17 +18,31 @@ bool GameScene::init()
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	///////////////////////////
-	//游戏地图背景待添加
-	///////////////////////////
-
+	
+	/************地图************/
+	//游戏地图
+	_tiledMap1 = TMXTiledMap::create(GameMap1);
+	addChild(_tiledMap1, -1);
+	//地图更新
+	schedule(schedule_selector(GameScene::update));
+	//地图移动的鼠标事件
+	auto mouse_event = EventListenerMouse::create();
+	mouse_event->onMouseMove = [&](Event *event)
+	{
+		EventMouse* e = static_cast<EventMouse*>(event);
+		crusor_position = Vec2(e->getCursorX(), e->getCursorY());
+	};
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(mouse_event, 1);
+	//地图移动的键盘事件
+	auto keyboard_listener = EventListenerKeyboard::create();
+	keyboard_listener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboard_listener, this);
 
 	//创建一个基地精灵
 	Buildings *base = Buildings::creatWithBuildingTypes(START_BASE);
-	base->setAnchorPoint(Vec2(0.5, 0.5));
-	base->setScale(0.2);
-	base->setPosition(Vec2(origin.x + visibleSize.width * 0.66, origin.y + visibleSize.height * 0.33));
+	base->setAnchorPoint(Vec2(0, 0));
+	base->setScale(0.3);
+	base->setPosition(Vec2(origin.x + visibleSize.width * -0.03, origin.y + visibleSize.height *-0.06));
 	addChild(base, 10, GameSceneNodeTagBuilding);
 
 	return true;
@@ -156,5 +170,78 @@ void GameScene::moneyUpdate(float dt)
 	MoneyLabel->setPosition(origin.x + visibleSize.width - Money_x * 0.75, origin.y + Money_y);
 	MoneyLabel->setColor(Color3B::YELLOW);
 	this->addChild(MoneyLabel, 20, GameSceneNodeTagMoney);
+}
+
+void GameScene::update(float dt)
+{
+	scrollMap();
+}
+
+void GameScene::scrollMap()
+{
+	auto mapCenter = _tiledMap1->getPosition();
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	int horizontal_state, vertical_state;
+	horizontal_state = (origin.x + visibleSize.width - BOX_EDGE_WITDH_SMALL < crusor_position.x)
+		+ (origin.x + visibleSize.width - BOX_EDGE_WITDH < crusor_position.x)
+		- (origin.x + BOX_EDGE_WITDH_SMALL > crusor_position.x)
+		- (origin.x + BOX_EDGE_WITDH > crusor_position.x);
+	vertical_state = (origin.y + visibleSize.height - BOX_EDGE_WITDH_SMALL < crusor_position.y)
+		+ (origin.y + visibleSize.height - BOX_EDGE_WITDH < crusor_position.y)
+		- (origin.y + BOX_EDGE_WITDH_SMALL > crusor_position.y)
+		- (origin.y + BOX_EDGE_WITDH > crusor_position.y);
+	Vec2 scroll(0, 0);
+	scroll += Vec2(-SCROLL_LENGTH, 0)*horizontal_state;
+	scroll += Vec2(0, -SCROLL_LENGTH)*vertical_state;
+	mapCenter += scroll;
+	if (_tiledMap1->getBoundingBox().containsPoint((-scroll) + Director::getInstance()->getVisibleSize())
+		&& _tiledMap1->getBoundingBox().containsPoint(-scroll))
+		_tiledMap1->setPosition(mapCenter);
+}
+
+void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEvent)
+{
+	auto mapCenter = _tiledMap1->getPosition();
+	Director::getInstance()->getVisibleSize();
+	switch (keycode)
+	{
+		//W 上移
+	case EventKeyboard::KeyCode::KEY_W:
+		mapCenter += Vec2(0, -100);
+		if (_tiledMap1->getBoundingBox().containsPoint(Vec2(0, 100) + Director::getInstance()->getVisibleSize()))
+			_tiledMap1->setPosition(mapCenter);
+		break;
+		//A 左移
+	case EventKeyboard::KeyCode::KEY_A:
+		mapCenter += Vec2(100, 0);
+		if (_tiledMap1->getBoundingBox().containsPoint(Vec2(-100, 0)))
+			_tiledMap1->setPosition(mapCenter);
+		break;
+		//S 下移
+	case EventKeyboard::KeyCode::KEY_S:
+		mapCenter += Vec2(0, 100);
+		if (_tiledMap1->getBoundingBox().containsPoint(Vec2(0, -100)))
+			_tiledMap1->setPosition(mapCenter);
+		break;
+		//D 右移
+	case EventKeyboard::KeyCode::KEY_D:
+		mapCenter += Vec2(-100, 0);
+		if (_tiledMap1->getBoundingBox().containsPoint(Vec2(100, 0) + Director::getInstance()->getVisibleSize()))
+			_tiledMap1->setPosition(mapCenter);
+		break;
+	/*
+		//X 
+	case EventKeyboard::KeyCode::KEY_X:
+		unit_manager->genCreateMessage(1, grid_map->getGridPoint(Vec2(Director::getInstance()->getVisibleSize().width / 2, Director::getInstance()->getVisibleSize().height / 2)));
+		break;
+		//空格 返回基地
+	case EventKeyboard::KeyCode::KEY_SPACE:
+		focusOnBase();
+		break;
+	*/
+	default:
+		break;
+	}
 }
 

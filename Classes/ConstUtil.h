@@ -1,4 +1,4 @@
-//资源类
+/*资源类*/
 
 #ifndef __Resources_H_
 #define __Resources_H_
@@ -18,7 +18,7 @@
 #define DIALOG_BUTTON "popuplayer/dialogbutton.png"
 #define DIALOG_BUTTON2 "popuplayer/dialogbutton2.png"
 //建筑物
-#define BASE "base.png"
+#define BASE "building/base.png"
 
 #define CAN_MOVE true
 #define CANNOT_MOVE false
@@ -34,10 +34,15 @@ typedef enum
 
 }BuildingTypes;
 
-
 //游戏界面节点
 #define GameSceneNodeTagBuilding 512
 #define GameSceneNodeTagMoney 1024
+
+//地图
+#define GameMap1 "map/GameMap1.tmx"
+#define BOX_EDGE_WITDH 40
+#define BOX_EDGE_WITDH_SMALL 10
+#define SCROLL_LENGTH 10
 
 
 
