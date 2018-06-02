@@ -4,6 +4,7 @@
 #include<iostream>
 #include"cocos2d.h"
 #include"ConstUtil.h"
+#include"GameScene.h"
 
 USING_NS_CC;
 

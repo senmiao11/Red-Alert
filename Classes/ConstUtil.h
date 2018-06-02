@@ -19,6 +19,8 @@
 #define DIALOG_BUTTON2 "popuplayer/dialogbutton2.png"
 //建筑物
 #define BASE "building/base.png"
+#define CASERN "building/casern.png"
+#define ELECTRICSTATION "building/electricStation.png"
 
 #define CAN_MOVE true
 #define CANNOT_MOVE false
@@ -26,11 +28,14 @@
 #define BASE_HEALTH 20000
 #define CASERN_PRICE 4000
 #define CASERN_HEALTH 10000
+#define ELECTRICSTATION_PRICE 2000
+#define ELECTRICSTATION_HEALTH 6000
 
 typedef enum
 {
 	START_BASE = 1,
-	CASERN
+	START_CASERN = 2,
+	START_ELECTRICSTATION=3,
 
 }BuildingTypes;
 
@@ -39,10 +44,24 @@ typedef enum
 #define GameSceneNodeTagMoney 1024
 
 //地图
-#define GameMap1 "map/GameMap1.tmx"
+#define GAMEMAP1 "map/GameMap1.tmx"
 #define BOX_EDGE_WITDH 40
 #define BOX_EDGE_WITDH_SMALL 10
 #define SCROLL_LENGTH 10
+
+//兵种
+typedef enum
+{
+	MINER = 1,
+	POLICEMAN = 2,
+	SOLDIER = 3,
+	TANK = 4
+}soldiers;
+#define MINER_IMAGE "soldiers/miner.png"
+#define POLICEMAN_IMAGE "soldiers/policeman.png"
+#define SOLDIER_IMAGE "sildiers/soldier.png"
+#define TANK_IMAGE "soldiers/tank.png"
+#define MINER_PRICE 100
 
 
 
