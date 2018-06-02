@@ -1,16 +1,19 @@
-//菜单场景
+/*菜单场景*/
+
 #ifndef __MenuScene_H_
 #define __MenuScene_H_
-
+#define STRAT_GAME    1
+#define INTRODUCTION  2
+#define QUIT_GAME     3
 
 #include"cocos2d.h"
 #include<iostream>
 #include"ConstUtil.h"
-#include"extensions/cocos-ext.h"  
-#include"popupLayer/PopupLayer.h"
+#include "extensions/cocos-ext.h"  
+#include "popupLayer/PopupLayer.h"
 #include"SplashScene.h"
 #include"MyUtility.h"
-#include"GameScene.h"
+#include"RoomScene.h"
 USING_NS_CC_EXT;
 USING_NS_CC;
 
@@ -28,6 +31,7 @@ private:
 	void addMenuSprites();                                            //添加Menu
 	void menuTouchDown(Object *pSender,Control::EventType event);     //Menu点击回调方法
 	void jumpToIntroduction(float dt);                                //跳转到IntroScene
+	void jumpToRoomScene(float dt);                                   //跳转到RoomScene
 };
 
 #endif // !__MenuScene_H_
