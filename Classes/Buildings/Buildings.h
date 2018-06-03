@@ -17,8 +17,9 @@ USING_NS_CC;
 class Buildings :public Sprite
 {
 public:
-	Buildings(BuildingTypes buildingType);        //通过枚举类来判段需产生什么建筑物
+	friend class GameScene;
 
+	Buildings(BuildingTypes buildingType);        //通过枚举类来判段需产生什么建筑物
 	static Buildings *creatWithBuildingTypes(BuildingTypes buildingType);
 
 private:

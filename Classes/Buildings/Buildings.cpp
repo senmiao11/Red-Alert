@@ -44,7 +44,7 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		touchBuildingListener->onTouchBegan = [](Touch *touch, Event *event)
 		{
 			log("touch to building");
-			auto target = static_cast<Buildings *>(event->getCurrentTarget());
+			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			if (!target->getifMove())
 			{
 				return false;
@@ -61,17 +61,30 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		touchBuildingListener->onTouchMoved = [](Touch *touch, Event *event)
 		{
 			log("building move");
-			auto target = static_cast<Buildings *>(event->getCurrentTarget());
+			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			target->setPosition(target->getPosition() + touch->getDelta());
 		};
 		touchBuildingListener->onTouchEnded = [](Touch *touch, Event *event)
 		{
 			log("touch to building end");
-			auto target = static_cast<Buildings *>(event->getCurrentTarget());
-			target->setifMove(CANNOT_MOVE);
+			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
+			if (GameScene::getIfBuild()->getTag())
+			{
+				target->setifMove(CAN_MOVE);
+			}
+			else
+			{
+				target->setifMove(CANNOT_MOVE);
+			}
 		};
 		eventDispatcher = Director::getInstance()->getEventDispatcher();
 		eventDispatcher->addEventListenerWithSceneGraphPriority(touchBuildingListener, building);
+
+		auto body = PhysicsBody::createBox((building->getContentSize()) * 0.75);
+		body->setCategoryBitmask(0x01);
+		body->setContactTestBitmask(0x01);
+		body->setCollisionBitmask(0x02);
+		building->setPhysicsBody(body);
 
 		return building;
 	}
