@@ -35,7 +35,7 @@ private:
 
 
 
-#endif // 1__Buildings_H_
+#endif // !__Buildings_H_
 
 
 

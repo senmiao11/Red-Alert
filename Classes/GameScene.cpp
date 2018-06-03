@@ -28,7 +28,7 @@ Scene * GameScene::createScene()
 	Scene *scene = Scene::createWithPhysics();
 	PhysicsWorld *phyWorld = scene->getPhysicsWorld();
 	//用于物理引擎debug
-	phyWorld->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	//phyWorld->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	phyWorld->setGravity(Vec2(0, 0));
 	auto layer = GameScene::create();
 	scene->addChild(layer);
@@ -77,31 +77,6 @@ bool GameScene::init()
 	mouseRectListener->onTouchMoved = CC_CALLBACK_2(GameScene::mouseRectOnTouchMoved, this);
 	mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
-	/*mouseRectListener->onTouchBegan = [this](Touch *pTouch, Event *event)
-	{
-		Point touch = pTouch->getLocation();
-		this->mouseRect->start = touch - this->_tiledMap1->getPosition();
-		this->mouseRect->touch_start = touch;
-		this->mouseRect->touch_end = touch;
-		this->mouseRect->schedule(schedule_selector(MouseRect::update));
-		return true;
-	};
-	mouseRectListener->onTouchMoved = [this](Touch *pTouch, Event *event)
-	{
-		Point touch = pTouch->getLocation();
-		this->mouseRect->touch_end = touch;
-		this->mouseRect->clear();
-		this->mouseRect->setVisible(true);
-	};
-	mouseRectListener->onTouchEnded = [this](Touch *pTouch, Event *event)
-	{
-		Point touch = pTouch->getLocation();
-		this->mouseRect->setVisible(false);
-		if (this->mouseRect->isScheduled(schedule_selector(MouseRect::update)))
-		{
-			this->mouseRect->unschedule(schedule_selector(MouseRect::update));
-		}
-	};*/
 
 	//建筑物不可建造时显示的标签
 	ifBuild = LabelTTF::create(MyUtility::gbk_2_utf8("非法建造"), "华文行楷", 15);
@@ -172,22 +147,23 @@ void GameScene::onEnter()
 	buildingLabel2->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height -80));
 	this->addChild(buildingLabel2, 30);
 
-	/*矿工菜单  尚未完成
-	MenuItemImage *soldierMenu1 = MenuItemImage::create(MINER_IMAGE, MINER_IMAGE, CC_CALLBACK_1(GameScene::soldiersCreate, this));
+	/*************test**************/
+	//创建矿工菜单
+	MenuItemImage *soldierMenu1 = MenuItemImage::create(MINER, MINER, CC_CALLBACK_1(GameScene::soldiersCreate, this));
 	soldierMenu1->setAnchorPoint(Vec2(0.5, 0.5));
-	soldierMenu1->setScale(1.0);
+	soldierMenu1->setScale(1.2);
 	//float smenu1_x = soldierMenu1->getContentSize().width;
 	//float smenu1_y = soldierMenu1->getContentSize().height;
 	soldierMenu1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 200));
-	soldierMenu1->setTag(MINER);
+	soldierMenu1->setTag(START_MINER);
 	soldierMenu1->setOpacity(128);
 	Menu *smn1 = Menu::create(soldierMenu1, NULL);
 	smn1->setPosition(Vec2::ZERO);
 	this->addChild(smn1, 20);
-	auto soldierLabel1 = LabelTTF::create(MyUtility::gbk_2_utf8("兵营"), "华文行楷", 8);
-	soldierLabel1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - menu1_y / 3));
+	auto soldierLabel1 = LabelTTF::create(MyUtility::gbk_2_utf8("矿工"), "华文行楷", 8);
+	soldierLabel1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 200));
 	this->addChild(soldierLabel1,30);
-	*/
+	
 
 	//建筑物接触检测监听器
 	buildingContactListener = EventListenerPhysicsContact::create();
@@ -385,13 +361,14 @@ void GameScene::buildingsCreate(Ref *pSender)
 	}
 
 }
-/*尚未完成
+
+/***************test*************/
 void GameScene::soldiersCreate(Ref *pSender)
 {
 	MenuItem *mnitm = (MenuItem *)pSender;
 	switch (mnitm->getTag())
 	{
-		case MINER:
+		case START_MINER:
 		{
 			if (Money < MINER_PRICE)
 			{
@@ -408,14 +385,16 @@ void GameScene::minerReady(float dt)
 {
 	//通过Soldiers类来创建士兵
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto miner = Soldiers::createWithSoldierTypes(MINER);
+	auto miner = Soldiers::createWithSoldierTypes(START_MINER);
 	miner->setAnchorPoint(Vec2(0.5, 0.5));
 	miner->setScale(1.0);
 	float soldiers_x = miner->getContentSize().width;
 	float soldiers_y = miner->getContentSize().height;
-	miner->setPosition(Vec2(visiable))
-}*/
+	miner->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
+	_tiledMap1->addChild(miner, 10, GameSceneNodeTagBuilding);
+}
 
+//建筑物绘制
 void GameScene::casernReady(float dt)
 {
 	//通过Buildings类来创建建筑物
@@ -428,7 +407,6 @@ void GameScene::casernReady(float dt)
 	casern->setPosition(Vec2(visibleSize.width - building_x, visibleSize.height - building_y / 6));
 	_tiledMap1->addChild(casern, 10, GameSceneNodeTagBuilding);
 }
-
 void GameScene::electricStationReady(float dt)
 {
 	//通过Buildings类来创建建筑物
