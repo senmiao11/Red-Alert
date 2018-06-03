@@ -21,13 +21,18 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		building->health = BASE_HEALTH;
 		building->if_move = CANNOT_MOVE;
 		break;
-	case CASERN:
-		buildingName = BASE;//ÔÝ´ú±øÓªÍ¼Æ¬
+	case START_CASERN:
+		buildingName = CASERN;
 		building->health = CASERN_HEALTH;
 		building->price = CASERN_PRICE;
 		building->if_move = CAN_MOVE;
 		break;
-
+	case START_ELECTRICSTATION:
+		buildingName = ELECTRICSTATION;
+		building->health = ELECTRICSTATION_HEALTH;
+		building->price = ELECTRICSTATION_PRICE;
+		building->if_move = CAN_MOVE;
+		break;
 	}
 
 	if (building && building->initWithFile(buildingName))

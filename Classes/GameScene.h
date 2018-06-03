@@ -8,6 +8,7 @@
 #include"ConstUtil.h"
 #include"MenuScene.h"
 #include"Buildings/Buildings.h"
+#include"Soldiers.h"
 
 USING_NS_CC;
 
@@ -21,8 +22,6 @@ public:
 	void reset();
 };
 
-
-
 class GameScene :public Layer
 {
 public:
@@ -35,10 +34,15 @@ public:
 	void update(float dt);
 	void scrollMap();
 
+
 	//获得是否可以建造的标签
 	static LabelTTF *getIfBuild()
 	{
 		return ifBuild;
+	}
+	static TMXTiledMap *gettiledMap()
+	{
+		return _tiledMap1;
 	}
 
 private:
@@ -52,28 +56,31 @@ private:
 
 	MouseRect *mouseRect = nullptr;
 	EventListenerTouchOneByOne *mouseRectListener;
-	bool ctrl_flag = true;//第一次按ctrl会关掉画矩形框，再按可以开启
+	/*bool ctrl_flag = true;//第一次按ctrl会关掉画矩形框，再按可以开启
 	bool mouseRectOnTouchBegan(Touch *pTouch, Event *event);
 	void mouseRectOnTouchMoved(Touch *pTouch, Event *event);
-	void mouseRectOnTouchEnded(Touch *pTouch, Event *event);
+	void mouseRectOnTouchEnded(Touch *pTouch, Event *event);*/
 
 
 	void backToMenuScene(Ref *pSender);//返回MenuScene
 	void buildingsCreate(Ref *pSender);//选择建筑物建造，建筑物菜单回调方法
+	void soldiersCreate(Ref *pSender);//选择产生兵种
 
 	void casernReady(float dt);//兵营准备
-	//////////////////////////////
-	//待添加其他建筑物的准备方法
-	//////////////////////////////
-
-	void moneyUpdate(float dt);//实时刷新金钱
+	void electricStationReady(float dt);  //电厂准备
+	void minerReady(float dt);
+							   //////////////////////////////
+							   //待添加其他建筑物的准备方法
+							   //////////////////////////////
 
 	static int Money;//金钱
+	void moneyUpdate(float dt);//实时刷新金钱
+
 	static LabelTTF *ifBuild;//建筑物不可建造时显示的标签
 
-	TMXTiledMap * _tiledMap1;
+	static TMXTiledMap * _tiledMap1;
 	Point crusor_position{ 0, 0 };
-	
+
 };
 
 

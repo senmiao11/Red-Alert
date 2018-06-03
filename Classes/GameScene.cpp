@@ -22,6 +22,7 @@ void MouseRect::reset()
 
 int GameScene::Money;
 LabelTTF * GameScene::ifBuild;
+TMXTiledMap *GameScene::_tiledMap1;
 
 Scene * GameScene::createScene()
 {
@@ -47,8 +48,11 @@ bool GameScene::init()
 	
 	/************地图************/
 	//游戏地图
-	_tiledMap1 = TMXTiledMap::create(GameMap1);
-	addChild(_tiledMap1, -1);
+	_tiledMap1 = TMXTiledMap::create(GAMEMAP1);
+	_tiledMap1->setAnchorPoint(Vec2(0, 0));
+	_tiledMap1->setPosition(0, 0);
+	addChild(_tiledMap1,0);
+	TMXLayer *UnreachableGroundLayer = _tiledMap1->getLayer("UnreachableGroundLayer");
 	//地图更新
 	schedule(schedule_selector(GameScene::update));
 	//地图移动的鼠标事件
@@ -57,25 +61,25 @@ bool GameScene::init()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(mouse_event, 1);
 	/*mouse_event->onMouseMove = [&](Event *event)
 	{
-		EventMouse* e = static_cast<EventMouse*>(event);
-		crusor_position = Vec2(e->getCursorX(), e->getCursorY());
+	EventMouse* e = static_cast<EventMouse*>(event);
+	crusor_position = Vec2(e->getCursorX(), e->getCursorY());
 	};*/
-
 	//各种键盘事件
-	keyboard_listener = EventListenerKeyboard::create();
+	auto keyboard_listener = EventListenerKeyboard::create();
 	keyboard_listener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboard_listener, this);
-
+	
 	//鼠标绘制一个矩形框
 	mouseRect = MouseRect::create();
 	mouseRect->setVisible(false);
 	_tiledMap1->addChild(mouseRect);
 	mouseRectListener = EventListenerTouchOneByOne::create();
-	mouseRectListener->onTouchBegan = CC_CALLBACK_2(GameScene::mouseRectOnTouchBegan, this);
+	mouseRectListener->setSwallowTouches(true);
+	/*mouseRectListener->onTouchBegan = CC_CALLBACK_2(GameScene::mouseRectOnTouchBegan, this);
 	mouseRectListener->onTouchMoved = CC_CALLBACK_2(GameScene::mouseRectOnTouchMoved, this);
 	mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
-	/*mouseRectListener->onTouchBegan = [this](Touch *pTouch, Event *event)
+	*/
+	mouseRectListener->onTouchBegan = [this](Touch *pTouch, Event *event)
 	{
 		Point touch = pTouch->getLocation();
 		this->mouseRect->start = touch - this->_tiledMap1->getPosition();
@@ -90,7 +94,6 @@ bool GameScene::init()
 		this->mouseRect->touch_end = touch;
 		this->mouseRect->clear();
 		this->mouseRect->setVisible(true);
-
 	};
 	mouseRectListener->onTouchEnded = [this](Touch *pTouch, Event *event)
 	{
@@ -100,14 +103,8 @@ bool GameScene::init()
 		{
 			this->mouseRect->unschedule(schedule_selector(MouseRect::update));
 		}
-	};*/
-
-	//创建一个基地精灵
-	Buildings *base = Buildings::creatWithBuildingTypes(START_BASE);
-	base->setAnchorPoint(Vec2(0, 0));
-	base->setScale(0.3);
-	base->setPosition(Vec2(origin.x + visibleSize.width * (-0.03), origin.y + visibleSize.height * (-0.06)));
-	_tiledMap1->addChild(base, 10, GameSceneNodeTagBuilding);
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
 
 	//建筑物不可建造时显示的标签
 	ifBuild = LabelTTF::create(MyUtility::gbk_2_utf8("非法建造"), "华文行楷", 15);
@@ -117,6 +114,13 @@ bool GameScene::init()
 	ifBuild->setTag(0);//标记为0和1分别对应建筑物监听器将建筑物设为不可移动和可移动
 	ifBuild->setVisible(false);//当标签不可见时建筑物可被监听器设为不可移动
 	addChild(ifBuild);
+
+	//创建一个基地精灵
+	Buildings *base = Buildings::creatWithBuildingTypes(START_BASE);
+	base->setAnchorPoint(Vec2(0, 0));
+	base->setScale(0.3);
+	base->setPosition(Vec2(origin.x + visibleSize.width * -0.03, origin.y + visibleSize.height *-0.06));
+	_tiledMap1->addChild(base, 10,GameSceneNodeTagBuilding);
 
 	return true;
 }
@@ -139,18 +143,54 @@ void GameScene::onEnter()
 	mn->setPosition(Vec2::ZERO);
 	this->addChild(mn);
 
-	//创建一个选择建筑物造菜单，目前只有兵营，暂用基地图代替
-	MenuItemImage *buildingMenu = MenuItemImage::create(BASE, BASE, CC_CALLBACK_1(GameScene::buildingsCreate, this));
-	buildingMenu->setAnchorPoint(Vec2(0.5, 0.5));
-	buildingMenu->setScale(0.2);
-	float menu_x = buildingMenu->getContentSize().width;
-	float menu_y = buildingMenu->getContentSize().height;
-	buildingMenu->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - menu_y / 6));
-	buildingMenu->setTag(CASERN);
-	buildingMenu->setOpacity(128);
-	Menu *bmn = Menu::create(buildingMenu, NULL);
-	bmn->setPosition(Vec2::ZERO);
-	this->addChild(bmn);
+	//创建兵营菜单
+	MenuItemImage *buildingMenu1 = MenuItemImage::create(CASERN, CASERN, CC_CALLBACK_1(GameScene::buildingsCreate, this));
+	buildingMenu1->setAnchorPoint(Vec2(0.5, 0.5));
+	buildingMenu1->setScale(0.3);
+	float menu1_x = buildingMenu1->getContentSize().width;
+	float menu1_y = buildingMenu1->getContentSize().height;
+	buildingMenu1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - menu1_y / 3));
+	buildingMenu1->setTag(START_CASERN);
+	buildingMenu1->setOpacity(128);
+	Menu *bmn1 = Menu::create(buildingMenu1, NULL);
+	bmn1->setPosition(Vec2::ZERO);
+	this->addChild(bmn1, 20);
+	auto buildingLabel1 = LabelTTF::create(MyUtility::gbk_2_utf8("兵营"), "华文行楷", 8);
+	buildingLabel1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - menu1_y / 3));
+	this->addChild(buildingLabel1,30);
+
+	//创建电厂菜单
+	MenuItemImage *buildingMenu2 = MenuItemImage::create(ELECTRICSTATION, ELECTRICSTATION, CC_CALLBACK_1(GameScene::buildingsCreate, this));
+	buildingMenu2->setAnchorPoint(Vec2(0.5, 0.5));
+	buildingMenu2->setScale(0.3);
+	float menu2_x = buildingMenu2->getContentSize().width;
+	float menu2_y = buildingMenu2->getContentSize().height;
+	buildingMenu2->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 80));
+	buildingMenu2->setTag(START_ELECTRICSTATION);
+	buildingMenu2->setOpacity(128);
+	Menu *bmn2 = Menu::create(buildingMenu2, NULL);
+	bmn2->setPosition(Vec2::ZERO);
+	this->addChild(bmn2, 20);
+	auto buildingLabel2 = LabelTTF::create(MyUtility::gbk_2_utf8("电厂"), "华文行楷", 8);
+	buildingLabel2->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height -80));
+	this->addChild(buildingLabel2, 30);
+
+	/*矿工菜单  尚未完成*/
+	MenuItemImage *soldierMenu1 = MenuItemImage::create(MINER_IMAGE, MINER_IMAGE, CC_CALLBACK_1(GameScene::soldiersCreate, this));
+	soldierMenu1->setAnchorPoint(Vec2(0.5, 0.5));
+	soldierMenu1->setScale(1.0);
+	//float smenu1_x = soldierMenu1->getContentSize().width;
+	//float smenu1_y = soldierMenu1->getContentSize().height;
+	soldierMenu1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 200));
+	soldierMenu1->setTag(MINER);
+	soldierMenu1->setOpacity(128);
+	Menu *smn1 = Menu::create(soldierMenu1, NULL);
+	smn1->setPosition(Vec2::ZERO);
+	this->addChild(smn1, 20);
+	auto soldierLabel1 = LabelTTF::create(MyUtility::gbk_2_utf8("兵营"), "华文行楷", 8);
+	soldierLabel1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - menu1_y / 3));
+	this->addChild(soldierLabel1,30);
+	
 
 	//建筑物接触检测监听器
 	buildingContactListener = EventListenerPhysicsContact::create();
@@ -171,7 +211,7 @@ void GameScene::onEnter()
 			{
 				buildingSpriteA->setifMove(CAN_MOVE);//让此建筑物认为可移动
 				buildingSpriteB->setOpacity(128);//将不可移动的建筑物变透明
-												 //给标签设置标记，使建筑物的监听器可以根据标签判断是否需要将建筑物设为不可移动
+				//给标签设置标记，使建筑物的监听器可以根据标签判断是否需要将建筑物设为不可移动
 				this->ifBuild->setTag(1);
 				this->ifBuild->setVisible(true);//显示禁止建造的标签
 				return true;
@@ -278,8 +318,6 @@ void GameScene::onEnter()
 	};
 	_eventDispatcher->addEventListenerWithFixedPriority(buildingContactListener, 20);
 
-
-
 	//实时刷新金钱
 	this->Money = 4000;
 	__String *currentMoney = __String::createWithFormat("Money:%d", this->Money);
@@ -297,6 +335,7 @@ void GameScene::onExit()
 {
 	Layer::onExit();
 	Director::getInstance()->getEventDispatcher()->removeEventListener(Buildings::touchBuildingListener);
+	Director::getInstance()->getEventDispatcher()->removeEventListener(Soldiers::touchSoldierListener);
 	Director::getInstance()->getEventDispatcher()->removeEventListener(mouse_event);
 	Director::getInstance()->getEventDispatcher()->removeEventListener(keyboard_listener);
 	Director::getInstance()->getEventDispatcher()->removeEventListener(buildingContactListener);
@@ -322,9 +361,9 @@ void GameScene::buildingsCreate(Ref *pSender)
 	MenuItem *mnitem = (MenuItem *)pSender;
 	switch (mnitem->getTag())
 	{
-		case CASERN:
+		case START_CASERN:
 		{
-			if (Money < CASERN_PRICE)//判断前是否足够
+			if (Money < CASERN_PRICE)//判断钱是否足够
 			{
 				break;
 			}
@@ -333,24 +372,79 @@ void GameScene::buildingsCreate(Ref *pSender)
 			this->scheduleOnce(schedule_selector(GameScene::casernReady), 2.0f);
 			break;
 		}
+		case START_ELECTRICSTATION:
+		{
+			if (Money < ELECTRICSTATION_PRICE)//判断钱是否足够
+			{
+				break;
+			}
+			Money -= ELECTRICSTATION_PRICE;
+			//建筑物准备定时器，每种建筑物准备时间不同
+			this->scheduleOnce(schedule_selector(GameScene::electricStationReady), 2.0f);
+			break;
+		}
 		//////////
 		//待扩充
 		//////////
 	}
 
 }
+/*尚未完成*/
+void GameScene::soldiersCreate(Ref *pSender)
+{
+	MenuItem *mnitm = (MenuItem *)pSender;
+	switch (mnitm->getTag())
+	{
+		case MINER:
+		{
+			if (Money < MINER_PRICE)
+			{
+				break;
+			}
+			Money -= MINER_PRICE;
+			//准备定时器
+			this->scheduleOnce(schedule_selector(GameScene::minerReady), 0.5f);
+		}
+	}
+}
+
+void GameScene::minerReady(float dt)
+{
+	//通过Soldiers类来创建士兵
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	auto miner = Soldiers::createWithSoldierTypes(MINER);
+	miner->setAnchorPoint(Vec2(0.5, 0.5));
+	miner->setScale(1.0);
+	float soldiers_x = miner->getContentSize().width;
+	float soldiers_y = miner->getContentSize().height;
+	miner->setPosition(Vec2(100, 100));
+	_tiledMap1->addChild(miner, 10, GameSceneNodeTagSoldier);
+}
 
 void GameScene::casernReady(float dt)
 {
 	//通过Buildings类来创建建筑物
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto casern = Buildings::creatWithBuildingTypes(CASERN);
+	auto casern = Buildings::creatWithBuildingTypes(START_CASERN);
 	casern->setAnchorPoint(Vec2(0.5, 0.5));
-	casern->setScale(0.2);
+	casern->setScale(0.3);
 	float building_x = casern->getContentSize().width;
 	float building_y = casern->getContentSize().height;
-	casern->setPosition(Vec2(visibleSize.width, visibleSize.height - building_y / 6));
-	this->_tiledMap1->addChild(casern, 10, GameSceneNodeTagBuilding);
+	casern->setPosition(Vec2(visibleSize.width - building_x, visibleSize.height - building_y / 6));
+	_tiledMap1->addChild(casern, 10, GameSceneNodeTagBuilding);
+}
+
+void GameScene::electricStationReady(float dt)
+{
+	//通过Buildings类来创建建筑物
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	auto casern = Buildings::creatWithBuildingTypes(START_ELECTRICSTATION);
+	casern->setAnchorPoint(Vec2(0.5, 0.5));
+	casern->setScale(0.3);
+	float building_x = casern->getContentSize().width;
+	float building_y = casern->getContentSize().height;
+	casern->setPosition(Vec2(visibleSize.width - building_x, visibleSize.height - building_y / 6));
+	_tiledMap1->addChild(casern, 10, GameSceneNodeTagBuilding);
 }
 
 void GameScene::moneyUpdate(float dt)
@@ -383,33 +477,33 @@ void GameScene::update(float dt)
 
 void GameScene::scrollMap()
 {
-	auto mapCenter = _tiledMap1->getPosition();
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	int horizontal_state, vertical_state;
-	horizontal_state = (origin.x + visibleSize.width - BOX_EDGE_WITDH_SMALL < crusor_position.x)
-		+ (origin.x + visibleSize.width - BOX_EDGE_WITDH < crusor_position.x)
-		- (origin.x + BOX_EDGE_WITDH_SMALL > crusor_position.x)
-		- (origin.x + BOX_EDGE_WITDH > crusor_position.x);
-	vertical_state = (origin.y + visibleSize.height - BOX_EDGE_WITDH_SMALL < crusor_position.y)
-		+ (origin.y + visibleSize.height - BOX_EDGE_WITDH < crusor_position.y)
-		- (origin.y + BOX_EDGE_WITDH_SMALL > crusor_position.y)
-		- (origin.y + BOX_EDGE_WITDH > crusor_position.y);
-	Vec2 scroll(0, 0);
-	scroll += Vec2(-SCROLL_LENGTH, 0)*horizontal_state;
-	scroll += Vec2(0, -SCROLL_LENGTH)*vertical_state;
-	mapCenter += scroll;
-	if (_tiledMap1->getBoundingBox().containsPoint((-scroll) + Director::getInstance()->getVisibleSize())
-		&& _tiledMap1->getBoundingBox().containsPoint(-scroll))
-		_tiledMap1->setPosition(mapCenter);
+		auto mapCenter = _tiledMap1->getPosition();
+		auto visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+		int horizontal_state, vertical_state;
+		horizontal_state = (origin.x + visibleSize.width - BOX_EDGE_WITDH_SMALL < crusor_position.x)
+			+ (origin.x + visibleSize.width - BOX_EDGE_WITDH < crusor_position.x)
+			- (origin.x + BOX_EDGE_WITDH_SMALL > crusor_position.x)
+			- (origin.x + BOX_EDGE_WITDH > crusor_position.x);
+		vertical_state = (origin.y + visibleSize.height - BOX_EDGE_WITDH_SMALL < crusor_position.y)
+			+ (origin.y + visibleSize.height - BOX_EDGE_WITDH < crusor_position.y)
+			- (origin.y + BOX_EDGE_WITDH_SMALL > crusor_position.y)
+			- (origin.y + BOX_EDGE_WITDH > crusor_position.y);
+		Vec2 scroll(0, 0);
+		scroll += Vec2(-SCROLL_LENGTH, 0)*horizontal_state;
+		scroll += Vec2(0, -SCROLL_LENGTH)*vertical_state;
+		mapCenter += scroll;
+		if (_tiledMap1->getBoundingBox().containsPoint((-scroll) + Director::getInstance()->getVisibleSize())
+			&& _tiledMap1->getBoundingBox().containsPoint(-scroll))
+			_tiledMap1->setPosition(mapCenter);
 }
-
 void GameScene::onMouseMove(Event *event)
 {
 	EventMouse* e = static_cast<EventMouse*>(event);
 	crusor_position = Vec2(e->getCursorX(), e->getCursorY());
 }
 
+/*
 bool GameScene::mouseRectOnTouchBegan(Touch *pTouch, Event *event)
 {
 	Point touch = pTouch->getLocation();
@@ -436,7 +530,7 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 	{
 		this->mouseRect->unschedule(schedule_selector(MouseRect::update));
 	}
-}
+}*/
 
 void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEvent)
 {
@@ -468,7 +562,7 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 		if (_tiledMap1->getBoundingBox().containsPoint(Vec2(100, 0) + Director::getInstance()->getVisibleSize()))
 			_tiledMap1->setPosition(mapCenter);
 		break;
-	//关闭或开启鼠标移动屏幕
+		//关闭或开启鼠标移动屏幕
 	case EventKeyboard::KeyCode::KEY_P:
 		if (p_flag)
 		{
@@ -483,7 +577,7 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 		mouse_event->onMouseMove = CC_CALLBACK_1(GameScene::onMouseMove, this);
 		Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(mouse_event, 1);
 		break;
-	//按下control鼠标可以或者不可以画出矩形框
+	/*	//按下control鼠标可以或者不可以画出矩形框
 	case EventKeyboard::KeyCode::KEY_CTRL:
 		if (ctrl_flag)
 		{
@@ -499,19 +593,21 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 		mouseRectListener->onTouchMoved = CC_CALLBACK_2(GameScene::mouseRectOnTouchMoved, this);
 		mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
-		break;
-	/*
-		//X 
-	case EventKeyboard::KeyCode::KEY_X:
+		break;*/
+		/*
+
+		//X
+		case EventKeyboard::KeyCode::KEY_X:
 		unit_manager->genCreateMessage(1, grid_map->getGridPoint(Vec2(Director::getInstance()->getVisibleSize().width / 2, Director::getInstance()->getVisibleSize().height / 2)));
 		break;
 		//空格 返回基地
-	case EventKeyboard::KeyCode::KEY_SPACE:
+		case EventKeyboard::KeyCode::KEY_SPACE:
 		focusOnBase();
 		break;
-	*/
+		*/
 	default:
 		break;
 	}
 }
 
+	
