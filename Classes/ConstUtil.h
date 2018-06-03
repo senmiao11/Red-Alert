@@ -19,11 +19,8 @@
 #define DIALOG_BUTTON2 "popuplayer/dialogbutton2.png"
 //建筑物
 #define BASE "building/base.png"
-<<<<<<< HEAD
 #define CASERN "building/casern.png"
 #define ELECTRICSTATION "building/electricStation.png"
-=======
->>>>>>> xiaorui
 
 #define CAN_MOVE true
 #define CANNOT_MOVE false
@@ -36,14 +33,9 @@
 
 typedef enum
 {
-<<<<<<< HEAD
 	START_BASE = 1,
 	START_CASERN = 2,
 	START_ELECTRICSTATION=3,
-=======
-	START_BASE = 100,
-	CASERN
->>>>>>> xiaorui
 
 }BuildingTypes;
 
@@ -52,16 +44,11 @@ typedef enum
 #define GameSceneNodeTagMoney 1024
 
 //地图
-<<<<<<< HEAD
 #define GAMEMAP1 "map/GameMap1.tmx"
-=======
-#define GameMap1 "map/GameMap1.tmx"
->>>>>>> xiaorui
 #define BOX_EDGE_WITDH 40
 #define BOX_EDGE_WITDH_SMALL 10
 #define SCROLL_LENGTH 10
 
-<<<<<<< HEAD
 //兵种
 typedef enum
 {
@@ -76,8 +63,6 @@ typedef enum
 #define TANK_IMAGE "soldiers/tank.png"
 #define MINER_PRICE 100
 
-=======
->>>>>>> xiaorui
 
 
 #endif 

@@ -1,38 +1,9 @@
 #include"GameScene.h"
 
-void MouseRect::update(float dt)
-{
-	clear();
-	Node *parent = getParent();
-	end = touch_end - parent->getPosition();
-	drawRect(start, end, Color4F(0, 1, 0, 1));
-}
-void MouseRect::reset()
-{
-	setVisible(false);
-	if (isScheduled(schedule_selector(MouseRect::update)))
-	{
-		unschedule(schedule_selector(MouseRect::update));
-	}
-	touch_start = Point{ 0,0 };
-	touch_end = Point{ 0,0 };
-	start = Point{ 0,0 };
-	end = Point{ 0,0 };
-}
 
-<<<<<<< HEAD
-=======
-int GameScene::Money;
-LabelTTF * GameScene::ifBuild;
-
->>>>>>> xiaorui
 Scene * GameScene::createScene()
 {
-	Scene *scene = Scene::createWithPhysics();
-	PhysicsWorld *phyWorld = scene->getPhysicsWorld();
-	//用于物理引擎debug
-	phyWorld->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-	phyWorld->setGravity(Vec2(0, 0));
+	Scene *scene = Scene::create();
 	auto layer = GameScene::create();
 	scene->addChild(layer);
 	return scene;
@@ -50,7 +21,6 @@ bool GameScene::init()
 	
 	/************地图************/
 	//游戏地图
-<<<<<<< HEAD
 	_tiledMap1 = TMXTiledMap::create(GAMEMAP1);
 	_tiledMap1->setAnchorPoint(Vec2(0, 0));
 	_tiledMap1->setPosition(0, 0);
@@ -70,83 +40,13 @@ bool GameScene::init()
 	auto keyboard_listener = EventListenerKeyboard::create();
 	keyboard_listener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboard_listener, this);
-=======
-	_tiledMap1 = TMXTiledMap::create(GameMap1);
-	addChild(_tiledMap1, -1);
-	//地图更新
-	schedule(schedule_selector(GameScene::update));
-	//地图移动的鼠标事件
-	mouse_event = EventListenerMouse::create();
-	mouse_event->onMouseMove = CC_CALLBACK_1(GameScene::onMouseMove, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(mouse_event, 1);
-	/*mouse_event->onMouseMove = [&](Event *event)
-	{
-		EventMouse* e = static_cast<EventMouse*>(event);
-		crusor_position = Vec2(e->getCursorX(), e->getCursorY());
-	};*/
-
-	//各种键盘事件
-	keyboard_listener = EventListenerKeyboard::create();
-	keyboard_listener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboard_listener, this);
-
-	//鼠标绘制一个矩形框
-	mouseRect = MouseRect::create();
-	mouseRect->setVisible(false);
-	_tiledMap1->addChild(mouseRect);
-	mouseRectListener = EventListenerTouchOneByOne::create();
-	mouseRectListener->onTouchBegan = CC_CALLBACK_2(GameScene::mouseRectOnTouchBegan, this);
-	mouseRectListener->onTouchMoved = CC_CALLBACK_2(GameScene::mouseRectOnTouchMoved, this);
-	mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
-	/*mouseRectListener->onTouchBegan = [this](Touch *pTouch, Event *event)
-	{
-		Point touch = pTouch->getLocation();
-		this->mouseRect->start = touch - this->_tiledMap1->getPosition();
-		this->mouseRect->touch_start = touch;
-		this->mouseRect->touch_end = touch;
-		this->mouseRect->schedule(schedule_selector(MouseRect::update));
-		return true;
-	};
-	mouseRectListener->onTouchMoved = [this](Touch *pTouch, Event *event)
-	{
-		Point touch = pTouch->getLocation();
-		this->mouseRect->touch_end = touch;
-		this->mouseRect->clear();
-		this->mouseRect->setVisible(true);
-
-	};
-	mouseRectListener->onTouchEnded = [this](Touch *pTouch, Event *event)
-	{
-		Point touch = pTouch->getLocation();
-		this->mouseRect->setVisible(false);
-		if (this->mouseRect->isScheduled(schedule_selector(MouseRect::update)))
-		{
-			this->mouseRect->unschedule(schedule_selector(MouseRect::update));
-		}
-	};*/
->>>>>>> xiaorui
 
 	//创建一个基地精灵
 	Buildings *base = Buildings::creatWithBuildingTypes(START_BASE);
 	base->setAnchorPoint(Vec2(0, 0));
 	base->setScale(0.3);
-<<<<<<< HEAD
 	base->setPosition(Vec2(origin.x + visibleSize.width * -0.03, origin.y + visibleSize.height *-0.06));
 	_tiledMap1->addChild(base, 10,GameSceneNodeTagBuilding);
-=======
-	base->setPosition(Vec2(origin.x + visibleSize.width * (-0.03), origin.y + visibleSize.height * (-0.06)));
-	_tiledMap1->addChild(base, 10, GameSceneNodeTagBuilding);
-
-	//建筑物不可建造时显示的标签
-	ifBuild = LabelTTF::create(MyUtility::gbk_2_utf8("非法建造"), "华文行楷", 15);
-	ifBuild->setColor(Color3B::RED);
-	ifBuild->setAnchorPoint(Vec2(0.5, 0.5));
-	ifBuild->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - ifBuild->getContentSize().height / 2));
-	ifBuild->setTag(0);//标记为0和1分别对应建筑物监听器将建筑物设为不可移动和可移动
-	ifBuild->setVisible(false);//当标签不可见时建筑物可被监听器设为不可移动
-	addChild(ifBuild);
->>>>>>> xiaorui
 
 	return true;
 }
@@ -169,7 +69,6 @@ void GameScene::onEnter()
 	mn->setPosition(Vec2::ZERO);
 	this->addChild(mn);
 
-<<<<<<< HEAD
 	//创建兵营菜单
 	MenuItemImage *buildingMenu1 = MenuItemImage::create(CASERN, CASERN, CC_CALLBACK_1(GameScene::buildingsCreate, this));
 	buildingMenu1->setAnchorPoint(Vec2(0.5, 0.5));
@@ -201,146 +100,6 @@ void GameScene::onEnter()
 	auto buildingLabel2 = LabelTTF::create(MyUtility::gbk_2_utf8("电厂"), "华文行楷", 8);
 	buildingLabel2->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height -80));
 	this->addChild(buildingLabel2, 30);
-=======
-	//创建一个选择建筑物造菜单，目前只有兵营，暂用基地图代替
-	MenuItemImage *buildingMenu = MenuItemImage::create(BASE, BASE, CC_CALLBACK_1(GameScene::buildingsCreate, this));
-	buildingMenu->setAnchorPoint(Vec2(0.5, 0.5));
-	buildingMenu->setScale(0.2);
-	float menu_x = buildingMenu->getContentSize().width;
-	float menu_y = buildingMenu->getContentSize().height;
-	buildingMenu->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - menu_y / 6));
-	buildingMenu->setTag(CASERN);
-	buildingMenu->setOpacity(128);
-	Menu *bmn = Menu::create(buildingMenu, NULL);
-	bmn->setPosition(Vec2::ZERO);
-	this->addChild(bmn);
-
-	//建筑物接触检测监听器
-	buildingContactListener = EventListenerPhysicsContact::create();
-	buildingContactListener->onContactBegin = [this](PhysicsContact &contact)
-	{
-		log("buildings contact");
-		Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
-		Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
-		if (!buildingSpriteA || !buildingSpriteB)
-		{
-			return false;
-		}
-		//判断两个精灵是否为建筑物，并看哪一个是需要建造的
-		if (buildingSpriteA->getTag() == GameSceneNodeTagBuilding && buildingSpriteB->getTag() == GameSceneNodeTagBuilding)
-		{
-			//需要建造的建筑物是可移动的
-			if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
-			{
-				buildingSpriteA->setifMove(CAN_MOVE);//让此建筑物认为可移动
-				buildingSpriteB->setOpacity(128);//将不可移动的建筑物变透明
-												 //给标签设置标记，使建筑物的监听器可以根据标签判断是否需要将建筑物设为不可移动
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);//显示禁止建造的标签
-				return true;
-			}
-			if (buildingSpriteB->getifMove() && !buildingSpriteA->getifMove())
-			{
-				buildingSpriteB->setifMove(CAN_MOVE);
-				buildingSpriteA->setOpacity(128);
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);
-				return true;
-			}
-		}
-		return false;
-	};
-	buildingContactListener->onContactPreSolve = [this](PhysicsContact &contact, PhysicsContactPreSolve &solve)
-	{
-		log("buildings contactpresolve");
-		Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
-		Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
-		if (!buildingSpriteA || !buildingSpriteB)
-		{
-			return false;
-		}
-		if (buildingSpriteA->getTag() == GameSceneNodeTagBuilding && buildingSpriteB->getTag() == GameSceneNodeTagBuilding)
-		{
-			if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
-			{
-				buildingSpriteA->setifMove(CAN_MOVE);
-				buildingSpriteB->setOpacity(128);
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);
-				return true;
-			}
-			if (buildingSpriteB->getifMove() && !buildingSpriteA->getifMove())
-			{
-				buildingSpriteB->setifMove(CAN_MOVE);
-				buildingSpriteA->setOpacity(128);
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);
-				return true;
-			}
-		}
-		return false;
-	};
-	buildingContactListener->onContactPostSolve = [this](PhysicsContact &contact, const PhysicsContactPostSolve &solve)
-	{
-		log("buildings contactpostsolve");
-		Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
-		Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
-		if (!buildingSpriteA || !buildingSpriteB)
-		{
-			return;
-		}
-		if (buildingSpriteA->getTag() == GameSceneNodeTagBuilding && buildingSpriteB->getTag() == GameSceneNodeTagBuilding)
-		{
-			if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
-			{
-				buildingSpriteA->setifMove(CAN_MOVE);
-				buildingSpriteB->setOpacity(128);
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);
-				return;
-			}
-			if (buildingSpriteB->getifMove() && !buildingSpriteA->getifMove())
-			{
-				buildingSpriteB->setifMove(CAN_MOVE);
-				buildingSpriteA->setOpacity(128);
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);
-				return;
-			}
-		}
-	};
-	buildingContactListener->onContactSeparate = [this](PhysicsContact &contact)
-	{
-		log("buildings contactseparate");
-		Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
-		Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
-		if (!buildingSpriteA || !buildingSpriteB)
-		{
-			return;
-		}
-		if (buildingSpriteA->getTag() == GameSceneNodeTagBuilding && buildingSpriteB->getTag() == GameSceneNodeTagBuilding)
-		{
-			if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
-			{
-				buildingSpriteA->setifMove(CAN_MOVE);//建筑物分离仍可移动
-				buildingSpriteB->setOpacity(255);//不可移动的建筑物恢复为不透明
-				this->ifBuild->setTag(0);//标签的标记为0，建筑物监听器可以将建筑物设为不可移动
-				this->ifBuild->setVisible(false);//标签不可见
-				return;
-			}
-			if (buildingSpriteB->getifMove() && !buildingSpriteA->getifMove())
-			{
-				buildingSpriteB->setifMove(CAN_MOVE);
-				buildingSpriteA->setOpacity(255);
-				this->ifBuild->setTag(0);
-				this->ifBuild->setVisible(false);
-				return;
-			}
-		}
-		return;
-	};
-	_eventDispatcher->addEventListenerWithFixedPriority(buildingContactListener, 20);
->>>>>>> xiaorui
 
 	/*矿工菜单  尚未完成
 	MenuItemImage *soldierMenu1 = MenuItemImage::create(MINER_IMAGE, MINER_IMAGE, CC_CALLBACK_1(GameScene::soldiersCreate, this));
@@ -362,13 +121,6 @@ void GameScene::onEnter()
 
 	//实时刷新金钱
 	this->Money = 4000;
-	__String *currentMoney = __String::createWithFormat("Money:%d", this->Money);
-	auto MoneyLabel = LabelTTF::create(currentMoney->getCString(), "Marker Felt", 15);
-	float Money_x = MoneyLabel->getContentSize().width;
-	float Money_y = MoneyLabel->getContentSize().height;
-	MoneyLabel->setPosition(origin.x + visibleSize.width - Money_x * 0.75, origin.y + Money_y);
-	MoneyLabel->setColor(Color3B::RED);
-	this->addChild(MoneyLabel, 20, GameSceneNodeTagMoney);
 	this->schedule(schedule_selector(GameScene::moneyUpdate), 1.0f, CC_REPEAT_FOREVER, 0);
 
 }
@@ -377,12 +129,8 @@ void GameScene::onExit()
 {
 	Layer::onExit();
 	Director::getInstance()->getEventDispatcher()->removeEventListener(Buildings::touchBuildingListener);
-	Director::getInstance()->getEventDispatcher()->removeEventListener(mouse_event);
-	Director::getInstance()->getEventDispatcher()->removeEventListener(keyboard_listener);
-	Director::getInstance()->getEventDispatcher()->removeEventListener(buildingContactListener);
-	Director::getInstance()->getEventDispatcher()->removeEventListener(mouseRectListener);
+
 	this->unschedule(schedule_selector(GameScene::moneyUpdate));
-	this->unschedule(schedule_selector(GameScene::update));
 }
 
 //返回MenuScene
@@ -470,7 +218,6 @@ void GameScene::casernReady(float dt)
 	casern->setScale(0.3);
 	float building_x = casern->getContentSize().width;
 	float building_y = casern->getContentSize().height;
-<<<<<<< HEAD
 	casern->setPosition(Vec2(visibleSize.width - building_x, visibleSize.height - building_y / 6));
 	_tiledMap1->addChild(casern, 10, GameSceneNodeTagBuilding);
 }
@@ -486,10 +233,6 @@ void GameScene::electricStationReady(float dt)
 	float building_y = casern->getContentSize().height;
 	casern->setPosition(Vec2(visibleSize.width - building_x, visibleSize.height - building_y / 6));
 	_tiledMap1->addChild(casern, 10, GameSceneNodeTagBuilding);
-=======
-	casern->setPosition(Vec2(visibleSize.width, visibleSize.height - building_y / 6));
-	this->_tiledMap1->addChild(casern, 10, GameSceneNodeTagBuilding);
->>>>>>> xiaorui
 }
 
 void GameScene::moneyUpdate(float dt)
@@ -522,7 +265,6 @@ void GameScene::update(float dt)
 
 void GameScene::scrollMap()
 {
-<<<<<<< HEAD
 		auto mapCenter = _tiledMap1->getPosition();
 		auto visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -542,61 +284,6 @@ void GameScene::scrollMap()
 		if (_tiledMap1->getBoundingBox().containsPoint((-scroll) + Director::getInstance()->getVisibleSize())
 			&& _tiledMap1->getBoundingBox().containsPoint(-scroll))
 			_tiledMap1->setPosition(mapCenter);
-=======
-	auto mapCenter = _tiledMap1->getPosition();
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	int horizontal_state, vertical_state;
-	horizontal_state = (origin.x + visibleSize.width - BOX_EDGE_WITDH_SMALL < crusor_position.x)
-		+ (origin.x + visibleSize.width - BOX_EDGE_WITDH < crusor_position.x)
-		- (origin.x + BOX_EDGE_WITDH_SMALL > crusor_position.x)
-		- (origin.x + BOX_EDGE_WITDH > crusor_position.x);
-	vertical_state = (origin.y + visibleSize.height - BOX_EDGE_WITDH_SMALL < crusor_position.y)
-		+ (origin.y + visibleSize.height - BOX_EDGE_WITDH < crusor_position.y)
-		- (origin.y + BOX_EDGE_WITDH_SMALL > crusor_position.y)
-		- (origin.y + BOX_EDGE_WITDH > crusor_position.y);
-	Vec2 scroll(0, 0);
-	scroll += Vec2(-SCROLL_LENGTH, 0)*horizontal_state;
-	scroll += Vec2(0, -SCROLL_LENGTH)*vertical_state;
-	mapCenter += scroll;
-	if (_tiledMap1->getBoundingBox().containsPoint((-scroll) + Director::getInstance()->getVisibleSize())
-		&& _tiledMap1->getBoundingBox().containsPoint(-scroll))
-		_tiledMap1->setPosition(mapCenter);
-}
-
-void GameScene::onMouseMove(Event *event)
-{
-	EventMouse* e = static_cast<EventMouse*>(event);
-	crusor_position = Vec2(e->getCursorX(), e->getCursorY());
-}
-
-bool GameScene::mouseRectOnTouchBegan(Touch *pTouch, Event *event)
-{
-	Point touch = pTouch->getLocation();
-	mouseRect->start = touch - _tiledMap1->getPosition();
-	mouseRect->touch_start = touch;
-	mouseRect->touch_end = touch;
-	mouseRect->schedule(schedule_selector(MouseRect::update));
-	return true;
-}
-
-void GameScene::mouseRectOnTouchMoved(Touch *pTouch, Event *event)
-{
-	Point touch = pTouch->getLocation();
-	this->mouseRect->touch_end = touch;
-	this->mouseRect->clear();
-	this->mouseRect->setVisible(true);
-}
-
-void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
-{
-	Point touch = pTouch->getLocation();
-	this->mouseRect->setVisible(false);
-	if (this->mouseRect->isScheduled(schedule_selector(MouseRect::update)))
-	{
-		this->mouseRect->unschedule(schedule_selector(MouseRect::update));
-	}
->>>>>>> xiaorui
 }
 
 void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEvent)
@@ -629,41 +316,6 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 		if (_tiledMap1->getBoundingBox().containsPoint(Vec2(100, 0) + Director::getInstance()->getVisibleSize()))
 			_tiledMap1->setPosition(mapCenter);
 		break;
-<<<<<<< HEAD
-=======
-	//关闭或开启鼠标移动屏幕
-	case EventKeyboard::KeyCode::KEY_P:
-		if (p_flag)
-		{
-			log("map move by mouse close");
-			p_flag = false;
-			Director::getInstance()->getEventDispatcher()->removeEventListener(mouse_event);
-			break;
-		}
-		log("map move by mouse open");
-		p_flag = true;
-		mouse_event = EventListenerMouse::create();
-		mouse_event->onMouseMove = CC_CALLBACK_1(GameScene::onMouseMove, this);
-		Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(mouse_event, 1);
-		break;
-	//按下control鼠标可以或者不可以画出矩形框
-	case EventKeyboard::KeyCode::KEY_CTRL:
-		if (ctrl_flag)
-		{
-			log("mouse Rect unusable");
-			ctrl_flag = false;
-			Director::getInstance()->getEventDispatcher()->removeEventListener(mouseRectListener);
-			break;
-		}
-		log("mouse Rect usable");
-		ctrl_flag = true;
-		mouseRectListener = EventListenerTouchOneByOne::create();
-		mouseRectListener->onTouchBegan = CC_CALLBACK_2(GameScene::mouseRectOnTouchBegan, this);
-		mouseRectListener->onTouchMoved = CC_CALLBACK_2(GameScene::mouseRectOnTouchMoved, this);
-		mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
-		_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
-		break;
->>>>>>> xiaorui
 	/*
 		//X 
 	case EventKeyboard::KeyCode::KEY_X:
