@@ -64,6 +64,10 @@ typedef enum
 #define TANK "soldiers/tank.png"
 #define MINER_PRICE 100
 #define MINER_HEALTH 200
+#define POLICEMAN_PRICE 150
+#define POLICEMAN_HEALTH 300
+#define TANK_PRICE 300
+#define TANK_HEALTH 450
 
 
 

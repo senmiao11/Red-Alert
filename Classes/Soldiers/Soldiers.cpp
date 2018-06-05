@@ -17,10 +17,28 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 	switch (soldierType)
 	{
 		case START_MINER:
+		{
 			soldierName = MINER;
 			soldier->health = MINER_HEALTH;
+			soldier->price = MINER_PRICE;
 			break;
+		}
+		case START_POLICEMAN:
+		{
+			soldierName = POLICEMAN;
+			soldier->health = POLICEMAN_HEALTH;
+			soldier->price = POLICEMAN_PRICE;
+			break;
+		}
+		case START_TANK:
+		{
+			soldierName = TANK;
+			soldier->health = TANK_HEALTH;
+			soldier->price = TANK_PRICE;
+		}
+			
 	    /*待添加*/
+		//已补充police.tank的health与price
 
 	}
 	if (soldier && soldier->initWithFile(soldierName))
