@@ -21,7 +21,11 @@ bool ServerScene::init()
 	addBackgroundSprite();
 	//添加Menu
 	addMenuSprites();
+<<<<<<< HEAD
 
+=======
+	//添加端口信息
+>>>>>>> master
 	auto inputbox = ui::EditBox::create(Size(80, 60), ui::Scale9Sprite::create(INPUT_IP));
 	inputbox->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y + visibleSize.height - inputbox->getContentSize().height));
 	inputbox->setTextHorizontalAlignment(TextHAlignment::CENTER);
@@ -31,9 +35,14 @@ bool ServerScene::init()
 	inputbox->setFontSize(20);
 	inputbox->setText("8008");
 	inputbox->setInputMode(ui::EditBox::InputMode::NUMERIC);
+<<<<<<< HEAD
 	//inputbox->setDelegate(this);
 	this->addChild(inputbox, 1);
 
+=======
+	this->addChild(inputbox, 1);
+	//信息label
+>>>>>>> master
 	connection_msg_ = Label::createWithTTF("", "/fonts/arial.ttf", 18);
 	connection_msg_->setAnchorPoint(Vec2(0.5, 0));
 	connection_msg_->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y));
@@ -41,6 +50,7 @@ bool ServerScene::init()
 	return true;
 }
 
+//添加背景图片
 void ServerScene::addBackgroundSprite()
 {
 	//添加背景图片
@@ -64,42 +74,68 @@ void ServerScene::addBackgroundSprite()
 //添加Menu
 void ServerScene::addMenuSprites()
 {
+	//1 显示服务器信息
 	//设置菜单的正常图片
 	Scale9Sprite * NormalButton1 = Scale9Sprite::create(NORMAL_MENU);
 	//设置菜单按下图片
 	Scale9Sprite * PressButton1 = Scale9Sprite::create(PRESS_MENU);
 	//创建菜单所需要的Label对象
-	LabelTTF * startGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("服务器信息"), "华文行楷", 25);
+	LabelTTF * MessageTTF = LabelTTF::create(MyUtility::gbk_2_utf8("服务器信息"), "华文行楷", 25);
 	//创建controlButton
-	ControlButton * startGameBtn = ControlButton::create(startGameTTF, NormalButton1);
-	//添加singleButton菜单按下的效果图片
-	startGameBtn->setBackgroundSpriteForState(PressButton1, Control::State::SELECTED);
-	//设置单机游戏菜单项的位置
-	startGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.58);
+	ControlButton * MessageBtn = ControlButton::create(MessageTTF, NormalButton1);
+	//添加菜单按下的效果图片
+	MessageBtn->setBackgroundSpriteForState(PressButton1, Control::State::SELECTED);
+	//设置菜单项的位置
+	MessageBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.58);
 	//设置点击的回调方法
-	startGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ServerScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
+	MessageBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ServerScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
 	//设置菜单按钮的Tag
-	startGameBtn->setTag(START_SERVER);
+	MessageBtn->setTag(START_SERVER);
 	//添加Menu到场景
-	addChild(startGameBtn);
+	addChild(MessageBtn);
 
+<<<<<<< HEAD
+=======
+	//2 开始游戏
+>>>>>>> master
 	//设置菜单的正常图片
 	Scale9Sprite * NormalButton2 = Scale9Sprite::create(NORMAL_MENU);
 	//设置菜单按下图片
 	Scale9Sprite * PressButton2 = Scale9Sprite::create(PRESS_MENU);
 	//创建菜单所需要的Label对象
-	LabelTTF * introGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("开始游戏"), "华文行楷", 25);
+	LabelTTF * startGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("开始游戏"), "华文行楷", 25);
 	//创建controlButton
-	ControlButton * introGameBtn = ControlButton::create(introGameTTF, NormalButton2);
-	//添加singleButton菜单按下的效果图片
-	introGameBtn->setBackgroundSpriteForState(PressButton2, Control::State::SELECTED);
-	//设置单机游戏菜单项的位置
-	introGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.45);
+	ControlButton * startGameBtn = ControlButton::create(startGameTTF, NormalButton2);
+	//添加菜单按下的效果图片
+	startGameBtn->setBackgroundSpriteForState(PressButton2, Control::State::SELECTED);
+	//设置菜单项的位置
+	startGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.45);
 	//设置点击的回调方法
-	introGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ServerScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
+	startGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ServerScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
 	//设置菜单按钮的Tag
-	introGameBtn->setTag(START_GAME);
+	startGameBtn->setTag(START_GAME);
 	//添加Menu到场景
+	addChild(startGameBtn);
+
+	//3 返回上一界面(RoomScene)
+	//设置菜单的正常图片
+	Scale9Sprite * NormalButton3 = Scale9Sprite::create(NORMAL_MENU);
+	//设置菜单按下图片
+	Scale9Sprite * PressButton3 = Scale9Sprite::create(PRESS_MENU);
+	//创建菜单所需要的Label对象
+	LabelTTF * backTTF = LabelTTF::create(MyUtility::gbk_2_utf8("返回"), "华文行楷", 25);
+	//创建controlButton
+	ControlButton * backBtn = ControlButton::create(backTTF, NormalButton3);
+	//添加菜单按下的效果图片
+	backBtn->setBackgroundSpriteForState(PressButton3, Control::State::SELECTED);
+	//设置单机游戏菜单项的位置
+	backBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.32);
+	//设置点击的回调方法
+	backBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ServerScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
+	//设置菜单按钮的Tag
+	backBtn->setTag(GO_BACK);
+	//添加Menu到场景
+<<<<<<< HEAD
 	addChild(introGameBtn);
 
 	//设置菜单的正常图片
@@ -122,6 +158,12 @@ void ServerScene::addMenuSprites()
 	addChild(backBtn);
 }
 
+=======
+	addChild(backBtn);
+}
+
+//返回输入的端口信息
+>>>>>>> master
 void ServerScene::editBoxReturn(EditBox* editBox)
 {
 	log(editBox->getText());
@@ -159,6 +201,12 @@ void ServerScene::menuTouchDown(Object *pSender, Control::EventType event)
 	}
 	case START_GAME:
 	{
+<<<<<<< HEAD
+=======
+		auto sc = GameScene::createScene();
+		auto reScene = TransitionFadeTR::create(0.5f, sc);
+		Director::getInstance()->pushScene(reScene);
+>>>>>>> master
 		/**************************
 		if (socket_server_)
 		{

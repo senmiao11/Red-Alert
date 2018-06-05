@@ -1,4 +1,4 @@
-//客户端界面
+/*客户端界面*/
 
 #ifndef __ClientScene_H_
 #define __ClientScene_H_
@@ -18,9 +18,13 @@ class ClientScene :public Layer
 public:
 	static Scene* createScene();                                      //创建场景
 	virtual bool init();                                              //初始化场景
-	CREATE_FUNC(ClientScene);                                          //完成create方法代码的生成
+	CREATE_FUNC(ClientScene);                                         //完成create方法代码的生成
 	void addMenuSprites();                                            //添加Menu
+<<<<<<< HEAD
 	void waitStart();
+=======
+	void waitStart();                                                 //等待服务端指令
+>>>>>>> master
 	void startSchedule(float f);
 private:
 	Size visibleSize;                                                 //窗口尺寸

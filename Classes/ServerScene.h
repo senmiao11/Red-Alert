@@ -8,26 +8,39 @@
 #include "extensions/cocos-ext.h"  
 #include "popupLayer/PopupLayer.h"
 #include"MyUtility.h"
+#include"GameScene.h"
 USING_NS_CC_EXT;
 USING_NS_CC;
+<<<<<<< HEAD
 #define START_SERVER 10
 #define START_GAME 11
 #define GO_BACK 12
+=======
+#define START_SERVER 4
+#define START_GAME 5
+#define GO_BACK 6
+>>>>>>> master
 
 class ServerScene :public Layer
 {
 public:
 	static Scene* createScene();                                      //创建场景
 	virtual bool init();                                              //初始化场景
-	CREATE_FUNC(ServerScene);                                          //完成create方法代码的生成
+	CREATE_FUNC(ServerScene);                                         //完成create方法代码的生成
 	void addMenuSprites();                                            //添加Menu
 private:
 	Size visibleSize;                                                 //窗口尺寸
 	void addBackgroundSprite();                                       //添加场景背景
 	void menuTouchDown(Object *pSender, Control::EventType event);    //Menu点击回调方法
+<<<<<<< HEAD
 	void editBoxReturn(EditBox* editBox);
 	void connectionSchdeule(float f);
 	Label* connection_msg_;
+=======
+	void editBoxReturn(EditBox* editBox);                             //返回输入的端口信息
+	void connectionSchdeule(float f);
+	Label* connection_msg_;                                           //连接信息
+>>>>>>> master
 };
 
 #endif // !__ServerScene_H_
