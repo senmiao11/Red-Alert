@@ -11,7 +11,6 @@
 #include"Soldiers/Soldiers.h"
 
 USING_NS_CC;
-
 class MouseRect :public DrawNode
 {
 public:
@@ -21,6 +20,7 @@ public:
 	void update(float dt);
 	void reset();
 };
+
 
 class GameScene :public Layer
 {
@@ -33,7 +33,10 @@ public:
 	CREATE_FUNC(GameScene);
 	void update(float dt);
 	void scrollMap();
-
+	static TMXTiledMap *gettiledMap()
+	{
+		return _tiledMap1;
+	}
 
 	//获得是否可以建造的标签
 	static LabelTTF *getIfBuild()
@@ -73,8 +76,7 @@ private:
 
 	static int Money;//金钱
 	static LabelTTF *ifBuild;//建筑物不可建造时显示的标签
-
-	TMXTiledMap * _tiledMap1;
+	static TMXTiledMap * _tiledMap1;  //瓦片地图
 	Point crusor_position{ 0, 0 };
 };
 

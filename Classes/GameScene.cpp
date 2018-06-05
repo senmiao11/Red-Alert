@@ -22,6 +22,7 @@ void MouseRect::reset()
 
 int GameScene::Money;
 LabelTTF * GameScene::ifBuild;
+TMXTiledMap *GameScene::_tiledMap1;
 
 Scene * GameScene::createScene()
 {
@@ -580,5 +581,6 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 		break;
 	}
 }
+
 
 	

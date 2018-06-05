@@ -13,7 +13,6 @@ class Soldiers :public Sprite
 public:
 	Soldiers(SoldierTypes soldierType);        //通过枚举类来判段需产生什么建筑物
 	static Soldiers *createWithSoldierTypes(SoldierTypes soldierType);
-	void Soldiers::OnTouchBegan(Touch *touch, Event *unused_event);
 
 private:
 	CC_SYNTHESIZE(SoldierTypes, soldiertype, SoldierType);

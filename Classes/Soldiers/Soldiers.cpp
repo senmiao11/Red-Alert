@@ -32,14 +32,13 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 		{
 			return true;
 		};
-		touchSoldierListener->onTouchEnded = [&](Touch *touch, Event *event)
+		touchSoldierListener->onTouchEnded = [](Touch *touch, Event *event)
 		{
+			auto origin = Director::getInstance()->getVisibleOrigin();
 			auto target = (Sprite*)event->getCurrentTarget();
-			auto pos = touch->getLocation();
-			//pos = Director::getInstance()->convertToUI(pos);
+			auto pos = GameScene::gettiledMap()->convertTouchToNodeSpace(touch);
 			MoveTo *soldierMove = MoveTo::create(1.0f, pos);
 			target->runAction(soldierMove);
-			return true;
 		};
 
 		eventDispatcher = Director::getInstance()->getEventDispatcher();
@@ -48,9 +47,4 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 	}
 	CC_SAFE_DELETE(soldier);
 	return nullptr;
-}
-
-void Soldiers::OnTouchBegan(Touch *touch, Event *unused_event)
-{
-
 }
