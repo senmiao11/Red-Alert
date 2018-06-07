@@ -18,6 +18,7 @@ private:
 	CC_SYNTHESIZE(SoldierTypes, soldiertype, SoldierType);
 	CC_SYNTHESIZE(int, health, currentHealth);
 	CC_SYNTHESIZE(int, price, Price);
+	CC_SYNTHESIZE(bool, ifselect, ifSelect);
 
 	//±øÖÖ¼àÌýÆ÷
 	static EventListenerTouchOneByOne *touchSoldierListener;

@@ -21,11 +21,8 @@
 #define BASE "building/base.png"
 #define CASERN "building/casern.png"
 #define ELECTRICSTATION "building/electricStation.png"
-<<<<<<< HEAD
 #define OREYARD "building/oreYard.png"
 #define TANKFACTORY "building/tankFactory.png"
-=======
->>>>>>> xiaorui
 
 #define CAN_MOVE true
 #define CANNOT_MOVE false
@@ -35,25 +32,18 @@
 #define CASERN_HEALTH 10000
 #define ELECTRICSTATION_PRICE 2000
 #define ELECTRICSTATION_HEALTH 6000
-<<<<<<< HEAD
 #define TANKFACTORY_PRICE 2800
 #define TANKFACTORY_HEALTH 7000
 #define OREYARD_PRICE 1500
 #define OREYARD_HEALTH 4000
-=======
->>>>>>> xiaorui
 
 typedef enum
 {
 	START_BASE = 1,
 	START_CASERN = 2,
 	START_ELECTRICSTATION = 3,
-<<<<<<< HEAD
 	START_TANKFACTORY = 4,
 	START_OREYARD = 5,
-=======
-
->>>>>>> xiaorui
 }BuildingTypes;
 
 //游戏界面节点
@@ -67,15 +57,21 @@ typedef enum
 #define BOX_EDGE_WITDH_SMALL 10
 #define SCROLL_LENGTH 10
 
+//鼠标选框
+#define MIN_SELECT_RECT_SIZE 16
+
 //兵种
 typedef enum
 {
-<<<<<<< HEAD
 	START_MINER = 1,
 	START_POLICEMAN = 2,
 	START_SOLDIER = 3,
 	START_TANK = 4
 }SoldierTypes;
+
+#define MIN_SELECT_RECT_SIZE 1
+#define SELECT_ON true
+#define SELECT_OFF false
 
 #define MINER "soldiers/miner.png"
 #define POLICEMAN "soldiers/policeman.png"
@@ -88,22 +84,6 @@ typedef enum
 #define TANK_PRICE 300
 #define TANK_HEALTH 450
 
-=======
-	MINER = 11,
-	POLICEMAN = 12,
-	SOLDIER = 13,
-	TANK = 14
-}SoldierTypes;
-#define MINER_IMAGE "soldiers/miner.png"
-#define POLICEMAN_IMAGE "soldiers/policeman.png"
-#define SOLDIER_IMAGE "sildiers/soldier.png"
-#define TANK_IMAGE "soldiers/tank.png"
-#define MINER_PRICE 100
-#define MINER_HEALTH 200
->>>>>>> xiaorui
 
-#define MIN_SELECT_RECT_SIZE 1
-#define SELECT_ON true
-#define SELECT_OFF false
 
 #endif 

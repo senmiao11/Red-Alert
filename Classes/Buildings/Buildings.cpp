@@ -33,7 +33,6 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		building->price = ELECTRICSTATION_PRICE;
 		building->if_move = CAN_MOVE;
 		break;
-<<<<<<< HEAD
 	case START_TANKFACTORY:
 		buildingName = TANKFACTORY;
 		building->health = TANKFACTORY_HEALTH;
@@ -46,8 +45,6 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		building->price = OREYARD_PRICE;
 		building->if_move = CAN_MOVE;
 		break;
-=======
->>>>>>> xiaorui
 	}
 
 	if (building && building->initWithFile(buildingName))
@@ -58,7 +55,7 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		touchBuildingListener->setSwallowTouches(true);
 		touchBuildingListener->onTouchBegan = [](Touch *touch, Event *event)
 		{
-			log("touch to building");
+			log("touch to building move");
 			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			if (!target->getifMove())
 			{
@@ -75,7 +72,7 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		};
 		touchBuildingListener->onTouchMoved = [](Touch *touch, Event *event)
 		{
-			log("touch to building move");
+			log("building move");
 			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			target->setPosition(target->getPosition() + touch->getDelta());
 		};
