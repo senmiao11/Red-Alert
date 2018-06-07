@@ -44,7 +44,10 @@ public:
 	{
 		return _tiledMap1;
 	}
-
+	static Rect getSelectRect()
+	{
+		return select_rect;
+	}
 private:
 	//EventListenerTouchOneByOne * touchBuildingListener;
 	EventListenerMouse * mouse_event;//地图移动的鼠标事件
@@ -56,10 +59,10 @@ private:
 
 	MouseRect *mouseRect = nullptr;
 	EventListenerTouchOneByOne *mouseRectListener;
-	/*bool ctrl_flag = true;//第一次按ctrl会关掉画矩形框，再按可以开启
 	bool mouseRectOnTouchBegan(Touch *pTouch, Event *event);
 	void mouseRectOnTouchMoved(Touch *pTouch, Event *event);
-	void mouseRectOnTouchEnded(Touch *pTouch, Event *event);*/
+	void mouseRectOnTouchEnded(Touch *pTouch, Event *event);
+	static Rect select_rect;
 
 
 	void backToMenuScene(Ref *pSender);//返回MenuScene

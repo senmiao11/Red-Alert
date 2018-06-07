@@ -60,7 +60,7 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		};
 		touchBuildingListener->onTouchMoved = [](Touch *touch, Event *event)
 		{
-			log("building move");
+			log("touch to building move");
 			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			target->setPosition(target->getPosition() + touch->getDelta());
 		};

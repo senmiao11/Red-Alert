@@ -65,5 +65,8 @@ typedef enum
 #define MINER_PRICE 100
 #define MINER_HEALTH 200
 
+#define MIN_SELECT_RECT_SIZE 1
+#define SELECT_ON true
+#define SELECT_OFF false
 
 #endif 

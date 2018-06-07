@@ -23,6 +23,7 @@ void MouseRect::reset()
 int GameScene::Money;
 LabelTTF * GameScene::ifBuild;
 TMXTiledMap *GameScene::_tiledMap1;
+Rect GameScene::select_rect;
 
 Scene * GameScene::createScene()
 {
@@ -72,14 +73,14 @@ bool GameScene::init()
 	//鼠标绘制一个矩形框
 	mouseRect = MouseRect::create();
 	mouseRect->setVisible(false);
-	_tiledMap1->addChild(mouseRect);
+	_tiledMap1->addChild(mouseRect, 10);
 	mouseRectListener = EventListenerTouchOneByOne::create();
 	mouseRectListener->setSwallowTouches(true);
-	/*mouseRectListener->onTouchBegan = CC_CALLBACK_2(GameScene::mouseRectOnTouchBegan, this);
+	mouseRectListener->onTouchBegan = CC_CALLBACK_2(GameScene::mouseRectOnTouchBegan, this);
 	mouseRectListener->onTouchMoved = CC_CALLBACK_2(GameScene::mouseRectOnTouchMoved, this);
 	mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
-	*/
-	mouseRectListener->onTouchBegan = [this](Touch *pTouch, Event *event)
+	
+	/*mouseRectListener->onTouchBegan = [this](Touch *pTouch, Event *event)
 	{
 		Point touch = pTouch->getLocation();
 		this->mouseRect->start = touch - this->_tiledMap1->getPosition();
@@ -103,7 +104,8 @@ bool GameScene::init()
 		{
 			this->mouseRect->unschedule(schedule_selector(MouseRect::update));
 		}
-	};
+		
+	};*/
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
 
 	//建筑物不可建造时显示的标签
@@ -196,16 +198,18 @@ void GameScene::onEnter()
 	buildingContactListener = EventListenerPhysicsContact::create();
 	buildingContactListener->onContactBegin = [this](PhysicsContact &contact)
 	{
-		log("buildings contact");
-		Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
-		Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
-		if (!buildingSpriteA || !buildingSpriteB)
+		log("SPRITE CONTACT");
+		Sprite *SpriteA = (Sprite *)(contact.getShapeA()->getBody()->getNode());
+		Sprite *SpriteB = (Sprite *)(contact.getShapeB()->getBody()->getNode());
+		if (!SpriteA || !SpriteB)
 		{
 			return false;
 		}
 		//判断两个精灵是否为建筑物，并看哪一个是需要建造的
-		if (buildingSpriteA->getTag() == GameSceneNodeTagBuilding && buildingSpriteB->getTag() == GameSceneNodeTagBuilding)
+		if (SpriteA->getTag() == GameSceneNodeTagBuilding && SpriteB->getTag() == GameSceneNodeTagBuilding)
 		{
+			auto buildingSpriteA = dynamic_cast<Buildings *>(SpriteA);
+			auto buildingSpriteB = dynamic_cast<Buildings *>(SpriteB);
 			//需要建造的建筑物是可移动的
 			if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
 			{
@@ -225,67 +229,35 @@ void GameScene::onEnter()
 				return true;
 			}
 		}
-		return false;
-	};
-	buildingContactListener->onContactPreSolve = [this](PhysicsContact &contact, PhysicsContactPreSolve &solve)
-	{
-		log("buildings contactpresolve");
-		Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
-		Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
-		if (!buildingSpriteA || !buildingSpriteB)
+		//此处为检测兵种接触
+		if (SpriteA->getTag() == GameSceneNodeTagSoldier && SpriteB->getTag() == GameSceneNodeTagSoldier)
 		{
-			return false;
-		}
-		if (buildingSpriteA->getTag() == GameSceneNodeTagBuilding && buildingSpriteB->getTag() == GameSceneNodeTagBuilding)
-		{
-			if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
+			auto soldierSpriteA = dynamic_cast<Soldiers *>(SpriteA);
+			auto soldierSpriteB = dynamic_cast<Soldiers *>(SpriteB);
+			if (!soldierSpriteA->getifSelect() && !soldierSpriteB->getifSelect())
 			{
-				buildingSpriteA->setifMove(CAN_MOVE);
-				buildingSpriteB->setOpacity(128);
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);
-				return true;
+				//通过随机数重新设置位置
+				Size s = soldierSpriteA->getContentSize();
+				Vec2 rand = soldierSpriteB->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
+				soldierSpriteA->setPosition(rand);
+				return false;
 			}
-			if (buildingSpriteB->getifMove() && !buildingSpriteA->getifMove())
+			/*if (!soldierSpriteA->getifSelect() && soldierSpriteB->getifSelect())
 			{
-				buildingSpriteB->setifMove(CAN_MOVE);
-				buildingSpriteA->setOpacity(128);
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);
-				return true;
+				Size s = soldierSpriteA->getContentSize();
+				Vec2 rand = soldierSpriteA->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
+				soldierSpriteB->setPosition(rand);
+				return false;
 			}
+			return false;*/
+			/*Size s = soldierSpriteA->getContentSize();
+			Vec2 rand = soldierSpriteB->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
+			soldierSpriteA->setPosition(rand);
+			return false;*/
 		}
 		return false;
 	};
-	buildingContactListener->onContactPostSolve = [this](PhysicsContact &contact, const PhysicsContactPostSolve &solve)
-	{
-		log("buildings contactpostsolve");
-		Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
-		Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
-		if (!buildingSpriteA || !buildingSpriteB)
-		{
-			return;
-		}
-		if (buildingSpriteA->getTag() == GameSceneNodeTagBuilding && buildingSpriteB->getTag() == GameSceneNodeTagBuilding)
-		{
-			if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
-			{
-				buildingSpriteA->setifMove(CAN_MOVE);
-				buildingSpriteB->setOpacity(128);
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);
-				return;
-			}
-			if (buildingSpriteB->getifMove() && !buildingSpriteA->getifMove())
-			{
-				buildingSpriteB->setifMove(CAN_MOVE);
-				buildingSpriteA->setOpacity(128);
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);
-				return;
-			}
-		}
-	};
+	
 	buildingContactListener->onContactSeparate = [this](PhysicsContact &contact)
 	{
 		log("buildings contactseparate");
@@ -503,7 +475,7 @@ void GameScene::onMouseMove(Event *event)
 	crusor_position = Vec2(e->getCursorX(), e->getCursorY());
 }
 
-/*
+
 bool GameScene::mouseRectOnTouchBegan(Touch *pTouch, Event *event)
 {
 	Point touch = pTouch->getLocation();
@@ -530,7 +502,52 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 	{
 		this->mouseRect->unschedule(schedule_selector(MouseRect::update));
 	}
-}*/
+	this->mouseRect->end = touch - this->_tiledMap1->getPosition();
+	Point maptouch = this->mouseRect->end;
+	Point last_maptouch = this->mouseRect->start;
+	if ((maptouch - last_maptouch).length() < MIN_SELECT_RECT_SIZE)
+	{
+		auto target = dynamic_cast<Soldiers *>(event->getCurrentTarget());
+		if (!target)
+		{
+			return;
+		}
+		if (target->getTag() == GameSceneNodeTagBuilding || target->getTag() == GameSceneNodeTagSoldier)
+		{
+			///////////////
+			//缺少血条显示
+			///////////////
+			log("search");
+			if (target->getTag() == GameSceneNodeTagSoldier && target->getifSelect())
+			{
+				target->setifSelect(SELECT_ON);
+			}
+		}
+	}
+	else
+	{
+		select_rect = { MIN(last_maptouch.x, maptouch.x), MIN(last_maptouch.y, maptouch.y),
+			abs(last_maptouch.x - maptouch.x), abs(last_maptouch.y - maptouch.y) };
+		for (auto &sprite : _tiledMap1->getChildren())
+		{
+			if (!select_rect.containsPoint(sprite->getPosition()))
+			{
+				continue;
+			}
+			if (sprite->getTag() == GameSceneNodeTagBuilding || sprite->getTag() == GameSceneNodeTagSoldier)
+			{
+				///////////////
+				//缺少血条显示
+				///////////////
+				if (sprite->getTag() == GameSceneNodeTagSoldier)
+				{
+					auto temp = dynamic_cast<Soldiers *>(sprite);
+					temp->setifSelect(SELECT_ON);
+				}
+			}
+		}
+	}
+}
 
 void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEvent)
 {
@@ -611,3 +628,69 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 }
 
 	
+
+
+
+
+
+
+
+/*buildingContactListener->onContactPreSolve = [this](PhysicsContact &contact, PhysicsContactPreSolve &solve)
+{
+log("buildings contactpresolve");
+Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
+Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
+if (!buildingSpriteA || !buildingSpriteB)
+{
+return false;
+}
+if (buildingSpriteA->getTag() == GameSceneNodeTagBuilding && buildingSpriteB->getTag() == GameSceneNodeTagBuilding)
+{
+if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
+{
+buildingSpriteA->setifMove(CAN_MOVE);
+buildingSpriteB->setOpacity(128);
+this->ifBuild->setTag(1);
+this->ifBuild->setVisible(true);
+return true;
+}
+if (buildingSpriteB->getifMove() && !buildingSpriteA->getifMove())
+{
+buildingSpriteB->setifMove(CAN_MOVE);
+buildingSpriteA->setOpacity(128);
+this->ifBuild->setTag(1);
+this->ifBuild->setVisible(true);
+return true;
+}
+}
+return false;
+};
+buildingContactListener->onContactPostSolve = [this](PhysicsContact &contact, const PhysicsContactPostSolve &solve)
+{
+log("buildings contactpostsolve");
+Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
+Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
+if (!buildingSpriteA || !buildingSpriteB)
+{
+return;
+}
+if (buildingSpriteA->getTag() == GameSceneNodeTagBuilding && buildingSpriteB->getTag() == GameSceneNodeTagBuilding)
+{
+if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
+{
+buildingSpriteA->setifMove(CAN_MOVE);
+buildingSpriteB->setOpacity(128);
+this->ifBuild->setTag(1);
+this->ifBuild->setVisible(true);
+return;
+}
+if (buildingSpriteB->getifMove() && !buildingSpriteA->getifMove())
+{
+buildingSpriteB->setifMove(CAN_MOVE);
+buildingSpriteA->setOpacity(128);
+this->ifBuild->setTag(1);
+this->ifBuild->setVisible(true);
+return;
+}
+}
+};*/
