@@ -49,12 +49,16 @@ typedef enum
 //游戏界面节点
 #define GameSceneNodeTagBuilding 512
 #define GameSceneNodeTagMoney 1024
+#define GameSceneNodeTagSoldier 2048
 
 //地图
 #define GAMEMAP1 "map/GameMap1.tmx"
 #define BOX_EDGE_WITDH 40
 #define BOX_EDGE_WITDH_SMALL 10
 #define SCROLL_LENGTH 10
+
+//鼠标选框
+#define MIN_SELECT_RECT_SIZE 16
 
 //兵种
 typedef enum
@@ -64,6 +68,10 @@ typedef enum
 	START_SOLDIER = 3,
 	START_TANK = 4
 }SoldierTypes;
+
+#define MIN_SELECT_RECT_SIZE 1
+#define SELECT_ON true
+#define SELECT_OFF false
 
 #define MINER "soldiers/miner.png"
 #define POLICEMAN "soldiers/policeman.png"

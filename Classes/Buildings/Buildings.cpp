@@ -55,7 +55,7 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		touchBuildingListener->setSwallowTouches(true);
 		touchBuildingListener->onTouchBegan = [](Touch *touch, Event *event)
 		{
-			log("touch to building");
+			log("touch to building move");
 			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			if (!target->getifMove())
 			{

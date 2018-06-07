@@ -3,6 +3,7 @@
 EventListenerTouchOneByOne * Soldiers::touchSoldierListener;
 EventDispatcher * Soldiers::eventDispatcher;
 
+
 Soldiers::Soldiers(SoldierTypes soldierType)
 {
 	this->soldiertype = soldierType;
@@ -15,40 +16,20 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 {
 	Soldiers *soldier = new Soldiers(soldierType);
 	const char *soldierName = "soldiername";
-	switch (soldierType)
-	{
-		case START_MINER:
-		{
-			soldierName = MINER;
-			soldier->health = MINER_HEALTH;
-			soldier->price = MINER_PRICE;
-			soldier->ifselect = SELECT_OFF;
-			break;
-		}
-		case START_POLICEMAN:
-		{
-			soldierName = POLICEMAN;
-			soldier->health = POLICEMAN_HEALTH;
-			soldier->price = POLICEMAN_PRICE;
-			break;
-		}
-		case START_TANK:
-		{
-			soldierName = TANK;
-			soldier->health = TANK_HEALTH;
-			soldier->price = TANK_PRICE;
-		}
-			
-	    /*待添加*/
-		//已补充police.tank的health与price
-
+	switch (soldierType) {
+	case MINER:
+		soldierName = MINER_IMAGE;
+		soldier->setHealth(MINER_HEALTH);
+		soldier->price = MINER_PRICE;
+		soldier->ifselect = SELECT_OFF;
+		break;
 	}
 	if (soldier && soldier->initWithFile(soldierName))
 	{
 		soldier->autorelease();
 		touchSoldierListener = EventListenerTouchOneByOne::create();
-		//touchSoldierListener->setSwallowTouches(true);
-		touchSoldierListener->onTouchBegan = [&](Touch *touch, Event *event)
+		touchSoldierListener->setSwallowTouches(true);
+		touchSoldierListener->onTouchBegan = [](Touch *touch, Event *event)
 		{
 			log("soldier");
 			auto target = dynamic_cast<Soldiers *>(event->getCurrentTarget());
@@ -75,6 +56,10 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 					if (target->getifSelect())
 					{
 						auto pos = GameScene::gettiledMap()->convertTouchToNodeSpace(touch);
+						//auto pos = GameScene::gettiledMap()->convertToNodeSpace(touch->getLocation());
+						//auto pos = touch->getLocation();
+						//Vec2 pos = target->convertToNodeSpace(touch->getLocation());
+						//pos = Director::getInstance()->convertToUI(pos);
 						MoveTo *soldierMove = MoveTo::create(1.0f, pos);
 						target->runAction(soldierMove);
 						target->setifSelect(SELECT_OFF);
@@ -82,7 +67,6 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 				}
 			}
 		};
-
 		eventDispatcher = Director::getInstance()->getEventDispatcher();
 		eventDispatcher->addEventListenerWithSceneGraphPriority(touchSoldierListener, soldier);
 
@@ -93,6 +77,7 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 		soldier->setPhysicsBody(body);
 
 		return soldier;
+
 	}
 	CC_SAFE_DELETE(soldier);
 	return nullptr;
