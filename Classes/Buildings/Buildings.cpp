@@ -32,7 +32,19 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		building->health = ELECTRICSTATION_HEALTH;
 		building->price = ELECTRICSTATION_PRICE;
 		building->if_move = CAN_MOVE;
-
+		break;
+	case START_TANKFACTORY:
+		buildingName = TANKFACTORY;
+		building->health = TANKFACTORY_HEALTH;
+		building->price = TANKFACTORY_PRICE;
+		building->if_move = CAN_MOVE;
+		break;
+	case START_OREYARD:
+		buildingName = OREYARD;
+		building->health = OREYARD_HEALTH;
+		building->price = OREYARD_PRICE;
+		building->if_move = CAN_MOVE;
+		break;
 	}
 
 	if (building && building->initWithFile(buildingName))

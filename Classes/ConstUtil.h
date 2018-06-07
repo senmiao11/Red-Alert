@@ -21,6 +21,8 @@
 #define BASE "building/base.png"
 #define CASERN "building/casern.png"
 #define ELECTRICSTATION "building/electricStation.png"
+#define OREYARD "building/oreYard.png"
+#define TANKFACTORY "building/tankFactory.png"
 
 #define CAN_MOVE true
 #define CANNOT_MOVE false
@@ -30,13 +32,18 @@
 #define CASERN_HEALTH 10000
 #define ELECTRICSTATION_PRICE 2000
 #define ELECTRICSTATION_HEALTH 6000
+#define TANKFACTORY_PRICE 2800
+#define TANKFACTORY_HEALTH 7000
+#define OREYARD_PRICE 1500
+#define OREYARD_HEALTH 4000
 
 typedef enum
 {
 	START_BASE = 1,
 	START_CASERN = 2,
-	START_ELECTRICSTATION=3,
-
+	START_ELECTRICSTATION = 3,
+	START_TANKFACTORY = 4,
+	START_OREYARD = 5,
 }BuildingTypes;
 
 //游戏界面节点
