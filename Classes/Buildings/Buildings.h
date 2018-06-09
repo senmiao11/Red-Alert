@@ -5,7 +5,7 @@
 #include"cocos2d.h"
 #include"ConstUtil.h"
 #include"GameScene.h"
-
+#include"Bar.h"
 USING_NS_CC;
 
 
@@ -16,6 +16,7 @@ USING_NS_CC;
 
 class Buildings :public Sprite
 {
+	friend class Bar;
 public:
 	Buildings(BuildingTypes buildingType);        //通过枚举类来判段需产生什么建筑物
 
@@ -26,16 +27,22 @@ private:
 	CC_SYNTHESIZE(int, health, currentHealth);
 	CC_SYNTHESIZE(int, price, Price);
 	CC_SYNTHESIZE(bool, if_move, ifMove);
-
+	CC_SYNTHESIZE(int, maxHealth, MaxHealth);
 	//建筑物监听器
 	static EventListenerTouchOneByOne *touchBuildingListener;
 	static EventDispatcher *eventDispatcher;
+
+	//血条
+	Bar *hpBar = nullptr;
+	void createBar();
+	void displayHpBar();
+	void hideHpBar();
 };
 
 
 
 
-#endif // 1__Buildings_H_
+#endif // !__Buildings_H_
 
 
 
