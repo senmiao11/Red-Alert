@@ -6,31 +6,36 @@
 #include"ConstUtil.h"
 #include"GameScene.h"
 #include"Bar.h"
+
 USING_NS_CC;
 
 class Soldiers :public Sprite
 {
+
 	friend class Bar;
 public:
-	Soldiers(SoldierTypes soldierType);        //Í¨¹ıÃ¶¾ÙÀàÀ´ÅĞ¶ÎĞè²úÉúÊ²Ã´½¨ÖşÎï
+	Soldiers(SoldierTypes soldierType);        //é€šè¿‡æšä¸¾ç±»æ¥åˆ¤æ®µéœ€äº§ç”Ÿä»€ä¹ˆå»ºç­‘ç‰©
 	static Soldiers *createWithSoldierTypes(SoldierTypes soldierType);
 	
+
 
 private:
 	CC_SYNTHESIZE(SoldierTypes, soldiertype, SoldierType);
 	CC_SYNTHESIZE(int, health, currentHealth);
 	CC_SYNTHESIZE(int, price, Price);
 	CC_SYNTHESIZE(bool, ifselect, ifSelect);
+
 	CC_SYNTHESIZE(int, maxHealth, MaxHealth);
-	//±øÖÖ¼àÌıÆ÷
+	//å…µç§ç›‘å¬å™¨
 	static EventListenerTouchOneByOne *touchSoldierListener;
 	static EventDispatcher * eventDispatcher;
 
-	//ÑªÌõ
+	//è¡€æ¡
 	Bar *hpBar = nullptr;
 	void createBar();
 	void displayHpBar();
 	void hideHpBar();
+
 };
 
 

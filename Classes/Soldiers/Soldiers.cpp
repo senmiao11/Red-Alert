@@ -45,8 +45,8 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 			soldier->maxHealth = TANK_HEALTH;
 		}
 			
-	    /*´ýÌí¼Ó*/
-		//ÒÑ²¹³äpolice.tankµÄhealthÓëprice
+	    /*Â´Ã½ÃŒÃ­Â¼Ã“*/
+		//Ã’Ã‘Â²Â¹Â³Ã¤police.tankÂµÃ„healthÃ“Ã«price
 
 	}
 	if (soldier && soldier->initWithFile(soldierName))
