@@ -1,4 +1,7 @@
 #include"MenuScene.h"
+#include"SimpleAudioEngine.h"
+#include"AudioControl.h"
+using namespace ui;
 //初始化场景
 bool MenuScene::init()
 {
@@ -13,7 +16,36 @@ bool MenuScene::init()
 	addBackgroundSprite();
 	//添加Menu
 	addMenuSprites();
+	
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/BackgroundMusic.mp3", true);
+	is_paused = false;
+
+	auto music_button = MenuItemImage::create("MusicOn.png", "Music0ff.png");
+	auto pause_button = MenuItemImage::create("MusicOff.png", "MusicOn.png");
+
+	MenuItemToggle *toggleItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(MenuScene::menuMusicCallBack, this), music_button, pause_button, NULL);
+	toggleItem->setScale(0.7f);
+	toggleItem->setPosition(Point(origin.x + visibleSize.width * 0.9, origin.y + visibleSize.height * 0.1));
+	auto menu = Menu::create(toggleItem, NULL);
+	menu->setPosition(Point::ZERO);
+	this->addChild(menu);
+
 	return true;
+}
+
+void MenuScene::menuMusicCallBack(cocos2d::Ref* pSender)
+{
+
+	if (is_paused == false)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+		is_paused = true;
+	}
+	else
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+		is_paused = false;
+	}
 }
 
 //创建场景
@@ -101,13 +133,35 @@ void MenuScene::addMenuSprites()
 	//添加singleButton菜单按下的效果图片
 	quitGameBtn->setBackgroundSpriteForState(PressButton3, Control::State::SELECTED);
 	//设置单机游戏菜单项的位置
-	quitGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.32);
+	quitGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.19);
 	//设置点击的回调方法
 	quitGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
 	//设置菜单按钮的Tag
 	quitGameBtn->setTag(QUIT_GAME);
 	//添加Menu到场景
 	addChild(quitGameBtn);
+	
+	
+	//设置背景音乐
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    auto set_button = Button::create(NORMAL_MENU);
+	set_button->setScale(1.5);
+	set_button->setTitleText("Setting");
+	set_button->setTitleFontSize(17);
+	set_button->setPosition(Vec2(visibleSize.width * 0.84, visibleSize.height * 0.32));
+
+	set_button->addTouchEventListener([](Ref* psender, Widget::TouchEventType type)
+	{
+		if (type == Widget::TouchEventType::ENDED)
+		{
+
+			auto transition = TransitionSlideInL::create(0.5, AudioControl::createScene());
+			Director::getInstance()->replaceScene(transition);
+
+		}
+	});
+	this->addChild(set_button);
+
 }
 
 

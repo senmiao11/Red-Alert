@@ -1,5 +1,6 @@
 #include"GameScene.h"
-
+using namespace ui;
+USING_NS_CC;
 void MouseRect::update(float dt)
 {
 	clear();
@@ -38,7 +39,7 @@ Scene * GameScene::createScene()
 	Scene *scene = Scene::createWithPhysics();
 	PhysicsWorld *phyWorld = scene->getPhysicsWorld();
 	//用于物理引擎debug
-	//phyWorld->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	phyWorld->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	phyWorld->setGravity(Vec2(0, 0));
 	auto layer = GameScene::create();
 	scene->addChild(layer);
@@ -60,32 +61,8 @@ bool GameScene::init()
 	_tiledMap1 = TMXTiledMap::create(GAMEMAP1);
 	_tiledMap1->setAnchorPoint(Vec2(0, 0));
 	_tiledMap1->setPosition(0, 0);
-	TMXLayer * layer = _tiledMap1->getLayer("ReachableGroundLayer");
-	TMXObjectGroup *objectsGroup = _tiledMap1->objectGroupNamed("Objects");
-	ValueVector objects = objectsGroup->getObjects();
-	auto s = layer->getLayerSize();
-	addChild(_tiledMap1, 0);
-	for (auto obj : objects) 
-	{
-		ValueMap& dict = obj.asValueMap();
-	
-		float x = dict["x"].asFloat();
-		float y = dict["y"].asFloat();
-		float width = dict["width"].asFloat();
-		float height = dict["height"].asFloat();
-
-		PhysicsBody * phy = PhysicsBody::createBox(Size(width, height));
-		phy->setDynamic(false);
-		Sprite * sp = Sprite::create();
-		sp->setPosition(Vec2(x, y));
-		sp->setAnchorPoint(Vec2::ZERO);
-		Size sss = sp->getContentSize();
-		sp->setContentSize(Size(width, height));
-		sp->setPhysicsBody(phy);
-		this->addChild(sp);
-	}
-
-
+	addChild(_tiledMap1,0);
+	TMXLayer *UnreachableGroundLayer = _tiledMap1->getLayer("UnreachableGroundLayer");
 	//地图更新
 	schedule(schedule_selector(GameScene::update));
 	//地图移动的鼠标事件
@@ -116,15 +93,12 @@ bool GameScene::init()
 	ifBuild->setVisible(false);//当标签不可见时建筑物可被监听器设为不可移动
 	addChild(ifBuild);
 
-
 	//创建一个基地精灵
 	Buildings *base = Buildings::creatWithBuildingTypes(START_BASE);
 	base->setAnchorPoint(Vec2(0, 0));
 	base->setScale(0.3);
-	base->setPosition(Vec2(origin.x + visibleSize.width * 0, origin.y + visibleSize.height *0));
-	base->createBar();
-	base->hpBar->setPosition(base->hpBar->getPosition() - Vec2(80, 0));
-	_tiledMap1->addChild(base, 10, GameSceneNodeTagBuilding);
+	base->setPosition(Vec2(origin.x + visibleSize.width * -0.03, origin.y + visibleSize.height *-0.06));
+	_tiledMap1->addChild(base, 10,GameSceneNodeTagBuilding);
 
 	return true;
 }
@@ -139,7 +113,6 @@ void GameScene::onEnter()
 
 	//创建返回菜单
 	auto backLabel = LabelTTF::create(MyUtility::gbk_2_utf8("返回"), "华文行楷", 15);
-	backLabel->setColor(Color3B::GREEN);
 	auto backMenu = MenuItemLabel::create(backLabel, CC_CALLBACK_1(GameScene::backToMenuScene, this));
 	float back_x = backMenu->getContentSize().width;  //获得菜单宽度
 	float back_y = backMenu->getContentSize().height; //获得菜单长度
@@ -161,7 +134,6 @@ void GameScene::onEnter()
 	bmn1->setPosition(Vec2::ZERO);
 	this->addChild(bmn1, 20);
 	auto buildingLabel1 = LabelTTF::create(MyUtility::gbk_2_utf8("兵营"), "华文行楷", 8);
-	buildingLabel1->setColor(Color3B::GREEN);
 	buildingLabel1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 40));
 	this->addChild(buildingLabel1,30);
 
@@ -178,7 +150,6 @@ void GameScene::onEnter()
 	bmn2->setPosition(Vec2::ZERO);
 	this->addChild(bmn2, 20);
 	auto buildingLabel2 = LabelTTF::create(MyUtility::gbk_2_utf8("电厂"), "华文行楷", 8);
-	buildingLabel2->setColor(Color3B::GREEN);
 	buildingLabel2->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height -80));
 	this->addChild(buildingLabel2, 30);
 
@@ -195,7 +166,6 @@ void GameScene::onEnter()
 	bmn3->setPosition(Vec2::ZERO);
 	this->addChild(bmn3, 20);
 	auto buildingLabel3 = LabelTTF::create(MyUtility::gbk_2_utf8("战车工厂"), "华文行楷", 8);
-	buildingLabel3->setColor(Color3B::GREEN);
 	buildingLabel3->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 120));
 	this->addChild(buildingLabel3, 30);
 
@@ -212,7 +182,6 @@ void GameScene::onEnter()
 	bmn4->setPosition(Vec2::ZERO);
 	this->addChild(bmn4, 20);
 	auto buildingLabel4 = LabelTTF::create(MyUtility::gbk_2_utf8("矿场"), "华文行楷", 8);
-	buildingLabel4->setColor(Color3B::GREEN);
 	buildingLabel4->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 160));
 	this->addChild(buildingLabel4, 30);
 	
@@ -221,6 +190,8 @@ void GameScene::onEnter()
 	MenuItemImage *soldierMenu1 = MenuItemImage::create(MINER, MINER, CC_CALLBACK_1(GameScene::soldiersCreate, this));
 	soldierMenu1->setAnchorPoint(Vec2(0.5, 0.5));
 	soldierMenu1->setScale(1.2);
+	//float smenu1_x = soldierMenu1->getContentSize().width;
+	//float smenu1_y = soldierMenu1->getContentSize().height;
 	soldierMenu1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 200));
 	soldierMenu1->setTag(START_MINER);
 	soldierMenu1->setOpacity(128);
@@ -228,39 +199,8 @@ void GameScene::onEnter()
 	smn1->setPosition(Vec2::ZERO);
 	this->addChild(smn1, 20);
 	auto soldierLabel1 = LabelTTF::create(MyUtility::gbk_2_utf8("矿工"), "华文行楷", 8);
-	soldierLabel1->setColor(Color3B::GREEN);
 	soldierLabel1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 200));
 	this->addChild(soldierLabel1,30);
-
-	//警犬菜单
-	MenuItemImage *soldierMenu2 = MenuItemImage::create(POLICEMAN, POLICEMAN, CC_CALLBACK_1(GameScene::soldiersCreate, this));
-	soldierMenu2->setAnchorPoint(Vec2(0.5, 0.5));
-	soldierMenu2->setScale(1.2);
-	soldierMenu2->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 220));
-	soldierMenu2->setTag(START_POLICEMAN);
-	soldierMenu2->setOpacity(128);
-	Menu *smn2 = Menu::create(soldierMenu2, NULL);
-	smn2->setPosition(Vec2::ZERO);
-	this->addChild(smn2, 20);
-	auto soldierLabel2 = LabelTTF::create(MyUtility::gbk_2_utf8("警犬"), "华文行楷", 8);
-	soldierLabel2->setColor(Color3B::GREEN);
-	soldierLabel2->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 220));
-	this->addChild(soldierLabel2, 30);
-
-	//坦克菜单
-	MenuItemImage *soldierMenu3 = MenuItemImage::create(TANK, TANK, CC_CALLBACK_1(GameScene::soldiersCreate, this));
-	soldierMenu3->setAnchorPoint(Vec2(0.5, 0.5));
-	soldierMenu3->setScale(1.2);
-	soldierMenu3->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 240));
-	soldierMenu3->setTag(START_TANK);
-	soldierMenu3->setOpacity(128);
-	Menu *smn3 = Menu::create(soldierMenu3, NULL);
-	smn3->setPosition(Vec2::ZERO);
-	this->addChild(smn3, 20);
-	auto soldierLabel3 = LabelTTF::create(MyUtility::gbk_2_utf8("坦克"), "华文行楷", 8);
-	soldierLabel3->setColor(Color3B::GREEN);
-	soldierLabel3->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 240));
-	this->addChild(soldierLabel3, 30);
 
 
 	//建筑物接触检测监听器
@@ -284,7 +224,7 @@ void GameScene::onEnter()
 			{
 				buildingSpriteA->setifMove(CAN_MOVE);//让此建筑物认为可移动
 				buildingSpriteB->setOpacity(128);//将不可移动的建筑物变透明
-				//给标签设置标记，使建筑物的监听器可以根据标签判断是否需要将建筑物设为不可移动
+												 //给标签设置标记，使建筑物的监听器可以根据标签判断是否需要将建筑物设为不可移动
 				this->ifBuild->setTag(1);
 				this->ifBuild->setVisible(true);//显示禁止建造的标签
 				return true;
@@ -329,7 +269,7 @@ void GameScene::onEnter()
 
 	buildingContactListener->onContactSeparate = [this](PhysicsContact &contact)
 	{
-		log("SPRITE CONTACTSEPARATE");
+		log("buildings contactseparate");
 		Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
 		Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
 		if (!buildingSpriteA || !buildingSpriteB)
@@ -360,7 +300,7 @@ void GameScene::onEnter()
 	_eventDispatcher->addEventListenerWithFixedPriority(buildingContactListener, 20);
 
 	//实时刷新金钱
-	this->Money = 5000;
+	this->Money = 4000;
 	__String *currentMoney = __String::createWithFormat("Money:%d", this->Money);
 	auto MoneyLabel = LabelTTF::create(currentMoney->getCString(), "Marker Felt", 15);
 	float Money_x = MoneyLabel->getContentSize().width;
@@ -405,42 +345,52 @@ void GameScene::buildingsCreate(Ref *pSender)
 		{
 			if (Money < CASERN_PRICE)//判断钱是否足够
 			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
 			Money -= CASERN_PRICE;
 			//建筑物准备定时器，每种建筑物准备时间不同
 			this->scheduleOnce(schedule_selector(GameScene::casernReady), 2.0f);
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 			break;
 		}
 		case START_ELECTRICSTATION:
 		{
 			if (Money < ELECTRICSTATION_PRICE)//判断钱是否足够
 			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				
 				break;
 			}
 			Money -= ELECTRICSTATION_PRICE;
 			//建筑物准备定时器，每种建筑物准备时间不同
 			this->scheduleOnce(schedule_selector(GameScene::electricStationReady), 1.8f);
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 			break;
 		}
 		case START_TANKFACTORY:
 		{
 			if (Money < TANKFACTORY_PRICE)      //判断钱是否足够
 			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
 			Money -= TANKFACTORY_PRICE;
-			this->scheduleOnce(schedule_selector(GameScene::tankFactoryReady), 2.5f);
+			this->scheduleOnce(schedule_selector(GameScene::tankFactoryReady), 1.5f);
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 			break;
 		}
 		case START_OREYARD:
 		{
 			if (Money < OREYARD_PRICE)         //判断钱是否足够
 			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
 			Money -= OREYARD_PRICE;
-			this->scheduleOnce(schedule_selector(GameScene::oreYardReady), 1.5f);
+			this->scheduleOnce(schedule_selector(GameScene::oreYardReady), 1.0f);
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+
 			break;
 		}
 	}
@@ -453,38 +403,15 @@ void GameScene::soldiersCreate(Ref *pSender)
 	{
 		case START_MINER:
 		{
-			if (Money < MINER_PRICE || !_tiledMap1->getChildByName("oreYard")
-				|| dynamic_cast<Buildings *>(_tiledMap1->getChildByName("oreYard"))->getifMove())
+			if (Money < MINER_PRICE)
 			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
 			Money -= MINER_PRICE;
 			//准备定时器
-			this->scheduleOnce(schedule_selector(GameScene::minerReady), 1.0f);
-			break;
-		}
-		case START_POLICEMAN:
-		{
-			if (Money < POLICEMAN_PRICE || !_tiledMap1->getChildByName("casern")
-				|| dynamic_cast<Buildings *>(_tiledMap1->getChildByName("casern"))->getifMove())
-			{
-				break;
-			}
-			Money -= POLICEMAN_PRICE;
-			//准备定时器
-			this->scheduleOnce(schedule_selector(GameScene::policemanReady), 1.5f);
-			break;
-		}
-		case START_TANK:
-		{
-			if (Money < TANK_PRICE || !_tiledMap1->getChildByName("tankFactory")
-				|| dynamic_cast<Buildings *>(_tiledMap1->getChildByName("tankFactory"))->getifMove())
-			{
-				break;
-			}
-			Money -= TANK_PRICE;
-			this->scheduleOnce(schedule_selector(GameScene::tankReady), 2.0f);
-			break;
+			this->scheduleOnce(schedule_selector(GameScene::minerReady), 0.5f);
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 		}
 	}
 }
@@ -499,49 +426,9 @@ void GameScene::minerReady(float dt)
 	miner->setScale(1.0);
 	float soldiers_x = miner->getContentSize().width;
 	float soldiers_y = miner->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("oreYard")->getContentSize() * 0.3;
-	Vec2 position = _tiledMap1->getChildByName("oreYard")->getPosition() + Vec2(s.width, 0);
-	miner->setPosition(position);
-	//miner->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
-	miner->setName("miner");
-	miner->createBar();
+	miner->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
 	_tiledMap1->addChild(miner, 10, GameSceneNodeTagSoldier);
 }
-void GameScene::policemanReady(float dt)
-{
-	//通过Soldiers类来创建士兵
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto policeman = Soldiers::createWithSoldierTypes(START_POLICEMAN);
-	policeman->setAnchorPoint(Vec2(0.5, 0.5));
-	policeman->setScale(1.0);
-	float soldiers_x = policeman->getContentSize().width;
-	float soldiers_y = policeman->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("casern")->getContentSize() * 0.3;
-	Vec2 position = _tiledMap1->getChildByName("casern")->getPosition() + Vec2(s.width, 0);
-	policeman->setPosition(position);
-	//policeman->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
-	policeman->setName("policeman");
-	policeman->createBar();
-	_tiledMap1->addChild(policeman, 10, GameSceneNodeTagSoldier);
-}
-void GameScene::tankReady(float dt)
-{
-	//通过Soldiers类来创建士兵
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto tank = Soldiers::createWithSoldierTypes(START_TANK);
-	tank->setAnchorPoint(Vec2(0.5, 0.5));
-	tank->setScale(1.0);
-	float soldiers_x = tank->getContentSize().width;
-	float soldiers_y = tank->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("tankFactory")->getContentSize() * 0.3;
-	Vec2 position = _tiledMap1->getChildByName("tankFactory")->getPosition() + Vec2(s.width, 0);
-	tank->setPosition(position);
-	//tank->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
-	tank->setName("tank");
-	tank->createBar();
-	_tiledMap1->addChild(tank, 10, GameSceneNodeTagSoldier);
-}
-
 
 //建筑物绘制
 void GameScene::casernReady(float dt)
@@ -554,8 +441,6 @@ void GameScene::casernReady(float dt)
 	float building_x = casern->getContentSize().width;
 	float building_y = casern->getContentSize().height;
 	casern->setPosition(Vec2(visibleSize.width - building_x, visibleSize.height - building_y / 6));
-	casern->setName("casern");
-	casern->createBar();
 	_tiledMap1->addChild(casern, 10, GameSceneNodeTagBuilding);
 }
 void GameScene::electricStationReady(float dt)
@@ -568,8 +453,6 @@ void GameScene::electricStationReady(float dt)
 	float building_x = electricStation->getContentSize().width;
 	float building_y = electricStation->getContentSize().height;
 	electricStation->setPosition(Vec2(visibleSize.width - building_x, visibleSize.height - building_y / 6));
-	electricStation->setName("electricStation");
-	electricStation->createBar();
 	_tiledMap1->addChild(electricStation, 10, GameSceneNodeTagBuilding);
 }
 void GameScene::tankFactoryReady(float dt)
@@ -582,9 +465,8 @@ void GameScene::tankFactoryReady(float dt)
 	float building_x = tankFactory->getContentSize().width;
 	float building_y = tankFactory->getContentSize().height;
 	tankFactory->setPosition(Vec2(visibleSize.width - building_x, visibleSize.height - building_y / 6));
-	tankFactory->setName("tankFactory");
-	tankFactory->createBar();
 	_tiledMap1->addChild(tankFactory, 10, GameSceneNodeTagBuilding);
+	log("a");
 }
 void GameScene::oreYardReady(float dt)
 {
@@ -596,8 +478,6 @@ void GameScene::oreYardReady(float dt)
 	float building_x = oreYard->getContentSize().width;
 	float building_y = oreYard->getContentSize().height;
 	oreYard->setPosition(Vec2(visibleSize.width - building_x, visibleSize.height - building_y / 6));
-	oreYard->setName("oreYard");
-	oreYard->createBar();
 	_tiledMap1->addChild(oreYard, 10, GameSceneNodeTagBuilding);
 }
 
@@ -739,30 +619,18 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 		{
 			if (!select_rect.containsPoint(sprite->getPosition()))
 			{
-				if (sprite->getTag() == GameSceneNodeTagBuilding)
-				{
-					auto temp = dynamic_cast<Buildings *>(sprite);
-					temp->hideHpBar();
-					continue;
-				}
+				continue;
+			}
+			if (sprite->getTag() == GameSceneNodeTagBuilding || sprite->getTag() == GameSceneNodeTagSoldier)
+			{
+				///////////////
+				//缺少血条显示
+				///////////////
 				if (sprite->getTag() == GameSceneNodeTagSoldier)
 				{
 					auto temp = dynamic_cast<Soldiers *>(sprite);
-					temp->hideHpBar();
-					continue;
+					temp->setifSelect(SELECT_ON);
 				}
-				continue;
-			}
-			if (sprite->getTag() == GameSceneNodeTagBuilding)
-			{
-				auto temp = dynamic_cast<Buildings *>(sprite);
-				temp->displayHpBar();
-			}
-			if (sprite->getTag() == GameSceneNodeTagSoldier)
-			{
-				auto temp = dynamic_cast<Soldiers *>(sprite);
-				temp->displayHpBar();
-				temp->setifSelect(SELECT_ON);
 			}
 		}
 	}

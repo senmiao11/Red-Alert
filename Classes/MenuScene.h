@@ -25,13 +25,16 @@ public:
 	CREATE_FUNC(MenuScene);                                           //完成create方法代码的生成
 	void popupQuitLayer();                                            //创建对话框，设置类型与显示内容
 	void quitButtonCallback(Node* pNode);                             //对话框按键的具体响应办法
+	void menuMusicCallBack(cocos2d::Ref* pSender);                    //回调
 private:
+	
 	Size visibleSize;                                                 //窗口尺寸
 	void addBackgroundSprite();                                       //添加场景背景
 	void addMenuSprites();                                            //添加Menu
 	void menuTouchDown(Object *pSender,Control::EventType event);     //Menu点击回调方法
 	void jumpToIntroduction(float dt);                                //跳转到IntroScene
 	void jumpToRoomScene(float dt);                                   //跳转到RoomScene
+	bool is_paused;
 };
 
 #endif // !__MenuScene_H_
