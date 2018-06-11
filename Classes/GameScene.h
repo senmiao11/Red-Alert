@@ -10,9 +10,8 @@
 #include"Buildings/Buildings.h"
 #include"Soldiers/Soldiers.h"
 #include"SimpleAudioEngine.h"
-
+using namespace ui;
 USING_NS_CC;
-
 class MouseRect :public DrawNode
 {
 public:
@@ -77,6 +76,8 @@ private:
 
 	//兵种准备方法
 	void minerReady(float dt);
+	void policemanReady(float dt);
+	void tankReady(float dt);
 
 	//金钱相关方法
 	void moneyUpdate(float dt);//实时刷新金钱
@@ -84,6 +85,7 @@ private:
 
 	static LabelTTF *ifBuild;//建筑物不可建造时显示的标签
 	static TMXTiledMap * _tiledMap1;  //瓦片地图
+
 
 
 //Mouse Rect相关方法

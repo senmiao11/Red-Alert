@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextobjectid="1">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextobjectid="91">
  <tileset firstgid="1" source="GameTiled1.tsx"/>
  <tileset firstgid="172" source="GameTiled2.tsx"/>
  <tileset firstgid="364" source="GameTiled5.tsx"/>
@@ -439,7 +439,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer name="MineLayer" width="100" height="100">
+ <layer name="MineLayer" width="100" height="100" locked="1">
   <properties>
    <property name="can_moveto" type="int" value="1"/>
    <property name="have_mine" type="int" value="1"/>
@@ -548,4 +548,93 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="Objects">
+  <object id="1" x="0" y="2681" width="518" height="48"/>
+  <object id="2" x="470" y="2680" width="54" height="244"/>
+  <object id="3" x="474" y="3003" width="45" height="195"/>
+  <object id="4" x="0" y="472" width="199" height="48"/>
+  <object id="5" x="282" y="471" width="229" height="49"/>
+  <object id="6" x="474" y="0" width="43" height="518"/>
+  <object id="7" x="2682" y="2680" width="268" height="45"/>
+  <object id="8" x="2682" y="2676" width="44" height="520"/>
+  <object id="9" x="3029" y="2676" width="173" height="53"/>
+  <object id="10" x="2681" y="-1" width="44" height="191"/>
+  <object id="11" x="2679" y="277" width="48" height="235"/>
+  <object id="12" x="2676" y="469" width="526" height="53"/>
+  <object id="14" x="635" y="1" width="172" height="95"/>
+  <object id="15" x="596" y="94" width="212" height="33"/>
+  <object id="16" x="570" y="124" width="206" height="37"/>
+  <object id="17" x="537" y="156" width="237" height="35"/>
+  <object id="18" x="536" y="191" width="208" height="33"/>
+  <object id="19" x="505" y="224" width="238" height="33"/>
+  <object id="20" x="506" y="256" width="267" height="31"/>
+  <object id="21" x="507" y="288" width="298" height="32"/>
+  <object id="22" x="534" y="321" width="308" height="30"/>
+  <object id="23" x="597" y="351" width="240" height="33"/>
+  <object id="24" x="632" y="384" width="205" height="31"/>
+  <object id="25" x="666" y="417" width="205" height="69"/>
+  <object id="26" x="693" y="480" width="178" height="36"/>
+  <object id="27" x="666" y="511" width="202" height="73"/>
+  <object id="28" x="669" y="632" width="199" height="44"/>
+  <object id="29" x="692" y="671" width="214" height="34"/>
+  <object id="30" x="699" y="702" width="234" height="35"/>
+  <object id="31" x="699" y="736" width="264" height="31"/>
+  <object id="32" x="698" y="766" width="299" height="34"/>
+  <object id="33" x="697" y="801" width="398" height="29"/>
+  <object id="34" x="728" y="832" width="366" height="35"/>
+  <object id="35" x="760" y="864" width="333" height="33"/>
+  <object id="36" x="825" y="895" width="272" height="33"/>
+  <object id="37" x="855" y="927" width="240" height="34"/>
+  <object id="38" x="921" y="963" width="172" height="194"/>
+  <object id="39" x="922" y="1154" width="201" height="29"/>
+  <object id="40" x="921" y="1185" width="237" height="32"/>
+  <object id="41" x="953" y="1217" width="270" height="65"/>
+  <object id="42" x="982" y="1279" width="242" height="34"/>
+  <object id="43" x="1046" y="1312" width="209" height="68"/>
+  <object id="44" x="1083" y="1378" width="170" height="66"/>
+  <object id="45" x="1082" y="1441" width="205" height="70"/>
+  <object id="46" x="1108" y="1499" width="182" height="79"/>
+  <object id="47" x="1115" y="1628" width="267" height="104"/>
+  <object id="48" x="1113" y="1732" width="369" height="35"/>
+  <object id="49" x="1142" y="1757" width="530" height="39"/>
+  <object id="50" x="1173" y="1786" width="591" height="40"/>
+  <object id="51" x="1203" y="1817" width="562" height="44"/>
+  <object id="52" x="1271" y="1852" width="593" height="42"/>
+  <object id="53" x="1333" y="1881" width="530" height="45"/>
+  <object id="54" x="1527" y="1919" width="402" height="38"/>
+  <object id="55" x="1687" y="1949" width="238" height="38"/>
+  <object id="56" x="1722" y="1981" width="206" height="233"/>
+  <object id="57" x="1689" y="2204" width="239" height="106"/>
+  <object id="58" x="1652" y="2301" width="242" height="73"/>
+  <object id="59" x="1627" y="2363" width="266" height="44"/>
+  <object id="60" x="1595" y="2396" width="266" height="42"/>
+  <object id="61" x="1556" y="2423" width="274" height="48"/>
+  <object id="62" x="1530" y="2457" width="236" height="45"/>
+  <object id="63" x="1531" y="2497" width="204" height="37"/>
+  <object id="64" x="1499" y="2523" width="235" height="108"/>
+  <object id="65" x="1500" y="2628" width="267" height="133"/>
+  <object id="66" x="1528" y="2750" width="235" height="43"/>
+  <object id="67" x="1535" y="2838" width="229" height="81"/>
+  <object id="68" x="1563" y="2907" width="199" height="44"/>
+  <object id="69" x="1561" y="2945" width="173" height="256"/>
+  <object id="70" x="2331" y="1692" width="136" height="39"/>
+  <object id="71" x="2231" y="1726" width="239" height="39"/>
+  <object id="72" x="2202" y="1757" width="264" height="40"/>
+  <object id="73" x="2167" y="1787" width="302" height="239"/>
+  <object id="74" x="2199" y="2009" width="271" height="47"/>
+  <object id="75" x="2231" y="2042" width="240" height="109"/>
+  <object id="76" x="2266" y="2138" width="205" height="42"/>
+  <object id="77" x="2392" y="2172" width="78" height="40"/>
+  <object id="78" x="2552" y="2167" width="173" height="47"/>
+  <object id="79" x="2551" y="2136" width="240" height="45"/>
+  <object id="80" x="2549" y="1881" width="276" height="271"/>
+  <object id="81" x="2552" y="1819" width="241" height="79"/>
+  <object id="82" x="2548" y="1785" width="208" height="42"/>
+  <object id="83" x="2554" y="1756" width="175" height="41"/>
+  <object id="84" x="2549" y="1724" width="83" height="35"/>
+  <object id="86" x="-64" y="-8" width="68" height="3228"/>
+  <object id="87" x="4" y="-108" width="3196" height="120"/>
+  <object id="89" x="3176" y="0" width="124" height="3200"/>
+  <object id="90" x="0" y="3172" width="3192" height="120"/>
+ </objectgroup>
 </map>
