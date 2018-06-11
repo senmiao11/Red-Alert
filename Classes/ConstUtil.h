@@ -57,7 +57,12 @@ typedef enum
 #define BOX_EDGE_WITDH_SMALL 10
 #define SCROLL_LENGTH 10
 
+<<<<<<< HEAD
 
+=======
+//Êó±êÑ¡¿ò
+#define MIN_SELECT_RECT_SIZE 16
+>>>>>>> xiaorui
 
 //±øÖÖ
 typedef enum
@@ -78,6 +83,7 @@ typedef enum
 #define TANK "soldiers/tank.png"
 #define MINER_PRICE 100
 #define MINER_HEALTH 200
+<<<<<<< HEAD
 #define MINER_SPEED 40
 #define POLICEMAN_PRICE 150
 #define POLICEMAN_HEALTH 300
@@ -85,6 +91,12 @@ typedef enum
 #define TANK_PRICE 300
 #define TANK_HEALTH 450
 #define TANK_SPEED 30
+=======
+#define POLICEMAN_PRICE 150
+#define POLICEMAN_HEALTH 300
+#define TANK_PRICE 300
+#define TANK_HEALTH 450
+>>>>>>> xiaorui
 
 
 

@@ -75,8 +75,11 @@ private:
 
 	//兵种准备方法
 	void minerReady(float dt);
+<<<<<<< HEAD
 	void policemanReady(float dt);
 	void tankReady(float dt);
+=======
+>>>>>>> xiaorui
 
 	//金钱相关方法
 	void moneyUpdate(float dt);//实时刷新金钱
@@ -86,7 +89,10 @@ private:
 	static TMXTiledMap * _tiledMap1;  //瓦片地图
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> xiaorui
 //Mouse Rect相关方法
 public:
 	Rect getvisionRect();

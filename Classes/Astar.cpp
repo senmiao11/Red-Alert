@@ -108,7 +108,11 @@ vector<Apoint*> Astar::getPath(Apoint &startPoint, Apoint &endPoint, bool ifIgno
 			if (*it == result)
 				break;
 		}
+<<<<<<< HEAD
 		path.insert(it, 0);
+=======
+		path.insert(it,0);
+>>>>>>> xiaorui
 		result = result->parent;
 		s++;
 	}
