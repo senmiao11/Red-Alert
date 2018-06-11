@@ -1,4 +1,4 @@
-//房间列表界面
+//房间列表界面：基本完成
 
 #ifndef __RoomScene_H_
 #define __RoomScene_H_
@@ -27,7 +27,7 @@ private:
 	Size visibleSize;                                                 //窗口尺寸
 	void addBackgroundSprite();                                       //添加场景背景
 	void menuTouchDown(Object *pSender, Control::EventType event);    //Menu点击回调方法
-	void jumpToServerScene(float dt);                                  //跳转到ServeScene
+	void jumpToServerScene(float dt);                                 //跳转到ServeScene
 	void jumpToClientScene(float dt);                                 //跳转到ClientScene
 };
 

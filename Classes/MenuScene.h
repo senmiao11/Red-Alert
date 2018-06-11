@@ -1,4 +1,4 @@
-//菜单场景
+/*菜单场景*/
 
 #ifndef __MenuScene_H_
 #define __MenuScene_H_
