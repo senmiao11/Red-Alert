@@ -9,6 +9,7 @@ Buildings::Buildings(BuildingTypes buildingType)
 	this->health = 0;
 	this->price = 0;
 	this->if_move = CANNOT_MOVE;
+	this->maxHealth = 0;
 }
 
 Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
@@ -20,19 +21,36 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		buildingName = BASE;
 		building->health = BASE_HEALTH;
 		building->if_move = CANNOT_MOVE;
+		building->maxHealth = BASE_HEALTH;
 		break;
 	case START_CASERN:
 		buildingName = CASERN;
 		building->health = CASERN_HEALTH;
 		building->price = CASERN_PRICE;
 		building->if_move = CAN_MOVE;
+		building->maxHealth = CASERN_HEALTH;
 		break;
 	case START_ELECTRICSTATION:
 		buildingName = ELECTRICSTATION;
 		building->health = ELECTRICSTATION_HEALTH;
 		building->price = ELECTRICSTATION_PRICE;
 		building->if_move = CAN_MOVE;
-
+		building->maxHealth = ELECTRICSTATION_HEALTH;
+		break;
+	case START_TANKFACTORY:
+		buildingName = TANKFACTORY;
+		building->health = TANKFACTORY_HEALTH;
+		building->price = TANKFACTORY_PRICE;
+		building->if_move = CAN_MOVE;
+		building->maxHealth = TANKFACTORY_HEALTH;
+		break;
+	case START_OREYARD:
+		buildingName = OREYARD;
+		building->health = OREYARD_HEALTH;
+		building->price = OREYARD_PRICE;
+		building->if_move = CAN_MOVE;
+		building->maxHealth = OREYARD_HEALTH;
+		break;
 	}
 
 	if (building && building->initWithFile(buildingName))
@@ -60,7 +78,7 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		};
 		touchBuildingListener->onTouchMoved = [](Touch *touch, Event *event)
 		{
-			log("building move");
+			log("touch to building move");
 			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			target->setPosition(target->getPosition() + touch->getDelta());
 		};
@@ -90,4 +108,34 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 	}
 	CC_SAFE_DELETE(building);
 	return nullptr;
+}
+
+void Buildings::createBar()
+{
+	hpBar = Bar::create();
+	float bar_width = this->getContentSize().width;
+	float bar_height = this->getContentSize().height;
+	hpBar->setLength(bar_width);
+	hpBar->setHeight(4);
+	hpBar->setVisible(false);
+	addChild(hpBar, 20);
+	hpBar->setPosition(Point(bar_width - 170, bar_height + 5));
+}
+
+void Buildings::displayHpBar()
+{
+	if (hpBar)
+	{
+		hpBar->schedule(schedule_selector(Bar::update));
+		hpBar->setVisible(true);
+	}
+}
+
+void Buildings::hideHpBar()
+{
+	if (hpBar)
+	{
+		hpBar->unschedule(schedule_selector(Bar::update));
+		hpBar->setVisible(false);
+	}
 }
