@@ -95,11 +95,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // create a scene. it's an autorelease object
 	/**************在此处修改起始场景************/
-<<<<<<< HEAD
     auto scene = GameScene::createScene();
-=======
-    auto scene = MenuScene::createScene();
->>>>>>> xiaorui
 
     // run
     director->runWithScene(scene);

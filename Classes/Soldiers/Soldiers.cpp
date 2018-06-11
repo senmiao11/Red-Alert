@@ -25,10 +25,7 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 			soldier->price = MINER_PRICE;
 			soldier->ifselect = SELECT_OFF;
 			soldier->maxHealth = MINER_HEALTH;
-<<<<<<< HEAD
 			soldier->speed = MINER_SPEED;
-=======
->>>>>>> xiaorui
 			break;
 		}
 		case START_POLICEMAN:
@@ -36,14 +33,9 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 			soldierName = POLICEMAN;
 			soldier->health = POLICEMAN_HEALTH;
 			soldier->price = POLICEMAN_PRICE;
-<<<<<<< HEAD
 			soldier->ifselect = SELECT_OFF;
 			soldier->maxHealth = POLICEMAN_HEALTH;
 			soldier->speed = POLICEMAN_SPEED;
-=======
-
-			soldier->maxHealth = POLICEMAN_HEALTH;
->>>>>>> xiaorui
 			break;
 		}
 		case START_TANK:
@@ -51,7 +43,6 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 			soldierName = TANK;
 			soldier->health = TANK_HEALTH;
 			soldier->price = TANK_PRICE;
-<<<<<<< HEAD
 			soldier->ifselect = SELECT_OFF;
 			soldier->maxHealth = TANK_HEALTH;
 			soldier->speed = TANK_SPEED;
@@ -59,14 +50,6 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 			
 	    /*´ýÌí¼Ó*/
 		//ÒÑ²¹³äpolice.tankµÄhealthÓëprice
-=======
-
-			soldier->maxHealth = TANK_HEALTH;
-		}
-			
-	    /*Â´Ã½ÃŒÃ­Â¼Ã“*/
-		//Ã’Ã‘Â²Â¹Â³Ã¤police.tankÂµÃ„healthÃ“Ã«price
->>>>>>> xiaorui
 
 	}
 	if (soldier && soldier->initWithFile(soldierName))
@@ -100,15 +83,10 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 					auto target = dynamic_cast<Soldiers *>(sprite);
 					if (target->getifSelect())
 					{
-<<<<<<< HEAD
 						auto pos1 = GameScene::gettiledMap()->convertTouchToNodeSpace(touch);
 						auto pos2 = target->getPosition();
 						float distance = sqrt(pow(pos1.x - pos2.x, 2) + pow(pos1.y - pos2.y, 2));
 						MoveTo *soldierMove = MoveTo::create(distance/target->speed, pos1);
-=======
-						auto pos = GameScene::gettiledMap()->convertTouchToNodeSpace(touch);
-						MoveTo *soldierMove = MoveTo::create(1.0f, pos);
->>>>>>> xiaorui
 						target->runAction(soldierMove);
 						target->setifSelect(SELECT_OFF);
 					}
@@ -159,8 +137,4 @@ void Soldiers::hideHpBar()
 		hpBar->unschedule(schedule_selector(Bar::update));
 		hpBar->setVisible(false);
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> xiaorui

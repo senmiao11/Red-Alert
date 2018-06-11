@@ -50,21 +50,6 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		building->price = OREYARD_PRICE;
 		building->if_move = CAN_MOVE;
 		building->maxHealth = OREYARD_HEALTH;
-<<<<<<< HEAD
-=======
-		break;
-	case START_TANKFACTORY:
-		buildingName = TANKFACTORY;
-		building->health = TANKFACTORY_HEALTH;
-		building->price = TANKFACTORY_PRICE;
-		building->if_move = CAN_MOVE;
-		break;
-	case START_OREYARD:
-		buildingName = OREYARD;
-		building->health = OREYARD_HEALTH;
-		building->price = OREYARD_PRICE;
-		building->if_move = CAN_MOVE;
->>>>>>> xiaorui
 		break;
 	}
 
@@ -76,11 +61,7 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		touchBuildingListener->setSwallowTouches(true);
 		touchBuildingListener->onTouchBegan = [](Touch *touch, Event *event)
 		{
-<<<<<<< HEAD
 			log("touch to building");
-=======
-			log("touch to building move");
->>>>>>> xiaorui
 			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			if (!target->getifMove())
 			{
@@ -97,11 +78,7 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		};
 		touchBuildingListener->onTouchMoved = [](Touch *touch, Event *event)
 		{
-<<<<<<< HEAD
 			log("touch to building move");
-=======
-			log("building move");
->>>>>>> xiaorui
 			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			target->setPosition(target->getPosition() + touch->getDelta());
 		};
