@@ -1,14 +1,11 @@
 #include"Buildings.h"
 
-EventListenerTouchOneByOne * Buildings::touchBuildingListener;
-EventDispatcher * Buildings::eventDispatcher;
 
 Buildings::Buildings(BuildingTypes buildingType)
 {
 	this->buildingtype = buildingType;
 	this->health = 0;
 	this->price = 0;
-	this->if_move = CANNOT_MOVE;
 	this->maxHealth = 0;
 }
 
@@ -20,36 +17,43 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 	case START_BASE:
 		buildingName = BASE;
 		building->health = BASE_HEALTH;
-		building->if_move = CANNOT_MOVE;
 		building->maxHealth = BASE_HEALTH;
 		break;
 	case START_CASERN:
 		buildingName = CASERN;
 		building->health = CASERN_HEALTH;
 		building->price = CASERN_PRICE;
-		building->if_move = CAN_MOVE;
 		building->maxHealth = CASERN_HEALTH;
 		break;
 	case START_ELECTRICSTATION:
 		buildingName = ELECTRICSTATION;
 		building->health = ELECTRICSTATION_HEALTH;
 		building->price = ELECTRICSTATION_PRICE;
-		building->if_move = CAN_MOVE;
 		building->maxHealth = ELECTRICSTATION_HEALTH;
 		break;
 	case START_TANKFACTORY:
 		buildingName = TANKFACTORY;
 		building->health = TANKFACTORY_HEALTH;
 		building->price = TANKFACTORY_PRICE;
-		building->if_move = CAN_MOVE;
 		building->maxHealth = TANKFACTORY_HEALTH;
 		break;
 	case START_OREYARD:
 		buildingName = OREYARD;
 		building->health = OREYARD_HEALTH;
 		building->price = OREYARD_PRICE;
-		building->if_move = CAN_MOVE;
 		building->maxHealth = OREYARD_HEALTH;
+		break;
+	case START_TANKFACTORY:
+		buildingName = TANKFACTORY;
+		building->health = TANKFACTORY_HEALTH;
+		building->price = TANKFACTORY_PRICE;
+		building->if_move = CAN_MOVE;
+		break;
+	case START_OREYARD:
+		buildingName = OREYARD;
+		building->health = OREYARD_HEALTH;
+		building->price = OREYARD_PRICE;
+		building->if_move = CAN_MOVE;
 		break;
 	}
 
@@ -57,11 +61,33 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 	{
 		//½¨ÖþÎï¼àÌýÆ÷
 		building->autorelease();
-		touchBuildingListener = EventListenerTouchOneByOne::create();
-		touchBuildingListener->setSwallowTouches(true);
-		touchBuildingListener->onTouchBegan = [](Touch *touch, Event *event)
+		auto tiledmap = GameScene::gettiledMap();
+		auto group = tiledmap->getObjectGroup("Buildings");
+		ValueMap buildobj;
+		switch (building->getBuildingType())
 		{
-			log("touch to building");
+<<<<<<< HEAD
+		case START_BASE:
+			buildobj = group->getObject("base1");
+			break;
+		case START_CASERN:
+			buildobj = group->getObject("casern1");
+			break;
+		case START_ELECTRICSTATION:
+			buildobj = group->getObject("electricStation1");
+			break;
+		case START_TANKFACTORY:
+			buildobj = group->getObject("tankFactory1");
+			break;
+		case START_OREYARD:
+			buildobj = group->getObject("oreyard1");
+			break;
+		}
+		float x = buildobj["width"].asFloat();
+		float y = buildobj["height"].asFloat();
+		auto body = PhysicsBody::createBox(Size(x, y));
+=======
+			log("touch to building move");
 			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			if (!target->getifMove())
 			{
@@ -78,7 +104,7 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		};
 		touchBuildingListener->onTouchMoved = [](Touch *touch, Event *event)
 		{
-			log("touch to building move");
+			log("building move");
 			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
 			target->setPosition(target->getPosition() + touch->getDelta());
 		};
@@ -99,6 +125,7 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		eventDispatcher->addEventListenerWithSceneGraphPriority(touchBuildingListener, building);
 
 		auto body = PhysicsBody::createBox((building->getContentSize()) * 0.75);
+>>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 		body->setCategoryBitmask(0x01);
 		body->setContactTestBitmask(0x01);
 		body->setCollisionBitmask(0x02);
@@ -119,7 +146,7 @@ void Buildings::createBar()
 	hpBar->setHeight(4);
 	hpBar->setVisible(false);
 	addChild(hpBar, 20);
-	hpBar->setPosition(Point(bar_width - 170, bar_height + 5));
+	hpBar->setPosition(Vec2(0, bar_height));
 }
 
 void Buildings::displayHpBar()

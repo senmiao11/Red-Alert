@@ -24,9 +24,6 @@
 #define OREYARD "building/oreYard.png"
 #define TANKFACTORY "building/tankFactory.png"
 
-#define CAN_MOVE true
-#define CANNOT_MOVE false
-
 #define BASE_HEALTH 20000
 #define CASERN_PRICE 4000
 #define CASERN_HEALTH 10000

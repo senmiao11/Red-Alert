@@ -1,7 +1,6 @@
 #include"Bar.h"
 void Bar::update(float dt)
 {
-	log("----");
 	clear();
 	Node *parent = getParent();
 	if (parent->getTag() == GameSceneNodeTagBuilding)//½¨ÖşÎïÑªÌõ
