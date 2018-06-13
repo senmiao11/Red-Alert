@@ -70,7 +70,7 @@ void ServerScene::addMenuSprites()
 	//设置菜单按下图片
 	Scale9Sprite * PressButton1 = Scale9Sprite::create(PRESS_MENU);
 	//创建菜单所需要的Label对象
-	LabelTTF * MessageTTF = LabelTTF::create(MyUtility::gbk_2_utf8("服务器信息"), "华文行楷", 25);
+	LabelTTF * MessageTTF = LabelTTF::create(MyUtility::gbk_2_utf8("开启服务器"), "华文行楷", 25);
 	//创建controlButton
 	ControlButton * MessageBtn = ControlButton::create(MessageTTF, NormalButton1);
 	//添加菜单按下的效果图片

@@ -25,6 +25,7 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 			soldier->price = MINER_PRICE;
 			soldier->ifselect = SELECT_OFF;
 			soldier->maxHealth = MINER_HEALTH;
+			soldier->speed = MINER_SPEED;
 			break;
 		}
 		case START_POLICEMAN:
@@ -32,8 +33,9 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 			soldierName = POLICEMAN;
 			soldier->health = POLICEMAN_HEALTH;
 			soldier->price = POLICEMAN_PRICE;
-
+			soldier->ifselect = SELECT_OFF;
 			soldier->maxHealth = POLICEMAN_HEALTH;
+			soldier->speed = POLICEMAN_SPEED;
 			break;
 		}
 		case START_TANK:
@@ -41,8 +43,9 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 			soldierName = TANK;
 			soldier->health = TANK_HEALTH;
 			soldier->price = TANK_PRICE;
-
+			soldier->ifselect = SELECT_OFF;
 			soldier->maxHealth = TANK_HEALTH;
+			soldier->speed = TANK_SPEED;
 		}
 			
 	    /*´ýÌí¼Ó*/
@@ -57,11 +60,11 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 		touchSoldierListener->onTouchBegan = [&](Touch *touch, Event *event)
 		{
 			log("soldier");
-			auto target = dynamic_cast<Soldiers *>(event->getCurrentTarget());
+			/*auto target = dynamic_cast<Soldiers *>(event->getCurrentTarget());
 			if (!target->getifSelect())
 			{
 				return false;
-			}
+			}*/
 			return true;
 		};
 		touchSoldierListener->onTouchEnded = [](Touch *touch, Event *event)
@@ -71,19 +74,44 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 			Rect rect = GameScene::getSelectRect();
 			for (auto &sprite : GameScene::gettiledMap()->getChildren())
 			{
-				if (!rect.containsPoint(sprite->getPosition()))
+				/*if (!rect.containsPoint(sprite->getPosition()))
 				{
 					continue;
-				}
+				}*/
 				if (sprite->getTag() == GameSceneNodeTagSoldier)
 				{
 					auto target = dynamic_cast<Soldiers *>(sprite);
 					if (target->getifSelect())
 					{
-						auto pos = GameScene::gettiledMap()->convertTouchToNodeSpace(touch);
-						MoveTo *soldierMove = MoveTo::create(1.0f, pos);
+						auto start = turnToApoint(target->getPosition());
+						auto end = turnToApoint(GameScene::gettiledMap()->convertTouchToNodeSpace(touch));
+						Astar pathFinder(100, 100, start, end);
+						pathFinder.findPath();
+						vector<Apoint *> path = pathFinder.getPath();
+						vector<Vec2> moveToPath;
+						for (int i = path.size() - 1; i >= 0; i--)
+						{
+							float x = (path[i]->getX()) * (GameScene::gettiledMap()->getTileSize().width);
+							float y = (GameScene::gettiledMap()->getMapSize().height - path[i]->getY()) 
+								* (GameScene::gettiledMap()->getTileSize().height);
+
+							moveToPath.push_back(Vec2(x, y));
+						}
+						for (auto &p : moveToPath)
+						{
+							float distance = sqrt(pow(target->getPosition().x - p.x, 2) 
+								+ pow(target->getPosition().y - p.y, 2));
+
+							MoveTo *soldierMove = MoveTo::create(distance / target->getSpeed(), p);
+							target->runAction(soldierMove);
+						}
+						
+						/*auto pos1 = GameScene::gettiledMap()->convertTouchToNodeSpace(touch);
+						auto pos2 = target->getPosition();
+						float distance = sqrt(pow(pos1.x - pos2.x, 2) + pow(pos1.y - pos2.y, 2));
+						MoveTo *soldierMove = MoveTo::create(distance/target->speed, pos1);
 						target->runAction(soldierMove);
-						target->setifSelect(SELECT_OFF);
+						target->setifSelect(SELECT_OFF);*/
 					}
 				}
 			}
@@ -104,6 +132,14 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 	return nullptr;
 }
 
+Apoint Soldiers::turnToApoint(Vec2 vecPoint)
+{
+	auto temp = GameScene::gettiledMap();
+	int x = vecPoint.x / temp->getTileSize().width;
+	int y = ((temp->getMapSize().height*temp->getTileSize().height) - vecPoint.y) / temp->getTileSize().height;
+	return Apoint(x, y);
+}
+
 void Soldiers::createBar()
 {
 	hpBar = Bar::create();
@@ -113,7 +149,7 @@ void Soldiers::createBar()
 	hpBar->setHeight(2);
 	hpBar->setVisible(false);
 	addChild(hpBar, 20);
-	hpBar->setPosition(Point(bar_width - 15, bar_height + 5));
+	hpBar->setPosition(Point(0, bar_height + 5));
 }
 
 void Soldiers::displayHpBar()

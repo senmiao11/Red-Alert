@@ -5,6 +5,7 @@
 #define STRAT_GAME    1
 #define INTRODUCTION  2
 #define QUIT_GAME     3
+#define SETTINGS      4
 
 #include"cocos2d.h"
 #include<iostream>
@@ -14,6 +15,9 @@
 #include"SplashScene.h"
 #include"MyUtility.h"
 #include"RoomScene.h"
+#include"SimpleAudioEngine.h"
+#include"Music/AudioControl.h"
+using namespace ui;
 USING_NS_CC_EXT;
 USING_NS_CC;
 
@@ -25,6 +29,7 @@ public:
 	CREATE_FUNC(MenuScene);                                           //完成create方法代码的生成
 	void popupQuitLayer();                                            //创建对话框，设置类型与显示内容
 	void quitButtonCallback(Node* pNode);                             //对话框按键的具体响应办法
+	void menuMusicCallBack(cocos2d::Ref* pSender);
 private:
 	Size visibleSize;                                                 //窗口尺寸
 	void addBackgroundSprite();                                       //添加场景背景
@@ -32,6 +37,7 @@ private:
 	void menuTouchDown(Object *pSender,Control::EventType event);     //Menu点击回调方法
 	void jumpToIntroduction(float dt);                                //跳转到IntroScene
 	void jumpToRoomScene(float dt);                                   //跳转到RoomScene
+	bool is_paused;
 };
 
 #endif // !__MenuScene_H_

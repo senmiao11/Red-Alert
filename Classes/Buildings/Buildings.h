@@ -26,11 +26,7 @@ private:
 	CC_SYNTHESIZE(BuildingTypes, buildingtype, BuildingType);
 	CC_SYNTHESIZE(int, health, currentHealth);
 	CC_SYNTHESIZE(int, price, Price);
-	CC_SYNTHESIZE(bool, if_move, ifMove);
 	CC_SYNTHESIZE(int, maxHealth, MaxHealth);
-	//½¨ÖþÎï¼àÌýÆ÷
-	static EventListenerTouchOneByOne *touchBuildingListener;
-	static EventDispatcher *eventDispatcher;
 
 	//ÑªÌõ
 	Bar *hpBar = nullptr;

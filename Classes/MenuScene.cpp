@@ -13,6 +13,17 @@ bool MenuScene::init()
 	addBackgroundSprite();
 	//添加Menu
 	addMenuSprites();
+	//音乐
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/BackgroundMusic.mp3", true);
+	is_paused = false;
+	auto music_button = MenuItemImage::create("MusicOn.png", "Music0ff.png");
+	auto pause_button = MenuItemImage::create("MusicOff.png", "MusicOn.png");
+	MenuItemToggle *toggleItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(MenuScene::menuMusicCallBack, this), music_button, pause_button, NULL);
+	toggleItem->setScale(0.7f);
+	toggleItem->setPosition(Point(origin.x + visibleSize.width * 0.9, origin.y + visibleSize.height * 0.1));
+	auto menu = Menu::create(toggleItem, NULL);
+	menu->setPosition(Point::ZERO);
+	this->addChild(menu);
 	return true;
 }
 
@@ -23,6 +34,20 @@ Scene * MenuScene::createScene()
 	auto layer = MenuScene::create();
 	scene->addChild(layer);
 	return scene;
+}
+void MenuScene::menuMusicCallBack(cocos2d::Ref* pSender)
+{
+
+	if (is_paused == false)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+		is_paused = true;
+	}
+	else
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+		is_paused = false;
+	}
 }
 
 //添加场景背景
@@ -101,13 +126,34 @@ void MenuScene::addMenuSprites()
 	//添加singleButton菜单按下的效果图片
 	quitGameBtn->setBackgroundSpriteForState(PressButton3, Control::State::SELECTED);
 	//设置单机游戏菜单项的位置
-	quitGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.32);
+	quitGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.19);
 	//设置点击的回调方法
 	quitGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
 	//设置菜单按钮的Tag
 	quitGameBtn->setTag(QUIT_GAME);
 	//添加Menu到场景
 	addChild(quitGameBtn);
+
+	//4 settings
+	//设置菜单的正常图片
+	Scale9Sprite * NormalButton4 = Scale9Sprite::create(NORMAL_MENU);
+	//设置菜单按下图片
+	Scale9Sprite * PressButton4 = Scale9Sprite::create(PRESS_MENU);
+	//创建菜单所需要的Label对象
+	LabelTTF * settingsTTF = LabelTTF::create(MyUtility::gbk_2_utf8("游戏设置"), "华文行楷", 25);
+	//创建controlButton
+	ControlButton * settingsBTN = ControlButton::create(settingsTTF, NormalButton4);
+	//添加singleButton菜单按下的效果图片
+	settingsBTN->setBackgroundSpriteForState(PressButton4, Control::State::SELECTED);
+	//设置单机游戏菜单项的位置
+	settingsBTN->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.32);
+	//设置点击的回调方法
+	settingsBTN->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
+	//设置菜单按钮的Tag
+	settingsBTN->setTag(SETTINGS);
+	//添加Menu到场景
+	addChild(settingsBTN);
+
 }
 
 
@@ -159,6 +205,12 @@ void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
 	case INTRODUCTION:
 	{
 		scheduleOnce(schedule_selector(MenuScene::jumpToIntroduction), 0.5);
+		break;
+	}
+	case SETTINGS:
+	{
+		auto transition = TransitionSlideInL::create(0.5, AudioControl::createScene());
+		Director::getInstance()->replaceScene(transition);
 		break;
 	}
 	case QUIT_GAME:

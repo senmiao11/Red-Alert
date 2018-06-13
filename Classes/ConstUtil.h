@@ -24,9 +24,6 @@
 #define OREYARD "building/oreYard.png"
 #define TANKFACTORY "building/tankFactory.png"
 
-#define CAN_MOVE true
-#define CANNOT_MOVE false
-
 #define BASE_HEALTH 20000
 #define CASERN_PRICE 4000
 #define CASERN_HEALTH 10000
@@ -57,8 +54,7 @@ typedef enum
 #define BOX_EDGE_WITDH_SMALL 10
 #define SCROLL_LENGTH 10
 
-// Û±Í—°øÚ
-#define MIN_SELECT_RECT_SIZE 16
+
 
 //±¯÷÷
 typedef enum
@@ -79,10 +75,13 @@ typedef enum
 #define TANK "soldiers/tank.png"
 #define MINER_PRICE 100
 #define MINER_HEALTH 200
+#define MINER_SPEED 80
 #define POLICEMAN_PRICE 150
 #define POLICEMAN_HEALTH 300
+#define POLICEMAN_SPEED 90
 #define TANK_PRICE 300
 #define TANK_HEALTH 450
+#define TANK_SPEED 70
 
 
 
