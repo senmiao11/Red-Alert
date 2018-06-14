@@ -71,11 +71,12 @@ bool PopupLayer::addButton(const char*normalImage, const char*selectedImage, con
 	Size winSize = Director::getInstance()->getWinSize();
 	//创建MenuItem按钮，并设置按钮tag，位置以及回调方法为buttonCallback
 	auto  menuImage = MenuItemImage::create(normalImage, selectedImage, CC_CALLBACK_1(PopupLayer::buttonCallBack, this));
+	menuImage->setScale(0.6);
 	menuImage->setTag(tag);
 	menuImage->setPosition(ccp(winSize.width / 2, winSize.height / 2));
 	//给MenuItem添加文字，设置颜色，位置
 	Size imenu = menuImage->getContentSize();
-	LabelTTF *ttf = LabelTTF::create(MyUtility::gbk_2_utf8(title), "华文行楷", 20);
+	LabelTTF *ttf = LabelTTF::create(MyUtility::gbk_2_utf8(title), "华文行楷", 25);
 	ttf->setColor(ccc3(0, 0, 0));
 	//设置文字在MenuItem中的位置
 	ttf->setPosition(ccp(imenu.width / 2, imenu.height / 2));

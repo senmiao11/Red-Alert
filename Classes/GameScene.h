@@ -4,6 +4,7 @@
 #define __GameScene_H_
 #include"cocos2d.h"
 #include<iostream>
+#include<vector>
 #include"MyUtility.h"
 #include"ConstUtil.h"
 #include"MenuScene.h"
@@ -44,11 +45,6 @@ public:
 	}
 	static Rect select_rect;
 
-	//获得是否可以建造的标签
-	static LabelTTF *getIfBuild()
-	{
-		return ifBuild;
-	}
 
 private:
 	//EventListenerTouchOneByOne * touchBuildingListener;
@@ -61,7 +57,7 @@ private:
 	EventListenerKeyboard * keyboard_listener;//各种键盘事件
 	void onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEvent);
 
-	EventListenerPhysicsContact * buildingContactListener;//建筑物接触监听器
+	EventListenerPhysicsContact * spriteContactListener;//建筑物接触监听器
 
 	//菜单按钮
 	void backToMenuScene(Ref *pSender);//返回MenuScene
@@ -83,9 +79,7 @@ private:
 	void moneyUpdate(float dt);//实时刷新金钱
 	static int Money;          //金钱
 
-	static LabelTTF *ifBuild;//建筑物不可建造时显示的标签
 	static TMXTiledMap * _tiledMap1;  //瓦片地图
-
 
 
 //Mouse Rect相关方法
