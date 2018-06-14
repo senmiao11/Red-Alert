@@ -115,20 +115,16 @@ void ClientScene::addMenuSprites()
 
 void ClientScene::waitStart()
 {
-	/***********
 	//socket_client_->camp();
 	unscheduleAllCallbacks();
 	log("get the camp");
 	log("start game");
-	auto scene = BattleScene::createScene(socket_client_, nullptr);
-	//	auto scene = BattleScene::createScene(socket_client_);
+	auto scene = GameScene::createScene(socket_client_, nullptr);
 	Director::getInstance()->replaceScene(TransitionSplitCols::create(0.5, scene));
-	**************/
 }
 
 void ClientScene::startSchedule(float f)
 {
-	/**************
 	if (socket_client_->error())
 	{
 		unscheduleAllCallbacks();
@@ -148,7 +144,6 @@ void ClientScene::startSchedule(float f)
 	}
 	if (socket_client_->started())
 		waitStart();
-	****************/
 }
 
 void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
@@ -159,7 +154,6 @@ void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
 	{
 	case JOIN_GAME:
 	{
-		/***********
 		if (!socket_client_)
 		{
 			auto ip_box = static_cast<ui::EditBox*>(getChildByTag(1));
@@ -168,16 +162,14 @@ void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
 			int port = atoi(port_box->getText());
 			log("ip:%s, port:%d", ip.c_str(), port);
 			socket_client_ = SocketClient::create(ip, port);
-			schedule(schedule_selector(ClientMenu::startSchedule), 0.1);
+			schedule(schedule_selector(ClientScene::startSchedule), 0.1);
 			//	std::async(&ClientMenu::wait_start, this);
 			//	wait_start();	
 		}
-		************/
 		break;
 	}
 	case GO_BACK:
 	{
-		/**********
 		if (socket_client_)
 		{
 			unscheduleAllSelectors();
@@ -185,7 +177,6 @@ void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
 			delete socket_client_;
 			socket_client_ = nullptr;
 		}
-		************/
 		Director::getInstance()->popScene();
 		break;
 	}

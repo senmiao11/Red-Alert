@@ -84,28 +84,31 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 					if (target->getifSelect())
 					{
 						auto start = turnToApoint(target->getPosition());
+						log("%f  %f", target->getPosition().x, target->getPosition().y);
+						log("%d   %d", start.getX(), start.getY());
 						auto end = turnToApoint(GameScene::gettiledMap()->convertTouchToNodeSpace(touch));
+						log("%d       %d", end.getX(), end.getY());
 						Astar pathFinder(100, 100, start, end);
 						pathFinder.findPath();
-						vector<Apoint *> path = pathFinder.getPath();
+						vector<Apoint> path = pathFinder.getPath();
 						vector<Vec2> moveToPath;
 						for (int i = path.size() - 1; i >= 0; i--)
 						{
-							float x = (path[i]->getX()) * (GameScene::gettiledMap()->getTileSize().width);
-							float y = (GameScene::gettiledMap()->getMapSize().height - path[i]->getY()) 
-								* (GameScene::gettiledMap()->getTileSize().height);
-
+							log("%d,%d", path[i].getX(), path[i].getY());
+							float x = (path[i].getX()) * 16;
+							float y = (100 - path[i].getY()) * 16;
 							moveToPath.push_back(Vec2(x, y));
 						}
 						for (auto &p : moveToPath)
 						{
 							float distance = sqrt(pow(target->getPosition().x - p.x, 2) 
 								+ pow(target->getPosition().y - p.y, 2));
-
-							MoveTo *soldierMove = MoveTo::create(distance / target->getSpeed(), p);
+							log("%f ,   %f", p.x, p.y);
+							MoveTo *soldierMove = MoveTo::create(30, p);
 							target->runAction(soldierMove);
+							//target->setifSelect(SELECT_OFF);
 						}
-						
+						target->setifSelect(SELECT_OFF);
 						/*auto pos1 = GameScene::gettiledMap()->convertTouchToNodeSpace(touch);
 						auto pos2 = target->getPosition();
 						float distance = sqrt(pow(pos1.x - pos2.x, 2) + pow(pos1.y - pos2.y, 2));
@@ -120,11 +123,11 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 		eventDispatcher = Director::getInstance()->getEventDispatcher();
 		eventDispatcher->addEventListenerWithSceneGraphPriority(touchSoldierListener, soldier);
 
-		auto body = PhysicsBody::createBox((soldier->getContentSize()));
+		/*auto body = PhysicsBody::createBox((soldier->getContentSize()));
 		body->setCategoryBitmask(0x02);
 		body->setContactTestBitmask(0x02);
 		body->setCollisionBitmask(0x04);
-		soldier->setPhysicsBody(body);
+		soldier->setPhysicsBody(body);*/
 
 		return soldier;
 	}
@@ -134,9 +137,8 @@ Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
 
 Apoint Soldiers::turnToApoint(Vec2 vecPoint)
 {
-	auto temp = GameScene::gettiledMap();
-	int x = vecPoint.x / temp->getTileSize().width;
-	int y = ((temp->getMapSize().height*temp->getTileSize().height) - vecPoint.y) / temp->getTileSize().height;
+	int x = vecPoint.x / 16;
+	int y = ((100 * 16) - vecPoint.y) / 16;
 	return Apoint(x, y);
 }
 

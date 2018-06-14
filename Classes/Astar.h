@@ -43,9 +43,8 @@ class Astar
 public:
 
 	Astar(int _width, int _height, Apoint start, Apoint end);
-	~Astar();
 	void findPath();
-	vector<Apoint *> getPath();
+	vector<Apoint> getPath();
 
 
 private:
@@ -57,6 +56,8 @@ private:
 	Apoint *end_point;
 	int width;
 	int height;
+
+	bool flag;
 
 	Apoint *nextPointByLeastF();
 	bool ifInOpenList(Apoint &nextPoint);

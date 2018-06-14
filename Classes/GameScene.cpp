@@ -32,24 +32,40 @@ Rect GameScene::getvisionRect()
 	return cocos2d::Rect(visible_origin, visible_size);
 }
 
-Scene * GameScene::createScene()
+GameScene* GameScene::create(SocketClient* _socket_client, SocketServer* _socket_server)
+{
+	GameScene *game_scene = new (std::nothrow) GameScene();
+	if (game_scene && game_scene->init(_socket_client, _socket_server))
+	{
+		game_scene->autorelease();
+		return game_scene;
+	}
+	CC_SAFE_DELETE(game_scene);
+
+	return nullptr;
+}
+
+Scene * GameScene::createScene(SocketClient* _socket_client, SocketServer* _socket_server)
 {
 	Scene *scene = Scene::createWithPhysics();
 	PhysicsWorld *phyWorld = scene->getPhysicsWorld();
 	//用于物理引擎debug
 	//phyWorld->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	phyWorld->setGravity(Vec2(0, 0));
-	auto layer = GameScene::create();
+	auto layer = GameScene::create(_socket_client, _socket_server);
 	scene->addChild(layer);
 	return scene;
 }
 
-bool GameScene::init()
+bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 {
 	if (!Layer::init())
 	{
 		return false;
 	}
+	//服务器相关
+	socket_client = _socket_client;
+	socket_server = _socket_server;
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -60,6 +76,11 @@ bool GameScene::init()
 	_tiledMap1->setAnchorPoint(Vec2(0, 0));
 	_tiledMap1->setPosition(0, 0);
 	addChild(_tiledMap1, 0);
+	TMXLayer *colliableLayer = _tiledMap1->getLayer("CollidableLayer");
+	if (colliableLayer == nullptr)
+	{
+		log(" 11");
+	}
 	TMXObjectGroup *objectsGroup = _tiledMap1->objectGroupNamed("Objects");
 	ValueVector objects = objectsGroup->getObjects();
 	for (auto obj : objects) 
@@ -111,7 +132,6 @@ bool GameScene::init()
 	base->setScale(1);
 	base->setPosition(Vec2(16,16));
 	base->createBar();
-	//base->hpBar->setPosition(base->hpBar->getPosition() - Vec2(16, -32));
 	_tiledMap1->addChild(base, 10, GameSceneNodeTagBuilding);
 
 	return true;
@@ -295,7 +315,7 @@ void GameScene::onEnter()
 
 	spriteContactListener->onContactSeparate = [this](PhysicsContact &contact)
 	{
-		
+
 		return;
 	};
 	_eventDispatcher->addEventListenerWithFixedPriority(spriteContactListener, 20);
@@ -322,11 +342,43 @@ void GameScene::onExit()
 	Director::getInstance()->getEventDispatcher()->removeEventListener(mouseRectListener);
 	this->unschedule(schedule_selector(GameScene::moneyUpdate));
 	this->unschedule(schedule_selector(GameScene::update));
+	if (socket_client)
+	{
+		socket_client->close();
+		delete socket_client;
+		socket_client = nullptr;
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(200));
+	if (socket_server)
+	{
+		socket_server->close();
+		delete socket_server;
+		socket_server = nullptr;
+	}
+	if (_onExitCallback)
+		_onExitCallback();
+	if (_componentContainer && !_componentContainer->isEmpty())
+	{
+		_componentContainer->onExit();
+	}
+	this->pause();
+	_running = false;
+	for (const auto &child : _children)
+		child->onExit();
 }
 
 //返回MenuScene
 void GameScene::backToMenuScene(Ref *pSender)
 {
+	if (socket_server)
+	{
+		socket_server->close();
+		socket_server = nullptr;
+
+	}
+	socket_client->close();
+	delete socket_client;
+	socket_client = nullptr;
 	Scene *sc = Scene::create();
 	auto layer = MenuScene::create();
 	sc->addChild(layer);
@@ -397,44 +449,44 @@ void GameScene::soldiersCreate(Ref *pSender)
 	MenuItem *mnitm = (MenuItem *)pSender;
 	switch (mnitm->getTag())
 	{
-		case START_MINER:
+	case START_MINER:
+	{
+		if (Money < MINER_PRICE || !_tiledMap1->getChildByName("oreYard"))
 		{
-			if (Money < MINER_PRICE || !_tiledMap1->getChildByName("oreYard"))
-			{
-				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
-				break;
-			}
-			Money -= MINER_PRICE;
-			//准备定时器
-			this->scheduleOnce(schedule_selector(GameScene::minerReady), 1.0f);
-			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
 		}
-		case START_POLICEMAN:
+		Money -= MINER_PRICE;
+		//准备定时器
+		this->scheduleOnce(schedule_selector(GameScene::minerReady), 1.0f);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+		break;
+	}
+	case START_POLICEMAN:
+	{
+		if (Money < POLICEMAN_PRICE || !_tiledMap1->getChildByName("casern"))
 		{
-			if (Money < POLICEMAN_PRICE || !_tiledMap1->getChildByName("casern"))
-			{
-				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
-				break;
-			}
-			Money -= POLICEMAN_PRICE;
-			//准备定时器
-			this->scheduleOnce(schedule_selector(GameScene::policemanReady), 1.5f);
-			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
 		}
-		case START_TANK:
+		Money -= POLICEMAN_PRICE;
+		//准备定时器
+		this->scheduleOnce(schedule_selector(GameScene::policemanReady), 1.5f);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+		break;
+	}
+	case START_TANK:
+	{
+		if (Money < TANK_PRICE || !_tiledMap1->getChildByName("tankFactory"))
 		{
-			if (Money < TANK_PRICE || !_tiledMap1->getChildByName("tankFactory"))
-			{
-				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
-				break;
-			}
-			Money -= TANK_PRICE;
-			this->scheduleOnce(schedule_selector(GameScene::tankReady), 2.0f);
-			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
 		}
+		Money -= TANK_PRICE;
+		this->scheduleOnce(schedule_selector(GameScene::tankReady), 2.0f);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+		break;
+	}
 	}
 }
 
@@ -444,11 +496,11 @@ void GameScene::minerReady(float dt)
 	//通过Soldiers类来创建士兵
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	auto miner = Soldiers::createWithSoldierTypes(START_MINER);
-	miner->setAnchorPoint(Vec2(0.5, 0.5));
+	miner->setAnchorPoint(Vec2(0, 0));
 	miner->setScale(1.2);
 	float soldiers_x = miner->getContentSize().width;
 	float soldiers_y = miner->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("oreYard")->getContentSize() * 0.3;
+	Size s = _tiledMap1->getChildByName("oreYard")->getContentSize();
 	Vec2 position = _tiledMap1->getChildByName("oreYard")->getPosition() + Vec2(s.width, 0);
 	miner->setPosition(position);
 	//miner->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
@@ -465,7 +517,7 @@ void GameScene::policemanReady(float dt)
 	policeman->setScale(1.2);
 	float soldiers_x = policeman->getContentSize().width;
 	float soldiers_y = policeman->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("casern")->getContentSize() * 0.3;
+	Size s = _tiledMap1->getChildByName("casern")->getContentSize();
 	Vec2 position = _tiledMap1->getChildByName("casern")->getPosition() + Vec2(s.width, 0);
 	policeman->setPosition(position);
 	//policeman->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
@@ -482,7 +534,7 @@ void GameScene::tankReady(float dt)
 	tank->setScale(1.2);
 	float soldiers_x = tank->getContentSize().width;
 	float soldiers_y = tank->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("tankFactory")->getContentSize() * 0.3;
+	Size s = _tiledMap1->getChildByName("tankFactory")->getContentSize();
 	Vec2 position = _tiledMap1->getChildByName("tankFactory")->getPosition() + Vec2(s.width, 0);
 	tank->setPosition(position);
 	//tank->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
@@ -541,15 +593,14 @@ void GameScene::oreYardReady(float dt)
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	auto oreYard = Buildings::creatWithBuildingTypes(START_OREYARD);
 	oreYard->setAnchorPoint(Vec2(0, 0));
-	//oreYard->setScale(1);
+	oreYard->setScale(1);
 	float building_x = oreYard->getContentSize().width;
 	float building_y = oreYard->getContentSize().height;
-	oreYard->setPosition(Vec2(16, 96));
+	oreYard->setPosition(Vec2(16,96));
 	oreYard->setName("oreYard");
 	oreYard->createBar();
 	_tiledMap1->addChild(oreYard, 10, GameSceneNodeTagBuilding);
 }
-
 
 void GameScene::moneyUpdate(float dt)
 {
@@ -699,6 +750,7 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 				{
 					auto temp = dynamic_cast<Soldiers *>(sprite);
 					temp->hideHpBar();
+					temp->setifSelect(SELECT_OFF);
 					continue;
 				}
 				continue;

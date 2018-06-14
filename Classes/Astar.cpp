@@ -1,4 +1,4 @@
-#include"Findpath/Astar.h"
+#include"Astar.h"
 
 Apoint::Apoint()
 {
@@ -36,10 +36,10 @@ Astar::Astar(int _width, int _height, Apoint start, Apoint end)
 	width = _width;
 	height = _height;
 	TMXLayer *collidable = GameScene::gettiledMap()->getLayer("CollidableLayer");
-	if (collidable == nullptr)
+	/*if (collidable == nullptr)
 	{
 		log("++++++++++++++");
-	}
+	}*/
 	vector<Apoint> row(width, Apoint());
 	map_point.assign(height, row);
 	for (int i = 0; i < width; i++)
@@ -64,20 +64,19 @@ Astar::Astar(int _width, int _height, Apoint start, Apoint end)
 		}
 	}
 	map_point[start.getX()][start.getY()].setFlag(START);
+	if (map_point[end.getX()][end.getY()].getFlag() == UNABLE)
+	{
+		flag = false;
+	}
 	map_point[end.getX()][end.getY()].setFlag(END);
 	start_point = &map_point[start.getX()][start.getY()];
 	end_point = &map_point[end.getX()][end.getY()];
-}
-Astar::~Astar()
-{
-	delete start_point;
-	delete end_point;
 }
 Apoint * Astar::nextPointByLeastF()
 {
 	if (!openlist.empty())
 	{
-		auto nextPoint = openlist.front();
+		auto nextPoint = openlist[0];
 		for (auto point : openlist)
 		{
 			if (point->getF() < nextPoint->getF())
@@ -107,11 +106,11 @@ bool Astar::ifInCloseList(Apoint &nextPoint)
 }
 int Astar::calculateG(Apoint &currentPoint, Apoint &lastPoint)
 {
-	if (currentPoint.getX() == lastPoint.getX() || currentPoint.getY() == lastPoint.getY())
+	/*if (currentPoint.getX() == lastPoint.getX() || currentPoint.getY() == lastPoint.getY())
 	{
 		return lastPoint.getG() + 10;
-	}
-	return lastPoint.getG() + 14;
+	}*/
+	return lastPoint.getG() + 10;
 }
 int Astar::calculateH(Apoint &currentPoint, Apoint &endPoint)
 {
@@ -124,6 +123,14 @@ int Astar::calculateF(Apoint &point)
 bool Astar::ifAbleReach(Apoint &nextPoint, Apoint &currentPoint)
 {
 	if (ifInCloseList(nextPoint))
+	{
+		return false;
+	}
+	if (nextPoint.getX() == currentPoint.getX() && nextPoint.getY() == currentPoint.getY())
+	{
+		return false;
+	}
+	if (nextPoint.getX() != currentPoint.getX() && nextPoint.getY() != currentPoint.getY())
 	{
 		return false;
 	}
@@ -173,6 +180,10 @@ void Astar::findPath()
 	closelist.clear();
 	Apoint *point = nullptr;
 	openlist.push_back(start_point);
+	if (!flag)
+	{
+		return;
+	}
 	while (end_point->getFlag() == END && !openlist.empty())
 	{
 		point = nextPointByLeastF();
@@ -186,13 +197,13 @@ void Astar::findPath()
 		}
 	}
 }
-vector<Apoint *> Astar::getPath()
+vector<Apoint> Astar::getPath()
 {
-	vector<Apoint *> path;
+	vector<Apoint> path;
 	Apoint *point = end_point;
 	while (point->getParentPoint() != nullptr)
 	{
-		path.push_back(&Apoint(point->getX(), point->getY()));
+		path.push_back(Apoint(point->getX(), point->getY()));
 		point = point->getParentPoint();
 	}
 	return path;

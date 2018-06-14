@@ -4,13 +4,15 @@
 #define __GameScene_H_
 #include"cocos2d.h"
 #include<iostream>
-#include<vector>
 #include"MyUtility.h"
 #include"ConstUtil.h"
 #include"MenuScene.h"
 #include"Buildings/Buildings.h"
 #include"Soldiers/Soldiers.h"
 #include"SimpleAudioEngine.h"
+#include"network/SocketClient.h"
+#include"network/SocketServer.h"
+#include"network/socket_message.h"
 using namespace ui;
 USING_NS_CC;
 class MouseRect :public DrawNode
@@ -28,11 +30,11 @@ public:
 class GameScene :public Layer
 {
 public:
-	static Scene *createScene();
-	virtual bool init();
+	static GameScene* create(SocketClient* _socket_client, SocketServer* _socket_server);
+	static Scene *createScene(SocketClient* _socket_client, SocketServer* _socket_server = nullptr);
+	virtual bool init(SocketClient* _socket_client, SocketServer* _socket_server);
 	virtual void onEnter();
 	virtual void onExit();
-	CREATE_FUNC(GameScene);
 	void update(float dt);
 	void scrollMap();
 	static TMXTiledMap *gettiledMap()
@@ -82,6 +84,7 @@ private:
 	static TMXTiledMap * _tiledMap1;  //瓦片地图
 
 
+
 //Mouse Rect相关方法
 public:
 	Rect getvisionRect();
@@ -96,6 +99,10 @@ private:
 	Rect mini_map_rect{};
 	Point last_touch{ 0, 0 };
 	Point crusor_position{ 0, 0 };
+
+//network
+	SocketServer* socket_server = nullptr;
+	SocketClient* socket_client = nullptr;
 };
 
 /***************************************************

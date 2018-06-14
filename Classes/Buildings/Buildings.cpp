@@ -70,13 +70,13 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 			buildobj = group->getObject("oreyard1");
 			break;
 		}
-		float x = buildobj["width"].asFloat();
+		/*float x = buildobj["width"].asFloat();
 		float y = buildobj["height"].asFloat();
 		auto body = PhysicsBody::createBox(Size(x, y));
 		body->setCategoryBitmask(0x01);
 		body->setContactTestBitmask(0x01);
 		body->setCollisionBitmask(0x02);
-		building->setPhysicsBody(body);
+		building->setPhysicsBody(body);*/
 
 		return building;
 	}
