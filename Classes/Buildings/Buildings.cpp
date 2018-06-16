@@ -43,18 +43,6 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		building->price = OREYARD_PRICE;
 		building->maxHealth = OREYARD_HEALTH;
 		break;
-	case START_TANKFACTORY:
-		buildingName = TANKFACTORY;
-		building->health = TANKFACTORY_HEALTH;
-		building->price = TANKFACTORY_PRICE;
-		building->if_move = CAN_MOVE;
-		break;
-	case START_OREYARD:
-		buildingName = OREYARD;
-		building->health = OREYARD_HEALTH;
-		building->price = OREYARD_PRICE;
-		building->if_move = CAN_MOVE;
-		break;
 	}
 
 	if (building && building->initWithFile(buildingName))
@@ -66,70 +54,76 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		ValueMap buildobj;
 		switch (building->getBuildingType())
 		{
-<<<<<<< HEAD
-		case START_BASE:
-			buildobj = group->getObject("base1");
-			break;
 		case START_CASERN:
+		{
 			buildobj = group->getObject("casern1");
-			break;
-		case START_ELECTRICSTATION:
-			buildobj = group->getObject("electricStation1");
-			break;
-		case START_TANKFACTORY:
-			buildobj = group->getObject("tankFactory1");
-			break;
-		case START_OREYARD:
-			buildobj = group->getObject("oreyard1");
+			float x1 = buildobj["x"].asFloat();
+			float y1 = buildobj["y"].asFloat();
+			float width1 = buildobj["width"].asFloat();
+			float height1 = buildobj["height"].asFloat();
+			PhysicsBody * phy1 = PhysicsBody::createBox(Size(width1, height1));
+			phy1->setDynamic(false);
+			Sprite * sp1 = Sprite::create();
+			sp1->setPosition(Vec2(x1, y1));
+			sp1->setAnchorPoint(ccp(0, 0));
+			sp1->setContentSize(Size(width1, height1));
+			sp1->setPhysicsBody(phy1);
+			tiledmap->addChild(sp1);
 			break;
 		}
-		float x = buildobj["width"].asFloat();
-		float y = buildobj["height"].asFloat();
-		auto body = PhysicsBody::createBox(Size(x, y));
-=======
-			log("touch to building move");
-			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
-			if (!target->getifMove())
-			{
-				return false;
-			}
-			Vec2 locationInNode = target->convertToNodeSpace(touch->getLocation());
-			Size s = target->getContentSize();
-			Rect rect = Rect(0, 0, s.width, s.height);
-			if (rect.containsPoint(locationInNode))
-			{
-				return true;
-			}
-			return false;
-		};
-		touchBuildingListener->onTouchMoved = [](Touch *touch, Event *event)
+		case START_ELECTRICSTATION:
 		{
-			log("building move");
-			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
-			target->setPosition(target->getPosition() + touch->getDelta());
-		};
-		touchBuildingListener->onTouchEnded = [](Touch *touch, Event *event)
+			buildobj = group->getObject("electricStation1");
+			float x2 = buildobj["x"].asFloat();
+			float y2 = buildobj["y"].asFloat();
+			float width2 = buildobj["width"].asFloat();
+			float height2 = buildobj["height"].asFloat();
+			PhysicsBody * phy2 = PhysicsBody::createBox(Size(width2, height2));
+			phy2->setDynamic(false);
+			Sprite * sp2 = Sprite::create();
+			sp2->setPosition(Vec2(x2, y2));
+			sp2->setAnchorPoint(ccp(0, 0));
+			sp2->setContentSize(Size(width2, height2));
+			sp2->setPhysicsBody(phy2);
+			tiledmap->addChild(sp2);
+			break;
+		}
+		case START_TANKFACTORY:
 		{
-			log("touch to building end");
-			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
-			if (GameScene::getIfBuild()->getTag())
-			{
-				target->setifMove(CAN_MOVE);
-			}
-			else
-			{
-				target->setifMove(CANNOT_MOVE);
-			}
-		};
-		eventDispatcher = Director::getInstance()->getEventDispatcher();
-		eventDispatcher->addEventListenerWithSceneGraphPriority(touchBuildingListener, building);
+			buildobj = group->getObject("tankFactory1");
+			float x3 = buildobj["x"].asFloat();
+			float y3 = buildobj["y"].asFloat();
+			float width3 = buildobj["width"].asFloat();
+			float height3 = buildobj["height"].asFloat();
+			PhysicsBody * phy3 = PhysicsBody::createBox(Size(width3, height3));
+			phy3->setDynamic(false);
+			Sprite * sp3 = Sprite::create();
+			sp3->setPosition(Vec2(x3, y3));
+			sp3->setAnchorPoint(ccp(0, 0));
+			sp3->setContentSize(Size(width3, height3));
+			sp3->setPhysicsBody(phy3);
+			tiledmap->addChild(sp3);
+			break;
+		}
+		case START_OREYARD:
+		{
+			buildobj = group->getObject("oreyard1");
+			float x4 = buildobj["x"].asFloat();
+			float y4 = buildobj["y"].asFloat();
+			float width4 = buildobj["width"].asFloat();
+			float height4 = buildobj["height"].asFloat();
+			PhysicsBody * phy4 = PhysicsBody::createBox(Size(width4, height4));
+			phy4->setDynamic(false);
+			Sprite * sp4 = Sprite::create();
+			sp4->setPosition(Vec2(x4, y4));
+			sp4->setAnchorPoint(ccp(0, 0));
+			sp4->setContentSize(Size(width4, height4));
+			sp4->setPhysicsBody(phy4);
+			tiledmap->addChild(sp4);
+			break;
+		}
+		}
 
-		auto body = PhysicsBody::createBox((building->getContentSize()) * 0.75);
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
-		body->setCategoryBitmask(0x01);
-		body->setContactTestBitmask(0x01);
-		body->setCollisionBitmask(0x02);
-		building->setPhysicsBody(body);
 
 		return building;
 	}

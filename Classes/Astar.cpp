@@ -1,159 +1,210 @@
-#include <math.h>  
-#include "Astar.h"  
+#include"Astar.h"
 
-void Astar::InitAstar(vector<bool> &_maze, int mapWidth, int mapHeight)
+Apoint::Apoint()
 {
-	maze = _maze;
-	width = mapWidth;
-	height = mapHeight;
+	this->x = 0;
+	this->y = 0;
+	this->F = 0;
+	this->G = 0;
+	this->H = 0;
+	this->parent = nullptr;
+	this->flag = ABLE;
 }
-int Astar::calculateG(Apoint *temp_start, Apoint *point)
+Apoint::Apoint(int _x, int _y)
 {
-	int extraG = (abs(point->x - temp_start->x) + abs(point->y - temp_start->y)) == 1 ? strMove : tiltMove;
-	//如果是初始节点，则其父节点是空
-	int parentG = point->parent == NULL ? 0 : point->parent->G;
-	return parentG + extraG;
+	this->x = _x;
+	this->y = _y;
+	this->F = 0;
+	this->G = 0;
+	this->H = 0;
+	this->parent = nullptr;
+	this->flag = ABLE;
 }
-int Astar::calculateH(Apoint *point, Apoint *end)
+void Apoint::setParentPoint(Apoint *parentpoint)
 {
-	return sqrt((double)(end->x - point->x)*(double)(end->x - point->x)+(double)(end->y-point->y)*(double)(end->y)-point->y)*strMove;
+	this->parent = parentpoint;
 }
-int Astar::calculateF(Apoint *point)
+Apoint * Apoint::getParentPoint()
 {
-	return point->G + point->H;
+	return parent;
 }
 
-Apoint *Astar::getLeastF()
+
+
+Astar::Astar(int _width, int _height, Apoint start, Apoint end)
 {
-	if (!openList.empty())
+	width = _width;
+	height = _height;
+	TMXLayer *collidable = GameScene::gettiledMap()->getLayer("CollidableLayer");
+	/*if (collidable == nullptr)
 	{
-		auto resPoint = openList.front();
-		for (auto point : openList)
-			if (point->F < resPoint->F)
-				resPoint = point;
-		return resPoint;
-	}
-	return NULL;
-}
-Apoint *Astar::findPath(Apoint &startPoint, Apoint &endPoint, bool ifIgnoreCorner)
-{
-	openList.clear();
-	closeList.clear();
-	openList.push_back(new Apoint(startPoint.x, startPoint.y));
-	//置入起点,拷贝开辟一个节点，内外隔离  
-	while (!openList.empty())
+	log("++++++++++++++");
+	}*/
+	vector<Apoint> row(width, Apoint());
+	map_point.assign(height, row);
+	for (int i = 0; i < width; i++)
 	{
-		auto currentPoint = getLeastF();//找到F值最小的点
-		vector<Apoint*>::iterator it = openList.begin();
-		for (; it != openList.end(); it++)
+		for (int j = 0; j < height; j++)
 		{
-			if (*it == currentPoint)
-				break;
-		}
-
-		openList.erase(it);//从开启列表中删除
-		closeList.push_back(currentPoint);//放到关闭列表 
-		//1,找到当前周围八个格中可以通过的格子  
-		auto surroundingPoints = getSurroundingPoints(currentPoint, ifIgnoreCorner);
-		for (auto &target : surroundingPoints)
-		{
-			//2,对某一个格子，如果它不在开启列表中，
-			//加入到开启列表，设置当前格为其父节点，
-			//计算F G H  
-			if (!ifInList(openList, target))
+			map_point[i][j].setX(i);
+			map_point[i][j].setY(j);
+			int tileGid = collidable->getTileGIDAt(Vec2(i, j));
+			if (tileGid > 0)
 			{
-				target->parent = currentPoint;
-				target->G = calculateG(currentPoint, target);
-				target->H = calculateH(target, &endPoint);
-				target->F = calculateF(target);
-				openList.push_back(target);
+				ValueMap propValueMap = (GameScene::gettiledMap()->getPropertiesForGID(tileGid)).asValueMap();
+				if (propValueMap["Collidable"].asString() == "true")
+				{
+					map_point[i][j].setFlag(UNABLE);
+				}
 			}
-			//3，对某一个格子，它在开启列表中，计算G值, 如果比原来的大, 就什么都不做, 否则设置它的父节点为当前点,并更新G和F  
 			else
 			{
-				int tempG = calculateG(currentPoint, target);
-				if (tempG < target->G)
-				{
-					target->parent = currentPoint;
-					target->G = tempG;
-					target->F = calculateF(target);
-				}
-				
-					
-				
+				map_point[i][j].setFlag(ABLE);
 			}
-			Apoint *resPoint = ifInList(openList, &endPoint);
-			if (resPoint)
-				return resPoint;
-			
-
 		}
+	}
+	map_point[start.getX()][start.getY()].setFlag(START);
+	if (map_point[end.getX()][end.getY()].getFlag() == UNABLE)
+	{
+		flag = false;
+	}
+	map_point[end.getX()][end.getY()].setFlag(END);
+	start_point = &map_point[start.getX()][start.getY()];
+	end_point = &map_point[end.getX()][end.getY()];
+}
+Apoint * Astar::nextPointByLeastF()
+{
+	if (!openlist.empty())
+	{
+		auto nextPoint = openlist[0];
+		for (auto point : openlist)
+		{
+			if (point->getF() < nextPoint->getF())
+			{
+				nextPoint = point;
+			}
+		}
+		return nextPoint;
 	}
 	return NULL;
 }
-vector<Apoint*> Astar::getPath(Apoint &startPoint, Apoint &endPoint, bool ifIgnoreCorner)
+bool Astar::ifInOpenList(Apoint &nextPoint)
 {
-	log("from point============>%d,%d", startPoint.x, startPoint.y);
-	log("to point===========>%d,%d", endPoint.x, endPoint.y);
-	Apoint *result = findPath(startPoint, endPoint, ifIgnoreCorner);
-	vector<Apoint*> path;
-	//返回路径
-	//如果没找到路径，返回空链表
-	int s = 1;
-	while (result->parent)
+	if (nextPoint.getFlag() == INOPENLIST)
 	{
-		vector<Apoint*>::iterator it = path.begin();
-		for (; it != path.end(); it++)
-		{
-			if (*it == result)
-				break;
-		}
-		path.insert(it, 0);
-		result = result->parent;
-		s++;
+		return true;
 	}
-	log("s===>%d", s);
+	return false;
+}
+bool Astar::ifInCloseList(Apoint &nextPoint)
+{
+	if (nextPoint.getFlag() == INCLOSELIST || nextPoint.getFlag() == START)
+	{
+		return true;
+	}
+	return false;
+}
+int Astar::calculateG(Apoint &currentPoint, Apoint &lastPoint)
+{
+	/*if (currentPoint.getX() == lastPoint.getX() || currentPoint.getY() == lastPoint.getY())
+	{
+	return lastPoint.getG() + 10;
+	}*/
+	return lastPoint.getG() + 10;
+}
+int Astar::calculateH(Apoint &currentPoint, Apoint &endPoint)
+{
+	return (abs(currentPoint.getX() - endPoint.getX()) + abs(currentPoint.getY() - endPoint.getY())) * 10;
+}
+int Astar::calculateF(Apoint &point)
+{
+	return (point.getG() + point.getH());
+}
+bool Astar::ifAbleReach(Apoint &nextPoint, Apoint &currentPoint)
+{
+	if (ifInCloseList(nextPoint))
+	{
+		return false;
+	}
+	if (nextPoint.getX() == currentPoint.getX() && nextPoint.getY() == currentPoint.getY())
+	{
+		return false;
+	}
+	if (nextPoint.getX() != currentPoint.getX() && nextPoint.getY() != currentPoint.getY())
+	{
+		return false;
+	}
+	if (nextPoint.getFlag() == UNABLE)
+	{
+		return false;
+	}
+	return true;
+}
+void Astar::getSurroundingPoints(Apoint &currentPoint)
+{
+	for (int i = -1; i <= 1; i++)
+	{
+		for (int j = -1; j <= 1; j++)
+		{
+			int next_x = currentPoint.getX() + i;
+			int next_y = currentPoint.getY() + j;
+			if (next_x >= 0 && next_x < width && next_y >= 0 && next_y < height
+				&& ifAbleReach(map_point[next_x][next_y], currentPoint))
+			{
+				if (ifInOpenList(map_point[next_x][next_y]))
+				{
+					if (map_point[next_x][next_y].getG() > calculateG(map_point[next_x][next_y], currentPoint))
+					{
+						map_point[next_x][next_y].setG(calculateG(map_point[next_x][next_y], currentPoint));
+						map_point[next_x][next_y].setH(calculateH(map_point[next_x][next_y], *end_point));
+						map_point[next_x][next_y].setF(calculateF(map_point[next_x][next_y]));
+						map_point[next_x][next_y].setParentPoint(&currentPoint);
+					}
+				}
+				else
+				{
+					map_point[next_x][next_y].setG(calculateG(map_point[next_x][next_y], currentPoint));
+					map_point[next_x][next_y].setH(calculateH(map_point[next_x][next_y], *end_point));
+					map_point[next_x][next_y].setF(calculateF(map_point[next_x][next_y]));
+					map_point[next_x][next_y].setFlag(INOPENLIST);
+					map_point[next_x][next_y].setParentPoint(&currentPoint);
+					openlist.push_back(&map_point[next_x][next_y]);
+				}
+			}
+		}
+	}
+}
+void Astar::findPath()
+{
+	openlist.clear();
+	closelist.clear();
+	Apoint *point = nullptr;
+	openlist.push_back(start_point);
+	if (!flag)
+	{
+		return;
+	}
+	while (end_point->getFlag() == END && !openlist.empty())
+	{
+		point = nextPointByLeastF();
+		getSurroundingPoints(*point);
+		point->setFlag(INCLOSELIST);
+		closelist.push_back(point);
+		vector<Apoint *>::iterator it = find(openlist.begin(), openlist.end(), point);
+		if (it != openlist.end())
+		{
+			openlist.erase(it);
+		}
+	}
+}
+vector<Apoint> Astar::getPath()
+{
+	vector<Apoint> path;
+	Apoint *point = end_point;
+	while (point->getParentPoint() != nullptr)
+	{
+		path.push_back(Apoint(point->getX(), point->getY()));
+		point = point->getParentPoint();
+	}
 	return path;
 }
-Apoint *Astar::ifInList(const vector<Apoint*>&list, const Apoint *point)const
-{
-	//判断某个节点是否在列表中
-	//比较坐标
-	for (auto p : list)
-	{
-		if (p->x == point->x&&p->y == point->y)
-			return p;
-		return NULL;
-	}
-}
-bool Astar::ifAbleReach(const Apoint *point, const Apoint *target, bool ifIgnoreCorner)const
-{
-	if (target->x<0 || target->x>width - 1
-		|| target->y<0 || target->y>height - 1//超出地图
-		|| maze[width*target->y + target->x] == false//是障碍物
-		|| (target->x == point->x&&target->y == point->y)//与当前节点重合
-		|| ifInList(closeList, target))//在关闭列表中
-		return false;
-	else
-	{
-		//斜对角要判断是否绊住  
-		if (maze[width*target->y + point->x] == true
-			&& maze[width*point->y + target->x] == true)
-			return true;
-		else
-			return ifIgnoreCorner;
-	}
-}
-vector<Apoint*> Astar::getSurroundingPoints(const Apoint *point, bool ifIgnoreCorner) const
-{
-	vector<Apoint*> surroundingPoints;
-	for (int x = point->x - 1; x <= point->x + 1; x++)
-	{
-		for (int y = point->y - 1; y <= point->y + 1; y++)
-			if (ifAbleReach(point, new Apoint(x, y), ifIgnoreCorner))
-				surroundingPoints.push_back(new Apoint(x, y)); 
-
-	}
-	return surroundingPoints;
-}
-

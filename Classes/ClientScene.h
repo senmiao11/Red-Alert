@@ -8,6 +8,10 @@
 #include "extensions/cocos-ext.h"  
 #include "popupLayer/PopupLayer.h"
 #include"MyUtility.h"
+#include"network/SocketClient.h"
+#include"network/SocketServer.h"
+#include"network/socket_message.h"
+#include"GameScene.h"
 USING_NS_CC_EXT;
 USING_NS_CC;
 #define JOIN_GAME 10
@@ -15,6 +19,7 @@ USING_NS_CC;
 
 class ClientScene :public Layer
 {
+	friend class SocketServer;
 public:
 	static Scene* createScene();                                      //创建场景
 	virtual bool init();                                              //初始化场景
@@ -27,7 +32,7 @@ private:
 	void addBackgroundSprite();                                       //添加场景背景
 	void menuTouchDown(Object *pSender, Control::EventType event);    //Menu点击回调方法
 	Label * connection_msg_;
-	/**********SocketClient* socket_client_{ nullptr };       *********/
+	SocketClient* socket_client_{ nullptr };     
 	int timer_ = 0;
 };
 

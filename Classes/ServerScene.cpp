@@ -1,5 +1,6 @@
 #include"ServerScene.h"
 
+SocketServer* socket_server_;
 Scene *ServerScene::createScene()
 {
 	auto scene = Scene::create();
@@ -134,12 +135,13 @@ void ServerScene::editBoxReturn(EditBox* editBox)
 
 void ServerScene::connectionSchdeule(float f)
 {
-	/*********************
-	if (socket_server_->connection_num())
-		connection_msg_->setString("Total connection num: " + std::to_string(socket_server_->connection_num()));
+	GameScene::playerid = 1;
+	if (socket_server_->getconnection_num())
+	{
+		connection_msg_->setString("Total connection num: " + std::to_string(socket_server_->getconnection_num()));
+	}
 	else
 		connection_msg_->setString("Port already used, please change another one");
-	************************/
 }
 
 void ServerScene::menuTouchDown(Object *pSender, Control::EventType event)
@@ -150,36 +152,29 @@ void ServerScene::menuTouchDown(Object *pSender, Control::EventType event)
 	{
 	case START_SERVER:
 	{
-		/****************
 		if (!socket_server_)
 		{
 			socket_server_ = SocketServer::create();
 			socket_client_ = SocketClient::create();
 			log("create server and client on 8008");
-			schedule(schedule_selector(ServerMenu::connectionSchdeule), 0.1);
+			schedule(schedule_selector(ServerScene::connectionSchdeule), 0.1);
 		}
-		***************/
 		break;
 	}
 	case START_GAME:
 	{
-		auto sc = GameScene::createScene();
-		auto reScene = TransitionFadeTR::create(0.5f, sc);
-		Director::getInstance()->pushScene(reScene);
-		/**************************
 		if (socket_server_)
 		{
 			socket_server_->button_start();
-			auto scene = BattleScene::createScene(socket_client_, socket_server_);
-			Director::getInstance()->replaceScene(TransitionSplitCols::create(0.5, scene));
+			auto sc = GameScene::createScene(socket_client_, socket_server_);
+			auto reScene = TransitionFadeTR::create(0.5f, sc);
+			Director::getInstance()->replaceScene(reScene);
 			log("start game");
 		}
-		**********************************/
 		break;
 	}
 	case GO_BACK:
 	{
-		/****************
 		if (socket_server_)
 		{
 			unscheduleAllCallbacks();
@@ -191,7 +186,6 @@ void ServerScene::menuTouchDown(Object *pSender, Control::EventType event)
 			delete socket_server_;
 			socket_server_ = nullptr;
 		}
-		********************/
 		Director::getInstance()->popScene();
 	}
 	break;
