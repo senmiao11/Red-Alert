@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="2018.04.18" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextobjectid="120">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextobjectid="120">
  <tileset firstgid="1" source="GameTiled1.tsx"/>
  <tileset firstgid="172" source="GameTiled2.tsx"/>
  <tileset firstgid="364" source="GameTiled5.tsx"/>
  <tileset firstgid="620" source="GameTiled4.tsx"/>
  <tileset firstgid="876" source="GameTiled3.tsx"/>
  <tileset firstgid="1116" name="collidable_tiles" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="../../../../Users/10638/Documents/Tencent Files/1063843261/FileRecv/collidable_tiles.jpg" width="32" height="32"/>
+  <image source="collidable_tiles.jpg" width="32" height="32"/>
   <tile id="0">
    <properties>
     <property name="Collidable" value="true"/>
@@ -445,7 +445,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer name="MineLayer" width="100" height="100">
+ <layer name="MineLayer" width="100" height="100" locked="1">
   <properties>
    <property name="can_moveto" type="int" value="1"/>
    <property name="have_mine" type="int" value="1"/>
@@ -747,20 +747,20 @@
   <object id="91" x="4" y="3196" width="3192" height="64"/>
   <object id="93" x="3194" y="2" width="52" height="3202"/>
  </objectgroup>
- <objectgroup name="Buildings" locked="1">
+ <objectgroup name="Buildings">
   <object id="96" name="base1" x="27.3333" y="3068" width="139.333" height="104"/>
   <object id="97" name="casern1" x="26.6667" y="2746" width="140.667" height="107.333"/>
   <object id="98" name="oreyard1" x="25.3333" y="2904" width="144.667" height="109.333"/>
   <object id="99" name="electricStation1" x="215.333" y="2743.33" width="142.667" height="112.667"/>
   <object id="100" name="tankFactory1" x="218.667" y="3064" width="140" height="110"/>
-  <object id="103" name="base2" x="3033.33" y="3068" width="138.667" height="104"/>
-  <object id="104" name="casern2" x="3033.33" y="2748" width="139.333" height="107.333"/>
-  <object id="105" name="oreyard2" x="3035.33" y="2904.67" width="136.667" height="107.333"/>
-  <object id="106" name="electricStation2" x="2745.33" y="2746" width="142.667" height="108.667"/>
-  <object id="108" name="tankFactory2" x="2747.33" y="3064.67" width="138.667" height="106.667"/>
-  <object id="110" name="base3" x="3029.33" y="25.3333" width="145.333" height="109.333"/>
-  <object id="111" name="casern3" x="3030.67" y="344" width="142.667" height="111.333"/>
-  <object id="112" name="oreyard3" x="3030.67" y="183.333" width="142.667" height="110"/>
+  <object id="103" name="base2" x="2746.66" y="3061.33" width="138.667" height="104"/>
+  <object id="104" name="casern2" x="2748" y="2742.67" width="139.333" height="107.333"/>
+  <object id="105" name="oreyard2" x="2752.66" y="2898" width="136.667" height="107.333"/>
+  <object id="106" name="electricStation2" x="2997.33" y="2898" width="142.667" height="108.667"/>
+  <object id="108" name="tankFactory2" x="3003.33" y="3063.34" width="138.667" height="106.667"/>
+  <object id="110" name="base3" x="2968" y="21.3333" width="145.333" height="109.333"/>
+  <object id="111" name="casern3" x="2966.67" y="338.667" width="142.667" height="111.333"/>
+  <object id="112" name="oreyard3" x="2969.34" y="182" width="142.667" height="110"/>
   <object id="113" name="electricStation3" x="2746" y="28.6667" width="138.667" height="104"/>
   <object id="114" name="tankFactory3" x="2748" y="344.667" width="136.667" height="106.667"/>
   <object id="115" name="base4" x="28" y="28.6667" width="138" height="105.333"/>

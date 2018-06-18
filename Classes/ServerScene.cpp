@@ -1,5 +1,6 @@
 #include"ServerScene.h"
 
+SocketServer* socket_server_;
 Scene *ServerScene::createScene()
 {
 	auto scene = Scene::create();
@@ -134,8 +135,16 @@ void ServerScene::editBoxReturn(EditBox* editBox)
 
 void ServerScene::connectionSchdeule(float f)
 {
+<<<<<<< HEAD
 	if (socket_server_->connection_num())
 		connection_msg_->setString("Total connection num: " + std::to_string(socket_server_->connection_num()));
+=======
+	GameScene::playerid = 1;
+	if (socket_server_->getconnection_num())
+	{
+		connection_msg_->setString("Total connection num: " + std::to_string(socket_server_->getconnection_num()));
+	}
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	else
 		connection_msg_->setString("Port already used, please change another one");
 }
@@ -159,17 +168,24 @@ void ServerScene::menuTouchDown(Object *pSender, Control::EventType event)
 	}
 	case START_GAME:
 	{
+<<<<<<< HEAD
 		/*
 		auto sc = GameScene::createScene();
 		auto reScene = TransitionFadeTR::create(0.5f, sc);
 		Director::getInstance()->pushScene(reScene);
 		*/
+=======
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 		if (socket_server_)
 		{
 			socket_server_->button_start();
 			auto sc = GameScene::createScene(socket_client_, socket_server_);
 			auto reScene = TransitionFadeTR::create(0.5f, sc);
+<<<<<<< HEAD
 			Director::getInstance()->pushScene(reScene);
+=======
+			Director::getInstance()->replaceScene(reScene);
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 			log("start game");
 		}
 		break;

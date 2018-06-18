@@ -15,6 +15,7 @@ using asio::ip::tcp;
 class SocketClient
 {
 public:
+<<<<<<< HEAD
 	//brief create a socket clientparam ip ip address, default to localhost
 	//param port port number, default to 8008 return a socket client 
 	static SocketClient* create(std::string ip = "127.0.0.1", int port = 8008);
@@ -39,16 +40,45 @@ public:
 	bool error()const { return error_flag_; }        //return if there is error
 	int camp() const;          //start from 1    return camp number
 	int total() const;       // return total player number
+=======
+	static SocketClient* create(std::string ip = "127.0.0.1", int port = 8008);
+	void close();                                                                 //关闭
+	void start()                                                                  //开启
+	{
+		start_connect();
+	};
+	/*******************************
+	std::vector<GameMessage> get_game_messages();
+	*******************************/
+	/****************************
+	void send_game_message(const std::vector<GameMessage>& vec_game_msg);
+	*******************************/
+	void send_string(std::string s);                                              //发送数据
+	std::string get_string();                                                     //获取数据
+	void do_close();     //inner use
+	bool started() const { return start_flag_; }                                  //游戏是否开始
+	bool error()const { return error_flag_; }                                     //是否有异常
+	int camp() const;                                                             //返回玩家阵营
+	int total() const;                                                            //返回玩家总数
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 private:
 	SocketClient::SocketClient(std::string ip, int port) : socket_(io_service_), endpoint_(asio::ip::address_v4::from_string(ip), port)
 	{
 		start();
 	}
+<<<<<<< HEAD
 	void write_data(std::string s);
 	void start_connect();
 	void handle_connect(const asio::error_code& error);
 	void handle_read_header(const asio::error_code& error);
 	void handle_read_body(const asio::error_code& error);
+=======
+	void write_data(std::string s);                                            //写入数据
+	void start_connect();                                                      //开始连接
+	void handle_connect(const asio::error_code& error);                        //处理连接
+	void handle_read_header(const asio::error_code& error);                    //数据头  
+	void handle_read_body(const asio::error_code& error);                      //数据体
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	std::string read_data();
 private:
 	asio::io_service io_service_;

@@ -22,10 +22,17 @@ void MouseRect::reset()
 
 int GameScene::Money;
 TMXTiledMap *GameScene::_tiledMap1;
+<<<<<<< HEAD
 vector<Buildings *> GameScene::buildingSprites;
 vector<Soldiers *> GameScene::soldierSprites;
 
 
+=======
+Rect GameScene::select_rect;
+int GameScene::mapType;
+int GameScene::playerid;
+
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 //Mouse Rect相关方法
 Rect GameScene::getvisionRect()
 {
@@ -74,6 +81,7 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 	
 	/************地图************/
 	//游戏地图
+<<<<<<< HEAD
 	_tiledMap1 = TMXTiledMap::create(GAMEMAP1);
 	_tiledMap1->setAnchorPoint(Vec2(0, 0));
 	_tiledMap1->setPosition(0, 0);
@@ -83,6 +91,20 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 	{
 		log(" 11");
 	}
+=======
+	if (mapType == 1)
+	{
+		_tiledMap1 = TMXTiledMap::create(GAMEMAP1);
+	}
+	else
+	{
+		_tiledMap1 = TMXTiledMap::create(GAMEMAP2);
+	}
+	_tiledMap1->setAnchorPoint(Vec2(0, 0));
+	_tiledMap1->setPosition(0, 0);
+	addChild(_tiledMap1, 0);
+	//TMXLayer *colliableLayer = _tiledMap1->getLayer("CollidableLayer");
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	TMXObjectGroup *objectsGroup = _tiledMap1->objectGroupNamed("Objects");
 	ValueVector objects = objectsGroup->getObjects();
 	for (auto obj : objects) 
@@ -99,7 +121,6 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 		Sprite * sp = Sprite::create();
 		sp->setPosition(Vec2(x, y));
 		sp->setAnchorPoint(ccp(0,0));
-		Size sss = sp->getContentSize();
 		sp->setContentSize(Size(width, height));
 		sp->setPhysicsBody(phy);
 		_tiledMap1->addChild(sp);
@@ -127,6 +148,7 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 	mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
 
+<<<<<<< HEAD
 	///////////////////////////////////////////////////////////////////////
 	soldierMove = EventListenerTouchOneByOne::create();
 	soldierMove->onTouchBegan = [this](Touch *touch, Event *event)
@@ -195,6 +217,119 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 	_tiledMap1->addChild(base, 10, GameSceneNodeTagBuilding);
 	buildingSprites.push_back(base);
 
+=======
+	if (_socket_server)
+	{
+		int t = _socket_server->getconnection_num();
+		log("%d", t);
+	}
+	//创建基地
+	if ((_socket_server&&_socket_server->getconnection_num() >= 1)||(_socket_client&&_socket_client->total()>=1))
+	{
+		auto tiledmap = GameScene::gettiledMap();
+		auto group = tiledmap->getObjectGroup("Buildings");
+		ValueMap buildobj;
+		buildobj = group->getObject("base1");
+		float x1 = buildobj["x"].asFloat();
+		float y1 = buildobj["y"].asFloat();
+		float width1 = buildobj["width"].asFloat();
+		float height1 = buildobj["height"].asFloat();
+		PhysicsBody * phy1 = PhysicsBody::createBox(Size(width1, height1));
+		phy1->setDynamic(false);
+		Sprite * sp1 = Sprite::create();
+		sp1->setPosition(Vec2(x1, y1));
+		sp1->setAnchorPoint(ccp(0, 0));
+		sp1->setContentSize(Size(width1, height1));
+		sp1->setPhysicsBody(phy1);
+		_tiledMap1->addChild(sp1);
+		Buildings *base1 = Buildings::creatWithBuildingTypes(START_BASE);
+		base1->setAnchorPoint(Vec2(0, 0));
+		base1->setScale(1);
+		base1->setPosition(Vec2(16, 16));
+		base1->createBar();
+		base1->hpBar->setPosition(base1->hpBar->getPosition() - Vec2(10, 0));
+		_tiledMap1->addChild(base1, 10, GameSceneNodeTagBuilding);
+	}
+	if ((_socket_server&&_socket_server->getconnection_num() >= 2) || (_socket_client&&_socket_client->total() >= 2))
+	{
+		auto tiledmap = GameScene::gettiledMap();
+		auto group = tiledmap->getObjectGroup("Buildings");
+		ValueMap buildobj;
+		buildobj = group->getObject("base2");
+		float x2 = buildobj["x"].asFloat();
+		float y2 = buildobj["y"].asFloat();
+		float width2 = buildobj["width"].asFloat();
+		float height2 = buildobj["height"].asFloat();
+		PhysicsBody * phy2 = PhysicsBody::createBox(Size(width2, height2));
+		phy2->setDynamic(false);
+		Sprite * sp2 = Sprite::create();
+		sp2->setPosition(Vec2(x2, y2));
+		sp2->setAnchorPoint(ccp(0, 0));
+		sp2->setContentSize(Size(width2, height2));
+		sp2->setPhysicsBody(phy2);
+		_tiledMap1->addChild(sp2);
+		Buildings *base2 = Buildings::creatWithBuildingTypes(START_BASE);
+		base2->setAnchorPoint(Vec2(0, 0));
+		base2->setScale(1);
+		base2->setPosition(Vec2(x2, y2));
+		base2->createBar();
+		base2->hpBar->setPosition(base2->hpBar->getPosition() - Vec2(10, 0));
+		_tiledMap1->addChild(base2, 10, GameSceneNodeTagBuilding);
+	}
+	if ((_socket_server&&_socket_server->getconnection_num() >= 3) || (_socket_client&&_socket_client->total() >= 3))
+	{
+		auto tiledmap = GameScene::gettiledMap();
+		auto group = tiledmap->getObjectGroup("Buildings");
+		ValueMap buildobj;
+		buildobj = group->getObject("base3");
+		float x3 = buildobj["x"].asFloat();
+		float y3 = buildobj["y"].asFloat();
+		float width3 = buildobj["width"].asFloat();
+		float height3 = buildobj["height"].asFloat();
+		PhysicsBody * phy3 = PhysicsBody::createBox(Size(width3, height3));
+		phy3->setDynamic(false);
+		Sprite * sp3 = Sprite::create();
+		sp3->setPosition(Vec2(x3, y3));
+		sp3->setAnchorPoint(ccp(0, 0));
+		sp3->setContentSize(Size(width3, height3));
+		sp3->setPhysicsBody(phy3);
+		_tiledMap1->addChild(sp3);
+		Buildings *base3 = Buildings::creatWithBuildingTypes(START_BASE);
+		base3->setAnchorPoint(Vec2(0, 0));
+		base3->setScale(1);
+		base3->setPosition(Vec2(x3, y3));
+		base3->createBar();
+		base3->hpBar->setPosition(base3->hpBar->getPosition() - Vec2(10, 0));
+		_tiledMap1->addChild(base3, 10, GameSceneNodeTagBuilding);
+	}
+	if ((_socket_server&&_socket_server->getconnection_num() >= 4) || (_socket_client&&_socket_client->total() >= 4))
+	{
+		auto tiledmap = GameScene::gettiledMap();
+		auto group = tiledmap->getObjectGroup("Buildings");
+		ValueMap buildobj;
+		buildobj = group->getObject("base1");
+		float x4 = buildobj["x"].asFloat();
+		float y4 = buildobj["y"].asFloat();
+		float width4 = buildobj["width"].asFloat();
+		float height4 = buildobj["height"].asFloat();
+		PhysicsBody * phy4 = PhysicsBody::createBox(Size(width4, height4));
+		phy4->setDynamic(false);
+		Sprite * sp4 = Sprite::create();
+		sp4->setPosition(Vec2(x4, y4));
+		sp4->setAnchorPoint(ccp(0, 0));
+		sp4->setContentSize(Size(width4, height4));
+		sp4->setPhysicsBody(phy4);
+		_tiledMap1->addChild(sp4);
+		Buildings *base4 = Buildings::creatWithBuildingTypes(START_BASE);
+		base4->setAnchorPoint(Vec2(0, 0));
+		base4->setScale(1);
+		base4->setPosition(Vec2(x4, y4));
+		base4->createBar();
+		base4->hpBar->setPosition(base4->hpBar->getPosition() - Vec2(10, 0));
+		_tiledMap1->addChild(base4, 10, GameSceneNodeTagBuilding);
+	}
+	
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	return true;
 }
 
@@ -287,7 +422,11 @@ void GameScene::onEnter()
 	
 
 	//创建矿工菜单
+<<<<<<< HEAD
 	MenuItemImage *soldierMenu1 = MenuItemImage::create(MINER, MINER, CC_CALLBACK_1(GameScene::soldiersCreate, this));
+=======
+	MenuItemImage *soldierMenu1 = MenuItemImage::create(MINER1, MINER1, CC_CALLBACK_1(GameScene::soldiersCreate, this));
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	soldierMenu1->setAnchorPoint(Vec2(0.5, 0.5));
 	soldierMenu1->setScale(1.2);
 	soldierMenu1->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 200));
@@ -301,26 +440,26 @@ void GameScene::onEnter()
 	soldierLabel1->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 200));
 	this->addChild(soldierLabel1,30);
 
-	//警犬菜单
-	MenuItemImage *soldierMenu2 = MenuItemImage::create(POLICEMAN, POLICEMAN, CC_CALLBACK_1(GameScene::soldiersCreate, this));
+	//警察菜单
+	MenuItemImage *soldierMenu2 = MenuItemImage::create(POLICEMAN1, POLICEMAN1, CC_CALLBACK_1(GameScene::soldiersCreate, this));
 	soldierMenu2->setAnchorPoint(Vec2(0.5, 0.5));
 	soldierMenu2->setScale(1.2);
-	soldierMenu2->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 220));
+	soldierMenu2->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 225));
 	soldierMenu2->setTag(START_POLICEMAN);
 	soldierMenu2->setOpacity(128);
 	Menu *smn2 = Menu::create(soldierMenu2, NULL);
 	smn2->setPosition(Vec2::ZERO);
 	this->addChild(smn2, 20);
-	auto soldierLabel2 = LabelTTF::create(MyUtility::gbk_2_utf8("警犬"), "华文行楷", 8);
+	auto soldierLabel2 = LabelTTF::create(MyUtility::gbk_2_utf8("警察"), "华文行楷", 8);
 	soldierLabel2->setColor(Color3B::GREEN);
-	soldierLabel2->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 220));
+	soldierLabel2->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 225));
 	this->addChild(soldierLabel2, 30);
 
 	//坦克菜单
-	MenuItemImage *soldierMenu3 = MenuItemImage::create(TANK, TANK, CC_CALLBACK_1(GameScene::soldiersCreate, this));
+	MenuItemImage *soldierMenu3 = MenuItemImage::create(TANK1, TANK1, CC_CALLBACK_1(GameScene::soldiersCreate, this));
 	soldierMenu3->setAnchorPoint(Vec2(0.5, 0.5));
 	soldierMenu3->setScale(1.2);
-	soldierMenu3->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 240));
+	soldierMenu3->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 250));
 	soldierMenu3->setTag(START_TANK);
 	soldierMenu3->setOpacity(128);
 	Menu *smn3 = Menu::create(soldierMenu3, NULL);
@@ -328,8 +467,23 @@ void GameScene::onEnter()
 	this->addChild(smn3, 20);
 	auto soldierLabel3 = LabelTTF::create(MyUtility::gbk_2_utf8("坦克"), "华文行楷", 8);
 	soldierLabel3->setColor(Color3B::GREEN);
-	soldierLabel3->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 240));
+	soldierLabel3->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 250));
 	this->addChild(soldierLabel3, 30);
+
+	//战士菜单
+	MenuItemImage *soldierMenu4 = MenuItemImage::create(WARRIOR1, WARRIOR1, CC_CALLBACK_1(GameScene::soldiersCreate, this));
+	soldierMenu4->setAnchorPoint(Vec2(0.5, 0.5));
+	soldierMenu4->setScale(1.2);
+	soldierMenu4->setPosition(Vec2(visibleSize.width - 20, origin.y + visibleSize.height - 275));
+	soldierMenu4->setTag(START_WARRIOR);
+	soldierMenu4->setOpacity(128);
+	Menu *smn4 = Menu::create(soldierMenu4, NULL);
+	smn4->setPosition(Vec2::ZERO);
+	this->addChild(smn4, 20);
+	auto soldierLabel4 = LabelTTF::create(MyUtility::gbk_2_utf8("战士"), "华文行楷", 8);
+	soldierLabel4->setColor(Color3B::GREEN);
+	soldierLabel4->setPosition(Vec2(visibleSize.width - 20, origin.y + visibleSize.height - 275));
+	this->addChild(soldierLabel4, 30);
 
 
 	//建筑物接触检测监听器
@@ -344,6 +498,7 @@ void GameScene::onEnter()
 			return false;
 		}
 		//此处为检测兵种接触
+<<<<<<< HEAD
 		/*if (SpriteA->getTag() == GameSceneNodeTagSoldier && SpriteB->getTag() == GameSceneNodeTagSoldier)
 		{
 			auto soldierSpriteA = dynamic_cast<Soldiers *>(SpriteA);
@@ -393,6 +548,45 @@ void GameScene::onEnter()
 			soldierSpriteB->runAction(Bmoveto);
 		}
 		return false;
+=======
+		if (SpriteA->getTag() == GameSceneNodeTagSoldier && SpriteB->getTag() == GameSceneNodeTagSoldier)
+		{
+			auto soldierSpriteA = dynamic_cast<Soldiers *>(SpriteA);
+			auto soldierSpriteB = dynamic_cast<Soldiers *>(SpriteB);
+			if (!soldierSpriteA->getifSelect() && !soldierSpriteB->getifSelect())
+			{
+				//通过随机数重新设置位置
+				Size s = soldierSpriteA->getContentSize();
+				Vec2 rand = soldierSpriteB->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
+				soldierSpriteA->setPosition(rand);
+				return false;
+			}
+			/*if (!soldierSpriteA->getifSelect() && soldierSpriteB->getifSelect())
+			{
+			Size s = soldierSpriteA->getContentSize();
+			Vec2 rand = soldierSpriteA->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
+			soldierSpriteB->setPosition(rand);
+			return false;
+			}
+			return false;*/
+			/*Size s = soldierSpriteA->getContentSize();
+			Vec2 rand = soldierSpriteB->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
+			soldierSpriteA->setPosition(rand);
+			return false;*/
+		}
+		if (SpriteA->getTag() == GameSceneNodeTagBuilding && SpriteB->getTag() == GameSceneNodeTagSoldier)
+		{
+			auto soldierSpriteA = dynamic_cast<Soldiers *>(SpriteA);
+			auto soldierSpriteB = dynamic_cast<Buildings *>(SpriteB);
+
+		}
+		return false;
+	};
+
+	spriteContactListener->onContactSeparate = [this](PhysicsContact &contact)
+	{
+		return;
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	};
 	_eventDispatcher->addEventListenerWithFixedPriority(spriteContactListener, 20);
 
@@ -450,8 +644,13 @@ void GameScene::backToMenuScene(Ref *pSender)
 	if (socket_server)
 	{
 		socket_server->close();
+<<<<<<< HEAD
 		socket_server = nullptr;
 
+=======
+		//delete socket_server;
+		socket_server = nullptr;
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	}
 	socket_client->close();
 	delete socket_client;
@@ -564,6 +763,21 @@ void GameScene::soldiersCreate(Ref *pSender)
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 		break;
 	}
+<<<<<<< HEAD
+=======
+	case START_WARRIOR:
+	{
+		if (Money < WARRIOR_PRICE || !_tiledMap1->getChildByName("casern"))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		Money -= WARRIOR_PRICE;
+		this->scheduleOnce(schedule_selector(GameScene::warriorReady), 2.0f);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+		break;
+	}
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	}
 }
 
@@ -603,6 +817,22 @@ void GameScene::policemanReady(float dt)
 	policeman->createBar();
 	_tiledMap1->addChild(policeman, 10, GameSceneNodeTagSoldier);
 	soldierSprites.push_back(policeman);
+}
+void GameScene::warriorReady(float dt)
+{
+	//通过Soldiers类来创建士兵
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	auto warrior = Soldiers::createWithSoldierTypes(START_WARRIOR);
+	warrior->setAnchorPoint(Vec2(0.5, 0.5));
+	warrior->setScale(1.2);
+	float soldiers_x = warrior->getContentSize().width;
+	float soldiers_y = warrior->getContentSize().height;
+	Size s = _tiledMap1->getChildByName("casern")->getContentSize() * 0.3;
+	Vec2 position = _tiledMap1->getChildByName("casern")->getPosition() + Vec2(s.width, 0);
+	warrior->setPosition(position);
+	warrior->setName("warrior");
+	warrior->createBar();
+	_tiledMap1->addChild(warrior, 10, GameSceneNodeTagSoldier);
 }
 void GameScene::tankReady(float dt)
 {
@@ -782,16 +1012,6 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 {
 	Point touch = pTouch->getLocation();
 	this->mouseRect->setVisible(false);
-	/**********************************************
-	if (mini_map_rect.containsPoint(touch))
-	{
-		auto focus_point = (touch - mini_map_rect.origin) / 2 * grid_map->getGridWidth();
-		focusOn(focus_point);
-		mini_map->update(0.0f);
-		mouseRect->reset();
-		return;
-	}
-	**************************************************/
 	if (this->mouseRect->isScheduled(schedule_selector(MouseRect::update)))
 	{
 		this->mouseRect->unschedule(schedule_selector(MouseRect::update));
@@ -799,20 +1019,6 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 	mouseRect->end = touch - _tiledMap1->getPosition();
 	Point maptouch = mouseRect->end;
 	Point last_maptouch = mouseRect->start;
-	/********************************************************************
-	GridPoint map_touch_grid_point = grid_map->getGridPoint(maptouch);
-	log("Map Touch Grid Point: (%d, %d)", map_touch_grid_point.x, map_touch_grid_point.y);
-	if (end_flag)
-		return;
-	if ((maptouch - last_maptouch).length() < MIN_SELECT_RECT_SIZE)
-		unit_manager->selectUnits(maptouch);
-	else
-	{
-		Rect select_rect{ MIN(last_maptouch.x, maptouch.x), MIN(last_maptouch.y, maptouch.y),
-			abs(last_maptouch.x - maptouch.x), abs(last_maptouch.y - maptouch.y) };
-		unit_manager->selectUnits(select_rect);
-	}
-	***********************************************************************/
 	if ((maptouch - last_maptouch).length() < MIN_SELECT_RECT_SIZE)
 	{
 		auto target = dynamic_cast<Soldiers *>(event->getCurrentTarget());
@@ -923,6 +1129,7 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 		mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
 		break;
+<<<<<<< HEAD
 		/*
 		//X
 		case EventKeyboard::KeyCode::KEY_X:
@@ -933,52 +1140,23 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 		focusOnBase();
 		break;
 		*/
+=======
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	default:
 		break;
 	}
 }
 
-/*****************************************************************
-void MiniMap::update(float dt)
-{
-	static std::vector<Color4F> color_list = { { 0, 0, 0, 0.5 },{ 0.5, 0.5, 0.5, 0.5 },{ 1, 0, 0, 1 },{ 0, 1, 0, 1 },{ 0, 0, 1, 1 },{ 1, 1, 0, 1 } };
-	const auto& umap = grid_map->getUnitMap();
-	const auto& fmap = grid_map->getFogMap();
-	clear();
-	int color_index = 0;
-	for (int x = 0; x < int(fmap.size()); x++)
-		for (int y = 0; y < int(fmap[x].size()); y++)
-		{
-			if (fmap[x][y])
-				color_index = 0;
-			else
-				if (umap[x][y])
-					color_index = unit_manager->getUnitCamp(umap[x][y]) + 1;
-				else
-					color_index = 1;
-			drawPoint(Point(x * 2, y * 2), 2, color_list[color_index]);
-		}
 
-	const auto& visible_rect = battle_scene->getVisionRect();
-	int grid_width = grid_map->getGridWidth();
-	auto mini_rect_start = visible_rect.origin / grid_width * 2;
-	auto mini_rect_end = mini_rect_start + visible_rect.size / grid_width * 2;
-	drawRect(mini_rect_start, mini_rect_end, Color4F(1, 0, 1, 1));
-}
-
-void MiniMap::setGridMap(GridMap * _grid_map)
+void GameScene::setMapType(int maptype)
 {
-	grid_map = _grid_map;
+	if (maptype == 1)
+	{
+		mapType = 1;
+	}
+	else
+	{
+		mapType = 2;
+	}
 }
-
-void MiniMap::setUnitManager(UnitManager * _unit_manager)
-{
-	unit_manager = _unit_manager;
-}
-
-void MiniMap::setBattleScene(GameScene * _game_scene)
-{
-	game_scene = _game_scene;
-}
-**************************************************************************/
 	

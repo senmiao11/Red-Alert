@@ -38,7 +38,11 @@ Astar::Astar(int _width, int _height, Apoint start, Apoint end)
 	TMXLayer *collidable = GameScene::gettiledMap()->getLayer("CollidableLayer");
 	/*if (collidable == nullptr)
 	{
+<<<<<<< HEAD
 		log("++++++++++++++");
+=======
+	log("++++++++++++++");
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	}*/
 	vector<Apoint> row(width, Apoint());
 	map_point.assign(height, row);
@@ -54,7 +58,10 @@ Astar::Astar(int _width, int _height, Apoint start, Apoint end)
 				ValueMap propValueMap = (GameScene::gettiledMap()->getPropertiesForGID(tileGid)).asValueMap();
 				if (propValueMap["Collidable"].asString() == "true")
 				{
+<<<<<<< HEAD
 					//log("%d,%d", i, j);
+=======
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 					map_point[i][j].setFlag(UNABLE);
 				}
 			}
@@ -65,10 +72,18 @@ Astar::Astar(int _width, int _height, Apoint start, Apoint end)
 		}
 	}
 	map_point[start.getX()][start.getY()].setFlag(START);
+<<<<<<< HEAD
 	if (map_point[end.getX()][end.getY()].getFlag() == ABLE)
 	{
 		map_point[end.getX()][end.getY()].setFlag(END);
 	}
+=======
+	if (map_point[end.getX()][end.getY()].getFlag() == UNABLE)
+	{
+		flag = false;
+	}
+	map_point[end.getX()][end.getY()].setFlag(END);
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	start_point = &map_point[start.getX()][start.getY()];
 	end_point = &map_point[end.getX()][end.getY()];
 }
@@ -95,6 +110,7 @@ bool Astar::ifInOpenList(Apoint &nextPoint)
 		return true;
 	}
 	return false;
+<<<<<<< HEAD
 }
 bool Astar::ifInCloseList(Apoint &nextPoint)
 {
@@ -111,6 +127,24 @@ int Astar::calculateG(Apoint &currentPoint, Apoint &lastPoint)
 		return lastPoint.getG() + 10;
 	}
 	return lastPoint.getG() + 14;
+=======
+}
+bool Astar::ifInCloseList(Apoint &nextPoint)
+{
+	if (nextPoint.getFlag() == INCLOSELIST || nextPoint.getFlag() == START)
+	{
+		return true;
+	}
+	return false;
+}
+int Astar::calculateG(Apoint &currentPoint, Apoint &lastPoint)
+{
+	/*if (currentPoint.getX() == lastPoint.getX() || currentPoint.getY() == lastPoint.getY())
+	{
+	return lastPoint.getG() + 10;
+	}*/
+	return lastPoint.getG() + 10;
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 }
 int Astar::calculateH(Apoint &currentPoint, Apoint &endPoint)
 {
@@ -128,12 +162,21 @@ bool Astar::ifAbleReach(Apoint &nextPoint, Apoint &currentPoint)
 	}
 	if (nextPoint.getX() == currentPoint.getX() && nextPoint.getY() == currentPoint.getY())
 	{
+<<<<<<< HEAD
 		return false;
 	}
 	if (nextPoint.getX() != currentPoint.getX() && nextPoint.getY() != currentPoint.getY())
 	{
 		return false;
 	}
+=======
+		return false;
+	}
+	if (nextPoint.getX() != currentPoint.getX() && nextPoint.getY() != currentPoint.getY())
+	{
+		return false;
+	}
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	if (nextPoint.getFlag() == UNABLE)
 	{
 		return false;
@@ -148,7 +191,11 @@ void Astar::getSurroundingPoints(Apoint &currentPoint)
 		{
 			int next_x = currentPoint.getX() + i;
 			int next_y = currentPoint.getY() + j;
+<<<<<<< HEAD
 			if (next_x >= 0 && next_x < width && next_y >= 0 && next_y < height 
+=======
+			if (next_x >= 0 && next_x < width && next_y >= 0 && next_y < height
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 				&& ifAbleReach(map_point[next_x][next_y], currentPoint))
 			{
 				if (ifInOpenList(map_point[next_x][next_y]))
@@ -180,7 +227,11 @@ void Astar::findPath()
 	closelist.clear();
 	Apoint *point = nullptr;
 	openlist.push_back(start_point);
+<<<<<<< HEAD
 	if (end_point->getFlag() == UNABLE)
+=======
+	if (!flag)
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	{
 		return;
 	}
@@ -203,7 +254,11 @@ vector<Apoint> Astar::getPath()
 	Apoint *point = end_point;
 	while (point->getParentPoint() != nullptr)
 	{
+<<<<<<< HEAD
 		path.insert(path.begin(), Apoint(point->getX(), point->getY()));
+=======
+		path.push_back(Apoint(point->getX(), point->getY()));
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 		point = point->getParentPoint();
 	}
 	return path;

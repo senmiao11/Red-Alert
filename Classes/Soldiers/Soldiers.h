@@ -1,3 +1,4 @@
+
 #ifndef __Soldiers_H_
 #define __Soldiers_H_
 #include"cocos2d.h"
@@ -28,6 +29,7 @@ private:
 
 class Explosioneffect :public ParticleFire
 {
+<<<<<<< HEAD
 public:
 	bool init();
 	CREATE_FUNC(Explosioneffect);
@@ -38,21 +40,30 @@ private:
 class Soldiers :public Sprite
 {
 	friend class Buildings;
+=======
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	friend class Bar;
 	friend class Astar;
 	friend class Apoint;
 public:
 	Soldiers(SoldierTypes soldierType);        //通过枚举类来判段需产生什么建筑物
+<<<<<<< HEAD
 	//~Soldiers();
 	static Soldiers *createWithSoldierTypes(SoldierTypes soldierType);
 	
 	void update(float dt);
+=======
+	static Soldiers *createWithSoldierTypes(SoldierTypes soldierType);
+
+
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 private:
 	CC_SYNTHESIZE(SoldierTypes, soldiertype, SoldierType);
 	CC_SYNTHESIZE(int, health, currentHealth);
 	CC_SYNTHESIZE(int, price, Price);
 	CC_SYNTHESIZE(bool, ifselect, ifSelect);
 	CC_SYNTHESIZE(int, maxHealth, MaxHealth);
+<<<<<<< HEAD
 	CC_SYNTHESIZE(float, speed, Speed);
 	CC_SYNTHESIZE(int, power, Power);
 	CC_SYNTHESIZE(int, atkRadius, AtkRadius);
@@ -73,6 +84,15 @@ public:
 	vector<Vec2> moveToPath;
 	void soldierAutoMove();
 
+=======
+	CC_SYNTHESIZE(int, speed, Speed);
+	//兵种监听器
+	static EventListenerTouchOneByOne *touchSoldierListener;
+	static EventDispatcher * eventDispatcher;
+
+	//像素坐标转换成瓦片坐标
+	static Apoint turnToApoint(Vec2 vecPoint);
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	//血条
 	Bar *hpBar = nullptr;
 	void createBar();

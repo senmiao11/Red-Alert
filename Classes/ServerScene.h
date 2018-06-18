@@ -21,6 +21,7 @@ USING_NS_CC;
 class ServerScene :public Layer
 {
 public:
+	friend class SocketServer;
 	static Scene* createScene();                                      //创建场景
 	virtual bool init();                                              //初始化场景
 	CREATE_FUNC(ServerScene);                                         //完成create方法代码的生成

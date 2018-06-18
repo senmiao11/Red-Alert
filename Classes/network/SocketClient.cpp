@@ -2,7 +2,11 @@
 #include <iostream>
 
 
+<<<<<<< HEAD
 SocketClient* SocketClient::create(std::string ip, int port)
+=======
+SocketClient* SocketClient::create(std::string ip, int port)  //创建连接
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	auto s = new SocketClient(ip, port);
 	s->thread_ = new std::thread(std::bind(static_cast<std::size_t(asio::io_service::*)()>(&asio::io_service::run),&s->io_service_));
@@ -23,26 +27,42 @@ void SocketClient::send_game_message(const std::vector<GameMessage>& vec_game_ms
 }
 **********************/
 
+<<<<<<< HEAD
 void SocketClient::send_string(std::string s)
+=======
+void SocketClient::send_string(std::string s)  //发送消息
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	if (error_flag_)
 		return;
 	write_data(s);
 }
 
+<<<<<<< HEAD
 std::string SocketClient::get_string()
+=======
+std::string SocketClient::get_string()        //获取消息
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	return read_data();
 }
 
+<<<<<<< HEAD
 void SocketClient::do_close()
+=======
+void SocketClient::do_close()                 //关闭
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	try
 	{
 		std::lock_guard<std::mutex> lk{ mut };
 		error_flag_ = true;
 		socket_message empty_msg;
+<<<<<<< HEAD
 		memcpy(empty_msg.data(), "0001\0", 5);
+=======
+		memcpy(empty_msg.data(), "0001\0", 5);    
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 		read_msg_deque_.push_back(empty_msg);
 		data_cond_.notify_one();
 		io_service_.stop();
@@ -60,22 +80,37 @@ void SocketClient::do_close()
 
 }
 
+<<<<<<< HEAD
 int SocketClient::camp() const
+=======
+int SocketClient::camp() const                    //获取我方阵营
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	while (!start_flag_);
 	return camp_;
 }
 
+<<<<<<< HEAD
 int SocketClient::total() const
+=======
+int SocketClient::total() const                   //获取连接总数
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	while (!start_flag_);
 	return total_;
 }
 
+<<<<<<< HEAD
 void SocketClient::write_data(std::string s)
 {
 	socket_message msg;
 	if (s.size() == 0)
+=======
+void SocketClient::write_data(std::string s)      //写入数据
+{
+	socket_message msg;
+	if (s.size() == 0)                           //若数据为空
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	{
 		s = std::string("\0");
 		msg.body_length(1);
@@ -89,12 +124,20 @@ void SocketClient::write_data(std::string s)
 	asio::write(socket_,asio::buffer(msg.data(), msg.length()));
 }
 
+<<<<<<< HEAD
 void SocketClient::start_connect()
+=======
+void SocketClient::start_connect()               //异步连接                                                        
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	socket_.async_connect(endpoint_,std::bind(&SocketClient::handle_connect, this,std::placeholders::_1));
 }
 
+<<<<<<< HEAD
 void SocketClient::handle_connect(const asio::error_code& error)
+=======
+void SocketClient::handle_connect(const asio::error_code& error)     
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	try
 	{
@@ -108,7 +151,11 @@ void SocketClient::handle_connect(const asio::error_code& error)
 				throw asio::system_error(error);
 			char header[4 + 1] = "";
 			strncat(header, data + 10, 4);
+<<<<<<< HEAD
 			total_ = atoi(header);
+=======
+			total_ = atoi(header);                      //把字符串转换成整型数
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 			camp_ = atoi(data + 14);
 			start_flag_ = true;
 			asio::async_read(socket_,asio::buffer(read_msg_.data(), socket_message::header_length),std::bind(&SocketClient::handle_read_header, this,std::placeholders::_1));

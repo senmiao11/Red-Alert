@@ -168,12 +168,13 @@ void MenuScene::popupQuitLayer()
 	popDialog->setTitle("提示",18);
 	popDialog->setContentText("确认退出游戏？",22,20,100);
 	//在对话框中添加确定和取消的Menu按键，并设置各自的tag
-	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON2, "是", 1);
-	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON2, "否", 0);
+	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON, "是", 1);
+	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON, "否", 0);
 	//设置对话框的按键相应方法
 	popDialog->setCallbackFunc(this, callfuncN_selector(MenuScene::quitButtonCallback));
 	this->addChild(popDialog);
 }
+
 
 void MenuScene::quitButtonCallback(Node* pNode)
 {

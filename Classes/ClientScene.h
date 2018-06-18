@@ -19,6 +19,7 @@ USING_NS_CC;
 
 class ClientScene :public Layer
 {
+	friend class SocketServer;
 public:
 	static Scene* createScene();                                      //创建场景
 	virtual bool init();                                              //初始化场景

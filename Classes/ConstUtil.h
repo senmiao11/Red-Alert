@@ -54,6 +54,7 @@ typedef enum
 
 //µØÍ¼
 #define GAMEMAP1 "map/GameMap1.tmx"
+#define GAMEMAP2 "map/GameMap2.tmx"
 #define BOX_EDGE_WITDH 40
 #define BOX_EDGE_WITDH_SMALL 10
 #define SCROLL_LENGTH 10
@@ -65,7 +66,7 @@ typedef enum
 {
 	START_MINER = 1,
 	START_POLICEMAN = 2,
-	START_SOLDIER = 3,
+	START_WARRIOR = 3,
 	START_TANK = 4
 }SoldierTypes;
 
@@ -73,10 +74,22 @@ typedef enum
 #define SELECT_ON true
 #define SELECT_OFF false
 
-#define MINER "soldiers/miner.png"
-#define POLICEMAN "soldiers/policeman.png"
-#define SOLDIER "sildiers/soldier.png"
-#define TANK "soldiers/tank.png"
+#define MINER1 "soldiers/miner1.png"
+#define MIERN2 "soldiers/miner2.png"
+#define MIERN3 "soldiers/miner3.png"
+#define MIERN4 "soldiers/miner4.png"
+#define POLICEMAN1 "soldiers/police1.png"
+#define POLICEMAN2 "soldiers/police2.png"
+#define POLICEMAN3 "soldiers/police3.png"
+#define POLICEMAN4 "soldiers/police4.png"
+#define WARRIOR1 "soldiers/warrior1.png"
+#define WARRIOR2 "soldiers/warrior2.png"
+#define WARRIOR3 "soldiers/warrior3.png"
+#define WARRIOR4 "soldiers/warrior4.png"
+#define TANK1 "soldiers/tank1.png"
+#define TANK2 "soldiers/tank2.png"
+#define TANK3 "soldiers/tank3.png"
+#define TANK4 "soldiers/tank4.png"
 #define MINER_PRICE 100
 #define MINER_HEALTH 200
 #define MINER_SPEED 0.4f
@@ -84,9 +97,16 @@ typedef enum
 #define MINER_POWER 20
 #define POLICEMAN_PRICE 150
 #define POLICEMAN_HEALTH 300
+<<<<<<< HEAD
 #define POLICEMAN_SPEED 0.3f
 #define POLICEMAN_ATK_RADIUS 80
 #define POLICEMAN_POWER 30
+=======
+#define POLICEMAN_SPEED 90
+#define WARRIOR_PRICE 220
+#define WARRIOR_HEALTH 370
+#define WARRIOR_SPEED 100
+>>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 #define TANK_PRICE 300
 #define TANK_HEALTH 450
 #define TANK_SPEED 0.2f
