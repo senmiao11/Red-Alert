@@ -24,6 +24,9 @@
 #define OREYARD "building/oreYard.png"
 #define TANKFACTORY "building/tankFactory.png"
 
+#define CAN_MOVE true
+#define CANNOT_MOVE false
+
 #define BASE_HEALTH 20000
 #define CASERN_PRICE 4000
 #define CASERN_HEALTH 10000
@@ -47,6 +50,7 @@ typedef enum
 #define GameSceneNodeTagBuilding 512
 #define GameSceneNodeTagMoney 1024
 #define GameSceneNodeTagSoldier 2048
+#define GameSceneNodeTagFire 4096
 
 //µØÍ¼
 #define GAMEMAP1 "map/GameMap1.tmx"
@@ -75,14 +79,19 @@ typedef enum
 #define TANK "soldiers/tank.png"
 #define MINER_PRICE 100
 #define MINER_HEALTH 200
-#define MINER_SPEED 80
+#define MINER_SPEED 0.4f
+#define MINER_ATK_RADIUS 80
+#define MINER_POWER 20
 #define POLICEMAN_PRICE 150
 #define POLICEMAN_HEALTH 300
-#define POLICEMAN_SPEED 90
+#define POLICEMAN_SPEED 0.3f
+#define POLICEMAN_ATK_RADIUS 80
+#define POLICEMAN_POWER 30
 #define TANK_PRICE 300
 #define TANK_HEALTH 450
-#define TANK_SPEED 70
-
+#define TANK_SPEED 0.2f
+#define TANK_ATK_RADIUS 80
+#define TANK_POWER 45
 
 
 #endif 

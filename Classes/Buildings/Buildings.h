@@ -5,6 +5,7 @@
 #include"cocos2d.h"
 #include"ConstUtil.h"
 #include"GameScene.h"
+#include"Soldiers/Soldiers.h"
 #include"Bar.h"
 USING_NS_CC;
 
@@ -16,17 +17,21 @@ USING_NS_CC;
 
 class Buildings :public Sprite
 {
+	friend class Soldiers;
 	friend class Bar;
 public:
 	Buildings(BuildingTypes buildingType);        //通过枚举类来判段需产生什么建筑物
+	//~Buildings();
 
 	static Buildings *creatWithBuildingTypes(BuildingTypes buildingType);
-
+	void update(float dt);
 private:
 	CC_SYNTHESIZE(BuildingTypes, buildingtype, BuildingType);
 	CC_SYNTHESIZE(int, health, currentHealth);
 	CC_SYNTHESIZE(int, price, Price);
 	CC_SYNTHESIZE(int, maxHealth, MaxHealth);
+
+	//CC_SYNTHESIZE(Soldiers *, attacker, Attacker);
 
 	//血条
 	Bar *hpBar = nullptr;

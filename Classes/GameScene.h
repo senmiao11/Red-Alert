@@ -4,13 +4,15 @@
 #define __GameScene_H_
 #include"cocos2d.h"
 #include<iostream>
-#include<vector>
 #include"MyUtility.h"
 #include"ConstUtil.h"
 #include"MenuScene.h"
 #include"Buildings/Buildings.h"
 #include"Soldiers/Soldiers.h"
 #include"SimpleAudioEngine.h"
+#include"network/SocketClient.h"
+#include"network/SocketServer.h"
+#include"network/socket_message.h"
 using namespace ui;
 USING_NS_CC;
 class MouseRect :public DrawNode
@@ -27,27 +29,27 @@ public:
 
 class GameScene :public Layer
 {
+	friend class Buildings;
+	friend class Soldiers;
 public:
-	static Scene *createScene();
-	virtual bool init();
+	static GameScene* create(SocketClient* _socket_client, SocketServer* _socket_server);
+	static Scene *createScene(SocketClient* _socket_client, SocketServer* _socket_server = nullptr);
+	virtual bool init(SocketClient* _socket_client, SocketServer* _socket_server);
 	virtual void onEnter();
 	virtual void onExit();
-	CREATE_FUNC(GameScene);
 	void update(float dt);
 	void scrollMap();
 	static TMXTiledMap *gettiledMap()
 	{
 		return _tiledMap1;
 	}
-	static Rect getSelectRect()
+	static vector<Soldiers *> getSoldiers()
 	{
-		return select_rect;
+		return soldierSprites;
 	}
-	static Rect select_rect;
 
 
 private:
-	//EventListenerTouchOneByOne * touchBuildingListener;
 	//地图相关方法
 	EventListenerMouse * mouse_event;//地图移动的鼠标事件
 	void onMouseMove(Event *event);
@@ -69,17 +71,23 @@ private:
 	void electricStationReady(float dt);  //电厂准备
 	void tankFactoryReady(float dt);      //战车工厂准备
 	void oreYardReady(float dt);          //矿场准备
+	static vector<Buildings *> buildingSprites;//储存建筑物
 
 	//兵种准备方法
 	void minerReady(float dt);
 	void policemanReady(float dt);
 	void tankReady(float dt);
+	static vector<Soldiers *> soldierSprites;//储存兵种
+	//兵种移动监听器
+	EventListenerTouchOneByOne *soldierMove;
+
 
 	//金钱相关方法
 	void moneyUpdate(float dt);//实时刷新金钱
 	static int Money;          //金钱
 
 	static TMXTiledMap * _tiledMap1;  //瓦片地图
+
 
 
 //Mouse Rect相关方法
@@ -96,6 +104,10 @@ private:
 	Rect mini_map_rect{};
 	Point last_touch{ 0, 0 };
 	Point crusor_position{ 0, 0 };
+
+//network
+	SocketServer* socket_server = nullptr;
+	SocketClient* socket_client = nullptr;
 };
 
 /***************************************************

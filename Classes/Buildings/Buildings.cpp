@@ -7,7 +7,13 @@ Buildings::Buildings(BuildingTypes buildingType)
 	this->health = 0;
 	this->price = 0;
 	this->maxHealth = 0;
+	//this->attacker = NULL;
 }
+
+/*Buildings::~Buildings()
+{
+	CC_SAFE_RELEASE(attacker);
+}*/
 
 Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 {
@@ -18,55 +24,46 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		buildingName = BASE;
 		building->health = BASE_HEALTH;
 		building->maxHealth = BASE_HEALTH;
+		//building->attacker = NULL;
 		break;
 	case START_CASERN:
 		buildingName = CASERN;
 		building->health = CASERN_HEALTH;
 		building->price = CASERN_PRICE;
 		building->maxHealth = CASERN_HEALTH;
+		//building->attacker = NULL;
 		break;
 	case START_ELECTRICSTATION:
 		buildingName = ELECTRICSTATION;
 		building->health = ELECTRICSTATION_HEALTH;
 		building->price = ELECTRICSTATION_PRICE;
 		building->maxHealth = ELECTRICSTATION_HEALTH;
+		//building->attacker = NULL;
 		break;
 	case START_TANKFACTORY:
 		buildingName = TANKFACTORY;
 		building->health = TANKFACTORY_HEALTH;
 		building->price = TANKFACTORY_PRICE;
 		building->maxHealth = TANKFACTORY_HEALTH;
+		//building->attacker = NULL;
 		break;
 	case START_OREYARD:
 		buildingName = OREYARD;
 		building->health = OREYARD_HEALTH;
 		building->price = OREYARD_PRICE;
 		building->maxHealth = OREYARD_HEALTH;
-		break;
-	case START_TANKFACTORY:
-		buildingName = TANKFACTORY;
-		building->health = TANKFACTORY_HEALTH;
-		building->price = TANKFACTORY_PRICE;
-		building->if_move = CAN_MOVE;
-		break;
-	case START_OREYARD:
-		buildingName = OREYARD;
-		building->health = OREYARD_HEALTH;
-		building->price = OREYARD_PRICE;
-		building->if_move = CAN_MOVE;
+		//building->attacker = NULL;
 		break;
 	}
 
 	if (building && building->initWithFile(buildingName))
 	{
-		//½¨ÖþÎï¼àÌýÆ÷
 		building->autorelease();
 		auto tiledmap = GameScene::gettiledMap();
 		auto group = tiledmap->getObjectGroup("Buildings");
 		ValueMap buildobj;
 		switch (building->getBuildingType())
 		{
-<<<<<<< HEAD
 		case START_BASE:
 			buildobj = group->getObject("base1");
 			break;
@@ -86,46 +83,6 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 		float x = buildobj["width"].asFloat();
 		float y = buildobj["height"].asFloat();
 		auto body = PhysicsBody::createBox(Size(x, y));
-=======
-			log("touch to building move");
-			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
-			if (!target->getifMove())
-			{
-				return false;
-			}
-			Vec2 locationInNode = target->convertToNodeSpace(touch->getLocation());
-			Size s = target->getContentSize();
-			Rect rect = Rect(0, 0, s.width, s.height);
-			if (rect.containsPoint(locationInNode))
-			{
-				return true;
-			}
-			return false;
-		};
-		touchBuildingListener->onTouchMoved = [](Touch *touch, Event *event)
-		{
-			log("building move");
-			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
-			target->setPosition(target->getPosition() + touch->getDelta());
-		};
-		touchBuildingListener->onTouchEnded = [](Touch *touch, Event *event)
-		{
-			log("touch to building end");
-			auto target = dynamic_cast<Buildings *>(event->getCurrentTarget());
-			if (GameScene::getIfBuild()->getTag())
-			{
-				target->setifMove(CAN_MOVE);
-			}
-			else
-			{
-				target->setifMove(CANNOT_MOVE);
-			}
-		};
-		eventDispatcher = Director::getInstance()->getEventDispatcher();
-		eventDispatcher->addEventListenerWithSceneGraphPriority(touchBuildingListener, building);
-
-		auto body = PhysicsBody::createBox((building->getContentSize()) * 0.75);
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 		body->setCategoryBitmask(0x01);
 		body->setContactTestBitmask(0x01);
 		body->setCollisionBitmask(0x02);
@@ -135,6 +92,29 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 	}
 	CC_SAFE_DELETE(building);
 	return nullptr;
+}
+
+void Buildings::update(float dt)
+{
+	if (getcurrentHealth() <= 0)
+	{
+		auto explosion = Explosioneffect::create();
+		explosion->setPosition(getPosition());
+		GameScene::gettiledMap()->addChild(explosion, 15);
+		//getAttacker()->setIfAttack(false);
+		auto it = find(GameScene::buildingSprites.begin(), GameScene::buildingSprites.end(), this);
+		if (it != GameScene::buildingSprites.end())
+		{
+			GameScene::buildingSprites.erase(it);
+		}
+		removeFromParent();
+		return;
+	}
+	/*if (getAttacker())
+	{
+		displayHpBar();
+		setcurrentHealth(getcurrentHealth() - getAttacker()->getPower());
+	}*/
 }
 
 void Buildings::createBar()

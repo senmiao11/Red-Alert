@@ -2,63 +2,83 @@
 #define __Soldiers_H_
 #include"cocos2d.h"
 #include<iostream>
-#include<vector>
 #include"cocos2d.h"
 #include"ConstUtil.h"
 #include"GameScene.h"
+#include"Buildings/Buildings.h"
 #include"Bar.h"
-<<<<<<< HEAD
-#include"Findpath/Astar.h"
-=======
-
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
+#include"Astar.h"
 USING_NS_CC;
-using namespace std;
+
+class Attackeffect :public ParticleFire
+{
+public:
+	bool init();
+	CREATE_FUNC(Attackeffect);
+
+	void setAtkPath(Vec2 from, Vec2 to);
+
+private:
+	Vec2 From;
+	Vec2 To;
+	Vec2 moveFromTo;
+	int moveSpeed = 3;
+	void updateAtkEffect(float dt);
+};
+
+class Explosioneffect :public ParticleFire
+{
+public:
+	bool init();
+	CREATE_FUNC(Explosioneffect);
+private:
+	void updateRemove(float dt);
+};
 
 class Soldiers :public Sprite
 {
-
+	friend class Buildings;
 	friend class Bar;
 	friend class Astar;
 	friend class Apoint;
 public:
-	Soldiers(SoldierTypes soldierType);        //é€šè¿‡æšä¸¾ç±»æ¥åˆ¤æ®µéœ€äº§ç”Ÿä»€ä¹ˆå»ºç­‘ç‰©
+	Soldiers(SoldierTypes soldierType);        //Í¨¹ıÃ¶¾ÙÀàÀ´ÅĞ¶ÎĞè²úÉúÊ²Ã´½¨ÖşÎï
+	//~Soldiers();
 	static Soldiers *createWithSoldierTypes(SoldierTypes soldierType);
 	
-
-
+	void update(float dt);
 private:
 	CC_SYNTHESIZE(SoldierTypes, soldiertype, SoldierType);
 	CC_SYNTHESIZE(int, health, currentHealth);
 	CC_SYNTHESIZE(int, price, Price);
 	CC_SYNTHESIZE(bool, ifselect, ifSelect);
-
 	CC_SYNTHESIZE(int, maxHealth, MaxHealth);
-<<<<<<< HEAD
-	CC_SYNTHESIZE(int, speed, Speed);
+	CC_SYNTHESIZE(float, speed, Speed);
+	CC_SYNTHESIZE(int, power, Power);
+	CC_SYNTHESIZE(int, atkRadius, AtkRadius);
+	
+private:
+	CC_SYNTHESIZE(bool, ifAttack, IfAttack);
+	int attackCD = 30;
+	CC_SYNTHESIZE(Soldiers *, sEnemy, SoldierEnemy);
+	CC_SYNTHESIZE(Buildings *, bEnemy, BuildingEnemy);
+	CC_SYNTHESIZE_RETAIN(Soldiers *, attacker, Attacker);
+	//CC_SYNTHESIZE(int, attackerPower, AttackerPower);
+public:
+	void findEnemy();
+	void attack();
 
-	//±øÖÖ¼àÌıÆ÷
-	static EventListenerTouchOneByOne *touchSoldierListener;
-	static EventDispatcher * eventDispatcher;
 
-	//ÏñËØ×ø±ê»»³ÉÍßÆ¬×ø±ê
-	static Apoint turnToApoint(Vec2 vecPoint);
+	//ÒÆ¶¯Ïà¹Ø·½·¨
+	vector<Vec2> moveToPath;
+	void soldierAutoMove();
 
 	//ÑªÌõ
-=======
-	//å…µç§ç›‘å¬å™¨
-	static EventListenerTouchOneByOne *touchSoldierListener;
-	static EventDispatcher * eventDispatcher;
-
-	//è¡€æ¡
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 	Bar *hpBar = nullptr;
 	void createBar();
 	void displayHpBar();
 	void hideHpBar();
-
 };
-
 
 
 #endif //!__Soldiers_H_

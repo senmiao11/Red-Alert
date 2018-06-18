@@ -22,9 +22,11 @@ void MouseRect::reset()
 
 int GameScene::Money;
 TMXTiledMap *GameScene::_tiledMap1;
-Rect GameScene::select_rect;
+vector<Buildings *> GameScene::buildingSprites;
+vector<Soldiers *> GameScene::soldierSprites;
 
-//Mouse Rectç›¸å…³æ–¹æ³•
+
+//Mouse RectÏà¹Ø·½·¨
 Rect GameScene::getvisionRect()
 {
 	auto visible_origin = Vec2(0, 0) - _tiledMap1->getPosition();
@@ -32,35 +34,55 @@ Rect GameScene::getvisionRect()
 	return cocos2d::Rect(visible_origin, visible_size);
 }
 
-Scene * GameScene::createScene()
+GameScene* GameScene::create(SocketClient* _socket_client, SocketServer* _socket_server)
+{
+	GameScene *game_scene = new (std::nothrow) GameScene();
+	if (game_scene && game_scene->init(_socket_client, _socket_server))
+	{
+		game_scene->autorelease();
+		return game_scene;
+	}
+	CC_SAFE_DELETE(game_scene);
+
+	return nullptr;
+}
+
+Scene * GameScene::createScene(SocketClient* _socket_client, SocketServer* _socket_server)
 {
 	Scene *scene = Scene::createWithPhysics();
 	PhysicsWorld *phyWorld = scene->getPhysicsWorld();
-	//ç”¨äºŽç‰©ç†å¼•æ“Ždebug
+	//ÓÃÓÚÎïÀíÒýÇædebug
 	//phyWorld->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	phyWorld->setGravity(Vec2(0, 0));
-	auto layer = GameScene::create();
+	auto layer = GameScene::create(_socket_client, _socket_server);
 	scene->addChild(layer);
 	return scene;
 }
 
-bool GameScene::init()
+bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 {
 	if (!Layer::init())
 	{
 		return false;
 	}
+	//·þÎñÆ÷Ïà¹Ø
+	socket_client = _socket_client;
+	socket_server = _socket_server;
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	
-	/************åœ°å›¾************/
-	//æ¸¸æˆåœ°å›¾
+	/************µØÍ¼************/
+	//ÓÎÏ·µØÍ¼
 	_tiledMap1 = TMXTiledMap::create(GAMEMAP1);
 	_tiledMap1->setAnchorPoint(Vec2(0, 0));
 	_tiledMap1->setPosition(0, 0);
-<<<<<<< HEAD
 	addChild(_tiledMap1, 0);
+	/*TMXLayer *colliableLayer = _tiledMap1->getLayer("CollidableLayer");
+	if (colliableLayer == nullptr)
+	{
+		log(" 11");
+	}
 	TMXObjectGroup *objectsGroup = _tiledMap1->objectGroupNamed("Objects");
 	ValueVector objects = objectsGroup->getObjects();
 	for (auto obj : objects) 
@@ -81,26 +103,21 @@ bool GameScene::init()
 		sp->setContentSize(Size(width, height));
 		sp->setPhysicsBody(phy);
 		_tiledMap1->addChild(sp);
-	}
+	}*/
 
 
 	//µØÍ¼¸üÐÂ
-=======
-	addChild(_tiledMap1,0);
-	TMXLayer *UnreachableGroundLayer = _tiledMap1->getLayer("UnreachableGroundLayer");
-	//åœ°å›¾æ›´æ–°
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 	schedule(schedule_selector(GameScene::update));
-	//åœ°å›¾ç§»åŠ¨çš„é¼ æ ‡äº‹ä»¶
+	//µØÍ¼ÒÆ¶¯µÄÊó±êÊÂ¼þ
 	mouse_event = EventListenerMouse::create();
 	mouse_event->onMouseMove = CC_CALLBACK_1(GameScene::onMouseMove, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(mouse_event, 1);
-	//å„ç§é”®ç›˜äº‹ä»¶
+	//¸÷ÖÖ¼üÅÌÊÂ¼þ
 	auto keyboard_listener = EventListenerKeyboard::create();
 	keyboard_listener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboard_listener, this);
 	
-	//é¼ æ ‡ç»˜åˆ¶ä¸€ä¸ªçŸ©å½¢æ¡†
+	//Êó±ê»æÖÆÒ»¸ö¾ØÐÎ¿ò
 	mouseRect = MouseRect::create();
 	mouseRect->setVisible(false);
 	_tiledMap1->addChild(mouseRect);
@@ -110,26 +127,73 @@ bool GameScene::init()
 	mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
 
-<<<<<<< HEAD
-=======
-	//å»ºç­‘ç‰©ä¸å¯å»ºé€ æ—¶æ˜¾ç¤ºçš„æ ‡ç­¾
-	ifBuild = LabelTTF::create(MyUtility::gbk_2_utf8("éžæ³•å»ºé€ "), "åŽæ–‡è¡Œæ¥·", 15);
-	ifBuild->setColor(Color3B::RED);
-	ifBuild->setAnchorPoint(Vec2(0.5, 0.5));
-	ifBuild->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - ifBuild->getContentSize().height / 2));
-	ifBuild->setTag(0);//æ ‡è®°ä¸º0å’Œ1åˆ†åˆ«å¯¹åº”å»ºç­‘ç‰©ç›‘å¬å™¨å°†å»ºç­‘ç‰©è®¾ä¸ºä¸å¯ç§»åŠ¨å’Œå¯ç§»åŠ¨
-	ifBuild->setVisible(false);//å½“æ ‡ç­¾ä¸å¯è§æ—¶å»ºç­‘ç‰©å¯è¢«ç›‘å¬å™¨è®¾ä¸ºä¸å¯ç§»åŠ¨
-	addChild(ifBuild);
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
+	///////////////////////////////////////////////////////////////////////
+	soldierMove = EventListenerTouchOneByOne::create();
+	soldierMove->onTouchBegan = [this](Touch *touch, Event *event)
+	{
+		return true;
+	};
+	soldierMove->onTouchEnded = [this](Touch *touch, Event *event)
+	{
+		int s = _tiledMap1->convertTouchToNodeSpace(touch).x / 16;
+		int t = ((100 * 16) - _tiledMap1->convertTouchToNodeSpace(touch).y) / 16;
+		Apoint end(s, t);
+		//log("%f %f", _tiledMap1->convertTouchToNodeSpace(touch).x, _tiledMap1->convertTouchToNodeSpace(touch).y);
+		//log("%d       %d", end.getX(), end.getY());
+		if (end.getX() < 0 || end.getX() > 99 || end.getY() < 0 || end.getY() > 99)
+		{
+			return;
+		}
+		for (auto &target : this->getSoldiers())
+		{
+			if (!target->getifSelect())
+			{
+				target->stopAllActions();
+				target->moveToPath.clear();
+				continue;
+			}
+			target->stopAllActions();
+			target->moveToPath.clear();
+			int x = target->getPosition().x / 16;
+			int y = ((100 * 16) - target->getPosition().y) / 16;
+			Apoint start(x, y);
+			//log("%f  %f", target->getPosition().x, target->getPosition().y);
+			//log("%d   %d", start.getX(), start.getY());
+			
+			
+			
+			Astar pathFinder(100, 100, start, end);
+			pathFinder.findPath();
+			vector<Apoint> path = pathFinder.getPath();
+			if (path.size() >= 2)
+			{
+				end.setX(path[path.size() - 2].getX());
+				end.setY(path[path.size() - 2].getY());
+			}
+			
 
-	//åˆ›å»ºä¸€ä¸ªåŸºåœ°ç²¾çµ
+			for (auto it = path.begin(); it != path.end(); it++)
+			{
+				//log("%d,%d", it->getX(), it->getY());
+				float x = (it->getX()) * 16;
+				float y = (99.5 - it->getY()) * 16;
+				target->moveToPath.push_back(Vec2(x, y));
+			}
+			target->soldierAutoMove();
+		}
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(soldierMove, _tiledMap1);
+	//////////////////////////////////////////////////////////////////////////////////
+
+
+	//´´½¨Ò»¸ö»ùµØ¾«Áé
 	Buildings *base = Buildings::creatWithBuildingTypes(START_BASE);
 	base->setAnchorPoint(Vec2(0, 0));
 	base->setScale(1);
 	base->setPosition(Vec2(16,16));
 	base->createBar();
-	//base->hpBar->setPosition(base->hpBar->getPosition() - Vec2(16, -32));
 	_tiledMap1->addChild(base, 10, GameSceneNodeTagBuilding);
+	buildingSprites.push_back(base);
 
 	return true;
 }
@@ -142,7 +206,6 @@ void GameScene::onEnter()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-<<<<<<< HEAD
 	//´´½¨·µ»Ø²Ëµ¥
 	auto backLabel = LabelTTF::create(MyUtility::gbk_2_utf8("·µ»Ø"), "»ªÎÄÐÐ¿¬", 15);
 	backLabel->setColor(Color3B::GREEN);
@@ -150,19 +213,11 @@ void GameScene::onEnter()
 	float back_x = backMenu->getContentSize().width;  //»ñµÃ²Ëµ¥¿í¶È
 	float back_y = backMenu->getContentSize().height; //»ñµÃ²Ëµ¥³¤¶È
 	backMenu->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - back_y));
-=======
-	//åˆ›å»ºè¿”å›žèœå•
-	auto backLabel = LabelTTF::create(MyUtility::gbk_2_utf8("è¿”å›ž"), "åŽæ–‡è¡Œæ¥·", 15);
-	auto backMenu = MenuItemLabel::create(backLabel, CC_CALLBACK_1(GameScene::backToMenuScene, this));
-	float back_x = backMenu->getContentSize().width;  //èŽ·å¾—èœå•å®½åº¦
-	float back_y = backMenu->getContentSize().height; //èŽ·å¾—èœå•é•¿åº¦
-	backMenu->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - back_y));
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 	auto mn = Menu::create(backMenu, NULL);
 	mn->setPosition(Vec2::ZERO);
 	this->addChild(mn);
 
-	//åˆ›å»ºå…µè¥èœå•
+	//´´½¨±øÓª²Ëµ¥
 	MenuItemImage *buildingMenu1 = MenuItemImage::create(CASERN, CASERN, CC_CALLBACK_1(GameScene::buildingsCreate, this));
 	buildingMenu1->setAnchorPoint(Vec2(0.5, 0.5));
 	buildingMenu1->setScale(1);
@@ -174,17 +229,12 @@ void GameScene::onEnter()
 	Menu *bmn1 = Menu::create(buildingMenu1, NULL);
 	bmn1->setPosition(Vec2::ZERO);
 	this->addChild(bmn1, 20);
-<<<<<<< HEAD
 	auto buildingLabel1 = LabelTTF::create(MyUtility::gbk_2_utf8("±øÓª"), "»ªÎÄÐÐ¿¬", 8);
 	buildingLabel1->setColor(Color3B::GREEN);
 	buildingLabel1->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 40));
-=======
-	auto buildingLabel1 = LabelTTF::create(MyUtility::gbk_2_utf8("å…µè¥"), "åŽæ–‡è¡Œæ¥·", 8);
-	buildingLabel1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 40));
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 	this->addChild(buildingLabel1,30);
 
-	//åˆ›å»ºç”µåŽ‚èœå•
+	//´´½¨µç³§²Ëµ¥
 	MenuItemImage *buildingMenu2 = MenuItemImage::create(ELECTRICSTATION, ELECTRICSTATION, CC_CALLBACK_1(GameScene::buildingsCreate, this));
 	buildingMenu2->setAnchorPoint(Vec2(0.5, 0.5));
 	buildingMenu2->setScale(1);
@@ -196,17 +246,12 @@ void GameScene::onEnter()
 	Menu *bmn2 = Menu::create(buildingMenu2, NULL);
 	bmn2->setPosition(Vec2::ZERO);
 	this->addChild(bmn2, 20);
-<<<<<<< HEAD
 	auto buildingLabel2 = LabelTTF::create(MyUtility::gbk_2_utf8("µç³§"), "»ªÎÄÐÐ¿¬", 8);
 	buildingLabel2->setColor(Color3B::GREEN);
 	buildingLabel2->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height -80));
-=======
-	auto buildingLabel2 = LabelTTF::create(MyUtility::gbk_2_utf8("ç”µåŽ‚"), "åŽæ–‡è¡Œæ¥·", 8);
-	buildingLabel2->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height -80));
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 	this->addChild(buildingLabel2, 30);
 
-	//åˆ›å»ºæˆ˜è½¦å·¥åŽ‚èœå•
+	//´´½¨Õ½³µ¹¤³§²Ëµ¥
 	MenuItemImage *buildingMenu3 = MenuItemImage::create(TANKFACTORY, TANKFACTORY, CC_CALLBACK_1(GameScene::buildingsCreate, this));
 	buildingMenu3->setAnchorPoint(Vec2(0.5, 0.5));
 	buildingMenu3->setScale(1);
@@ -218,17 +263,12 @@ void GameScene::onEnter()
 	Menu *bmn3 = Menu::create(buildingMenu3, NULL);
 	bmn3->setPosition(Vec2::ZERO);
 	this->addChild(bmn3, 20);
-<<<<<<< HEAD
 	auto buildingLabel3 = LabelTTF::create(MyUtility::gbk_2_utf8("Õ½³µ¹¤³§"), "»ªÎÄÐÐ¿¬", 8);
 	buildingLabel3->setColor(Color3B::GREEN);
 	buildingLabel3->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 120));
-=======
-	auto buildingLabel3 = LabelTTF::create(MyUtility::gbk_2_utf8("æˆ˜è½¦å·¥åŽ‚"), "åŽæ–‡è¡Œæ¥·", 8);
-	buildingLabel3->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 120));
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 	this->addChild(buildingLabel3, 30);
 
-	//åˆ›å»ºçŸ¿åœºèœå•
+	//´´½¨¿ó³¡²Ëµ¥
 	MenuItemImage *buildingMenu4 = MenuItemImage::create(OREYARD, OREYARD, CC_CALLBACK_1(GameScene::buildingsCreate, this));
 	buildingMenu4->setAnchorPoint(Vec2(0.5, 0.5));
 	buildingMenu4->setScale(1);
@@ -240,18 +280,13 @@ void GameScene::onEnter()
 	Menu *bmn4 = Menu::create(buildingMenu4, NULL);
 	bmn4->setPosition(Vec2::ZERO);
 	this->addChild(bmn4, 20);
-<<<<<<< HEAD
 	auto buildingLabel4 = LabelTTF::create(MyUtility::gbk_2_utf8("¿ó³¡"), "»ªÎÄÐÐ¿¬", 8);
 	buildingLabel4->setColor(Color3B::GREEN);
 	buildingLabel4->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 160));
-=======
-	auto buildingLabel4 = LabelTTF::create(MyUtility::gbk_2_utf8("çŸ¿åœº"), "åŽæ–‡è¡Œæ¥·", 8);
-	buildingLabel4->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 160));
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 	this->addChild(buildingLabel4, 30);
 	
 
-	//åˆ›å»ºçŸ¿å·¥èœå•
+	//´´½¨¿ó¹¤²Ëµ¥
 	MenuItemImage *soldierMenu1 = MenuItemImage::create(MINER, MINER, CC_CALLBACK_1(GameScene::soldiersCreate, this));
 	soldierMenu1->setAnchorPoint(Vec2(0.5, 0.5));
 	soldierMenu1->setScale(1.2);
@@ -261,14 +296,9 @@ void GameScene::onEnter()
 	Menu *smn1 = Menu::create(soldierMenu1, NULL);
 	smn1->setPosition(Vec2::ZERO);
 	this->addChild(smn1, 20);
-<<<<<<< HEAD
 	auto soldierLabel1 = LabelTTF::create(MyUtility::gbk_2_utf8("¿ó¹¤"), "»ªÎÄÐÐ¿¬", 8);
 	soldierLabel1->setColor(Color3B::GREEN);
 	soldierLabel1->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 200));
-=======
-	auto soldierLabel1 = LabelTTF::create(MyUtility::gbk_2_utf8("çŸ¿å·¥"), "åŽæ–‡è¡Œæ¥·", 8);
-	soldierLabel1->setPosition(Vec2(visibleSize.width, origin.y + visibleSize.height - 200));
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 	this->addChild(soldierLabel1,30);
 
 	//¾¯È®²Ëµ¥
@@ -302,125 +332,72 @@ void GameScene::onEnter()
 	this->addChild(soldierLabel3, 30);
 
 
-<<<<<<< HEAD
 	//½¨ÖþÎï½Ó´¥¼ì²â¼àÌýÆ÷
 	spriteContactListener = EventListenerPhysicsContact::create();
 	spriteContactListener->onContactBegin = [this](PhysicsContact &contact)
-=======
-	//å»ºç­‘ç‰©æŽ¥è§¦æ£€æµ‹ç›‘å¬å™¨
-	buildingContactListener = EventListenerPhysicsContact::create();
-	buildingContactListener->onContactBegin = [this](PhysicsContact &contact)
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 	{
-		log("SPRITE CONTACT");
+		
 		Sprite *SpriteA = (Sprite *)(contact.getShapeA()->getBody()->getNode());
 		Sprite *SpriteB = (Sprite *)(contact.getShapeB()->getBody()->getNode());
 		if (!SpriteA || !SpriteB)
 		{
 			return false;
 		}
-<<<<<<< HEAD
-		//ÅÐ¶ÏÁ½¸ö¾«ÁéÊÇ·ñÎª½¨ÖþÎï£¬²¢¿´ÄÄÒ»¸öÊÇÐèÒª½¨ÔìµÄ
-
 		//´Ë´¦Îª¼ì²â±øÖÖ½Ó´¥
-=======
-		//åˆ¤æ–­ä¸¤ä¸ªç²¾çµæ˜¯å¦ä¸ºå»ºç­‘ç‰©ï¼Œå¹¶çœ‹å“ªä¸€ä¸ªæ˜¯éœ€è¦å»ºé€ çš„
-		if (SpriteA->getTag() == GameSceneNodeTagBuilding && SpriteB->getTag() == GameSceneNodeTagBuilding)
-		{
-			auto buildingSpriteA = dynamic_cast<Buildings *>(SpriteA);
-			auto buildingSpriteB = dynamic_cast<Buildings *>(SpriteB);
-			//éœ€è¦å»ºé€ çš„å»ºç­‘ç‰©æ˜¯å¯ç§»åŠ¨çš„
-			if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
-			{
-				buildingSpriteA->setifMove(CAN_MOVE);//è®©æ­¤å»ºç­‘ç‰©è®¤ä¸ºå¯ç§»åŠ¨
-				buildingSpriteB->setOpacity(128);//å°†ä¸å¯ç§»åŠ¨çš„å»ºç­‘ç‰©å˜é€æ˜Ž
-												 //ç»™æ ‡ç­¾è®¾ç½®æ ‡è®°ï¼Œä½¿å»ºç­‘ç‰©çš„ç›‘å¬å™¨å¯ä»¥æ ¹æ®æ ‡ç­¾åˆ¤æ–­æ˜¯å¦éœ€è¦å°†å»ºç­‘ç‰©è®¾ä¸ºä¸å¯ç§»åŠ¨
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);//æ˜¾ç¤ºç¦æ­¢å»ºé€ çš„æ ‡ç­¾
-				return true;
-			}
-			if (buildingSpriteB->getifMove() && !buildingSpriteA->getifMove())
-			{
-				buildingSpriteB->setifMove(CAN_MOVE);
-				buildingSpriteA->setOpacity(128);
-				this->ifBuild->setTag(1);
-				this->ifBuild->setVisible(true);
-				return true;
-			}
-		}
-		//æ­¤å¤„ä¸ºæ£€æµ‹å…µç§æŽ¥è§¦
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
-		if (SpriteA->getTag() == GameSceneNodeTagSoldier && SpriteB->getTag() == GameSceneNodeTagSoldier)
+		/*if (SpriteA->getTag() == GameSceneNodeTagSoldier && SpriteB->getTag() == GameSceneNodeTagSoldier)
 		{
 			auto soldierSpriteA = dynamic_cast<Soldiers *>(SpriteA);
 			auto soldierSpriteB = dynamic_cast<Soldiers *>(SpriteB);
-			if (!soldierSpriteA->getifSelect() && !soldierSpriteB->getifSelect())
-			{
-				//é€šè¿‡éšæœºæ•°é‡æ–°è®¾ç½®ä½ç½®
-				Size s = soldierSpriteA->getContentSize();
-				Vec2 rand = soldierSpriteB->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
-				soldierSpriteA->setPosition(rand);
-				return false;
-			}
-			/*if (!soldierSpriteA->getifSelect() && soldierSpriteB->getifSelect())
-			{
-			Size s = soldierSpriteA->getContentSize();
-			Vec2 rand = soldierSpriteA->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
-			soldierSpriteB->setPosition(rand);
-			return false;
-			}
-			return false;*/
-			/*Size s = soldierSpriteA->getContentSize();
-			Vec2 rand = soldierSpriteB->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
-			soldierSpriteA->setPosition(rand);
-			return false;*/
+
+			int ax = soldierSpriteA->getPosition().x / 16;
+			int ay = (100 * 16 - soldierSpriteA->getPosition().y) / 16;
+			float as = ax * 16 + CCRANDOM_MINUS1_1(16);
+			float at = (99.5 - ay) * 16 + CCRANDOM_MINUS1_1(16);
+			soldierSpriteA->stopAllActions();
+			MoveTo *Amoveto = MoveTo::create(0.1f, Vec2(as, at));
+			soldierSpriteA->runAction(Amoveto);
+			soldierSpriteA->soldierAutoMove();
+
+			int bx = soldierSpriteB->getPosition().x / 16;
+			int by = (100 * 16 - soldierSpriteB->getPosition().y) / 16;
+			float bs = bx * 16 + CCRANDOM_MINUS1_1(16);
+			float bt = (99.5 - by) * 16 + CCRANDOM_MINUS1_1(16);
+			soldierSpriteB->stopAllActions();
+			MoveTo *Bmoveto = MoveTo::create(0.1f, Vec2(bs, bt));
+			soldierSpriteB->runAction(Bmoveto);
+			soldierSpriteB->soldierAutoMove();
+
+			
+		}*/
+
+		if (SpriteA->getTag() == GameSceneNodeTagSoldier && SpriteB->getTag() == GameSceneNodeTagBuilding)
+		{
+			auto soldierSpriteA = dynamic_cast<Soldiers *>(SpriteA);
+			int ax = soldierSpriteA->getPosition().x / 16;
+			int ay = (100 * 16 - soldierSpriteA->getPosition().y) / 16;
+			float as = ax * 16;
+			float at = (99.5 - ay) * 16;
+			soldierSpriteA->stopAllActions();
+			MoveTo *Amoveto = MoveTo::create(0.1f, Vec2(as, at));
+			soldierSpriteA->runAction(Amoveto);
+		}
+		if (SpriteA->getTag() == GameSceneNodeTagBuilding && SpriteB->getTag() == GameSceneNodeTagSoldier)
+		{
+			auto soldierSpriteB = dynamic_cast<Soldiers *>(SpriteB);
+			int bx = soldierSpriteB->getPosition().x / 16;
+			int by = (100 * 16 - soldierSpriteB->getPosition().y) / 16;
+			float bs = bx * 16;
+			float bt = (99.5 - by) * 16;
+			soldierSpriteB->stopAllActions();
+			MoveTo *Bmoveto = MoveTo::create(0.1f, Vec2(bs, bt));
+			soldierSpriteB->runAction(Bmoveto);
 		}
 		return false;
 	};
-
-	spriteContactListener->onContactSeparate = [this](PhysicsContact &contact)
-	{
-<<<<<<< HEAD
-		
-=======
-		log("SPRITE CONTACTSEPARATE");
-		Buildings *buildingSpriteA = (Buildings *)(contact.getShapeA()->getBody()->getNode());
-		Buildings *buildingSpriteB = (Buildings *)(contact.getShapeB()->getBody()->getNode());
-		if (!buildingSpriteA || !buildingSpriteB)
-		{
-			return;
-		}
-		if (buildingSpriteA->getTag() == GameSceneNodeTagBuilding && buildingSpriteB->getTag() == GameSceneNodeTagBuilding)
-		{
-			if (buildingSpriteA->getifMove() && !buildingSpriteB->getifMove())
-			{
-				buildingSpriteA->setifMove(CAN_MOVE);//å»ºç­‘ç‰©åˆ†ç¦»ä»å¯ç§»åŠ¨
-				buildingSpriteB->setOpacity(255);//ä¸å¯ç§»åŠ¨çš„å»ºç­‘ç‰©æ¢å¤ä¸ºä¸é€æ˜Ž
-				this->ifBuild->setTag(0);//æ ‡ç­¾çš„æ ‡è®°ä¸º0ï¼Œå»ºç­‘ç‰©ç›‘å¬å™¨å¯ä»¥å°†å»ºç­‘ç‰©è®¾ä¸ºä¸å¯ç§»åŠ¨
-				this->ifBuild->setVisible(false);//æ ‡ç­¾ä¸å¯è§
-				return;
-			}
-			if (buildingSpriteB->getifMove() && !buildingSpriteA->getifMove())
-			{
-				buildingSpriteB->setifMove(CAN_MOVE);
-				buildingSpriteA->setOpacity(255);
-				this->ifBuild->setTag(0);
-				this->ifBuild->setVisible(false);
-				return;
-			}
-		}
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
-		return;
-	};
 	_eventDispatcher->addEventListenerWithFixedPriority(spriteContactListener, 20);
 
-<<<<<<< HEAD
 	//ÊµÊ±Ë¢ÐÂ½ðÇ®
 	this->Money = 5000;
-=======
-	//å®žæ—¶åˆ·æ–°é‡‘é’±
-	this->Money = 4000;
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 	__String *currentMoney = __String::createWithFormat("Money:%d", this->Money);
 	auto MoneyLabel = LabelTTF::create(currentMoney->getCString(), "Marker Felt", 15);
 	float Money_x = MoneyLabel->getContentSize().width;
@@ -439,13 +416,46 @@ void GameScene::onExit()
 	Director::getInstance()->getEventDispatcher()->removeEventListener(keyboard_listener);
 	Director::getInstance()->getEventDispatcher()->removeEventListener(spriteContactListener);
 	Director::getInstance()->getEventDispatcher()->removeEventListener(mouseRectListener);
+	Director::getInstance()->getEventDispatcher()->removeEventListener(soldierMove);
 	this->unschedule(schedule_selector(GameScene::moneyUpdate));
 	this->unschedule(schedule_selector(GameScene::update));
+	if (socket_client)
+	{
+		socket_client->close();
+		delete socket_client;
+		socket_client = nullptr;
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(200));
+	if (socket_server)
+	{
+		socket_server->close();
+		delete socket_server;
+		socket_server = nullptr;
+	}
+	if (_onExitCallback)
+		_onExitCallback();
+	if (_componentContainer && !_componentContainer->isEmpty())
+	{
+		_componentContainer->onExit();
+	}
+	this->pause();
+	_running = false;
+	for (const auto &child : _children)
+		child->onExit();
 }
 
-//è¿”å›žMenuScene
+//·µ»ØMenuScene
 void GameScene::backToMenuScene(Ref *pSender)
 {
+	if (socket_server)
+	{
+		socket_server->close();
+		socket_server = nullptr;
+
+	}
+	socket_client->close();
+	delete socket_client;
+	socket_client = nullptr;
 	Scene *sc = Scene::create();
 	auto layer = MenuScene::create();
 	sc->addChild(layer);
@@ -454,7 +464,7 @@ void GameScene::backToMenuScene(Ref *pSender)
 	Director::getInstance()->replaceScene(reScene);
 }
 
-//é€‰æ‹©å»ºç­‘ç‰©å»ºé€ 
+//Ñ¡Ôñ½¨ÖþÎï½¨Ôì
 void GameScene::buildingsCreate(Ref *pSender)
 {
 	MenuItem *mnitem = (MenuItem *)pSender;
@@ -462,31 +472,31 @@ void GameScene::buildingsCreate(Ref *pSender)
 	{
 		case START_CASERN:
 		{
-			if (Money < CASERN_PRICE)//åˆ¤æ–­é’±æ˜¯å¦è¶³å¤Ÿ
+			if (Money < CASERN_PRICE)//ÅÐ¶ÏÇ®ÊÇ·ñ×ã¹»
 			{
 				break;
 			}
 			Money -= CASERN_PRICE;
-			//å»ºç­‘ç‰©å‡†å¤‡å®šæ—¶å™¨ï¼Œæ¯ç§å»ºç­‘ç‰©å‡†å¤‡æ—¶é—´ä¸åŒ
+			//½¨ÖþÎï×¼±¸¶¨Ê±Æ÷£¬Ã¿ÖÖ½¨ÖþÎï×¼±¸Ê±¼ä²»Í¬
 			this->scheduleOnce(schedule_selector(GameScene::casernReady), 2.0f);
 			break;
 		}
 		case START_ELECTRICSTATION:
 		{
-			if (Money < ELECTRICSTATION_PRICE)//åˆ¤æ–­é’±æ˜¯å¦è¶³å¤Ÿ
+			if (Money < ELECTRICSTATION_PRICE)//ÅÐ¶ÏÇ®ÊÇ·ñ×ã¹»
 			{
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
 			Money -= ELECTRICSTATION_PRICE;
-			//å»ºç­‘ç‰©å‡†å¤‡å®šæ—¶å™¨ï¼Œæ¯ç§å»ºç­‘ç‰©å‡†å¤‡æ—¶é—´ä¸åŒ
+			//½¨ÖþÎï×¼±¸¶¨Ê±Æ÷£¬Ã¿ÖÖ½¨ÖþÎï×¼±¸Ê±¼ä²»Í¬
 			this->scheduleOnce(schedule_selector(GameScene::electricStationReady), 1.8f);
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 			break;
 		}
 		case START_TANKFACTORY:
 		{
-			if (Money < TANKFACTORY_PRICE)      //åˆ¤æ–­é’±æ˜¯å¦è¶³å¤Ÿ
+			if (Money < TANKFACTORY_PRICE)      //ÅÐ¶ÏÇ®ÊÇ·ñ×ã¹»
 			{
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
@@ -498,7 +508,7 @@ void GameScene::buildingsCreate(Ref *pSender)
 		}
 		case START_OREYARD:
 		{
-			if (Money < OREYARD_PRICE)         //åˆ¤æ–­é’±æ˜¯å¦è¶³å¤Ÿ
+			if (Money < OREYARD_PRICE)         //ÅÐ¶ÏÇ®ÊÇ·ñ×ã¹»
 			{
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
@@ -516,69 +526,65 @@ void GameScene::soldiersCreate(Ref *pSender)
 	MenuItem *mnitm = (MenuItem *)pSender;
 	switch (mnitm->getTag())
 	{
-		case START_MINER:
+	case START_MINER:
+	{
+		if (Money < MINER_PRICE || !_tiledMap1->getChildByName("oreYard"))
 		{
-			if (Money < MINER_PRICE || !_tiledMap1->getChildByName("oreYard"))
-			{
-				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
-				break;
-			}
-			Money -= MINER_PRICE;
-<<<<<<< HEAD
-			//×¼±¸¶¨Ê±Æ÷
-			this->scheduleOnce(schedule_selector(GameScene::minerReady), 1.0f);
-			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
 		}
-		case START_POLICEMAN:
+		Money -= MINER_PRICE;
+		//×¼±¸¶¨Ê±Æ÷
+		this->scheduleOnce(schedule_selector(GameScene::minerReady), 1.0f);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+		break;
+	}
+	case START_POLICEMAN:
+	{
+		if (Money < POLICEMAN_PRICE || !_tiledMap1->getChildByName("casern"))
 		{
-			if (Money < POLICEMAN_PRICE || !_tiledMap1->getChildByName("casern"))
-			{
-				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
-				break;
-			}
-			Money -= POLICEMAN_PRICE;
-			//×¼±¸¶¨Ê±Æ÷
-			this->scheduleOnce(schedule_selector(GameScene::policemanReady), 1.5f);
-			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
 		}
-		case START_TANK:
+		Money -= POLICEMAN_PRICE;
+		//×¼±¸¶¨Ê±Æ÷
+		this->scheduleOnce(schedule_selector(GameScene::policemanReady), 1.5f);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+		break;
+	}
+	case START_TANK:
+	{
+		if (Money < TANK_PRICE || !_tiledMap1->getChildByName("tankFactory"))
 		{
-			if (Money < TANK_PRICE || !_tiledMap1->getChildByName("tankFactory"))
-			{
-				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
-				break;
-			}
-			Money -= TANK_PRICE;
-			this->scheduleOnce(schedule_selector(GameScene::tankReady), 2.0f);
-			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
-=======
-			//å‡†å¤‡å®šæ—¶å™¨
-			this->scheduleOnce(schedule_selector(GameScene::minerReady), 0.5f);
->>>>>>> adab2cd04015cfcb12374731b7f276360b4fd5e5
 		}
+		Money -= TANK_PRICE;
+		this->scheduleOnce(schedule_selector(GameScene::tankReady), 2.0f);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+		break;
+	}
 	}
 }
 
-//å…µç§ç»˜åˆ¶
+//±øÖÖ»æÖÆ
 void GameScene::minerReady(float dt)
 {
-	//é€šè¿‡Soldiersç±»æ¥åˆ›å»ºå£«å…µ
+	//Í¨¹ýSoldiersÀàÀ´´´½¨Ê¿±ø
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	auto miner = Soldiers::createWithSoldierTypes(START_MINER);
 	miner->setAnchorPoint(Vec2(0.5, 0.5));
 	miner->setScale(1.2);
 	float soldiers_x = miner->getContentSize().width;
 	float soldiers_y = miner->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("oreYard")->getContentSize() * 0.3;
-	Vec2 position = _tiledMap1->getChildByName("oreYard")->getPosition() + Vec2(s.width, 0);
+	Size s = _tiledMap1->getChildByName("oreYard")->getContentSize();
+	Vec2 position = _tiledMap1->getChildByName("oreYard")->getPosition() + Vec2(80, 0);
 	miner->setPosition(position);
 	//miner->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
 	miner->setName("miner");
 	miner->createBar();
 	_tiledMap1->addChild(miner, 10, GameSceneNodeTagSoldier);
+	soldierSprites.push_back(miner);
 }
 void GameScene::policemanReady(float dt)
 {
@@ -589,13 +595,14 @@ void GameScene::policemanReady(float dt)
 	policeman->setScale(1.2);
 	float soldiers_x = policeman->getContentSize().width;
 	float soldiers_y = policeman->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("casern")->getContentSize() * 0.3;
-	Vec2 position = _tiledMap1->getChildByName("casern")->getPosition() + Vec2(s.width, 0);
+	Size s = _tiledMap1->getChildByName("casern")->getContentSize();
+	Vec2 position = _tiledMap1->getChildByName("casern")->getPosition() + Vec2(80, 0);
 	policeman->setPosition(position);
 	//policeman->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
 	policeman->setName("policeman");
 	policeman->createBar();
 	_tiledMap1->addChild(policeman, 10, GameSceneNodeTagSoldier);
+	soldierSprites.push_back(policeman);
 }
 void GameScene::tankReady(float dt)
 {
@@ -606,20 +613,21 @@ void GameScene::tankReady(float dt)
 	tank->setScale(1.2);
 	float soldiers_x = tank->getContentSize().width;
 	float soldiers_y = tank->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("tankFactory")->getContentSize() * 0.3;
-	Vec2 position = _tiledMap1->getChildByName("tankFactory")->getPosition() + Vec2(s.width, 0);
+	Size s = _tiledMap1->getChildByName("tankFactory")->getContentSize();
+	Vec2 position = _tiledMap1->getChildByName("tankFactory")->getPosition() + Vec2(80, 0);
 	tank->setPosition(position);
 	//tank->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
 	tank->setName("tank");
 	tank->createBar();
 	_tiledMap1->addChild(tank, 10, GameSceneNodeTagSoldier);
+	soldierSprites.push_back(tank);
 }
 
 
-//å»ºç­‘ç‰©ç»˜åˆ¶
+//½¨ÖþÎï»æÖÆ
 void GameScene::casernReady(float dt)
 {
-	//é€šè¿‡Buildingsç±»æ¥åˆ›å»ºå»ºç­‘ç‰©
+	//Í¨¹ýBuildingsÀàÀ´´´½¨½¨ÖþÎï
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	auto casern = Buildings::creatWithBuildingTypes(START_CASERN);
 	casern->setAnchorPoint(Vec2(0, 0));
@@ -630,10 +638,11 @@ void GameScene::casernReady(float dt)
 	casern->setName("casern");
 	casern->createBar();
 	_tiledMap1->addChild(casern, 10, GameSceneNodeTagBuilding);
+	buildingSprites.push_back(casern);
 }
 void GameScene::electricStationReady(float dt)
 {
-	//é€šè¿‡Buildingsç±»æ¥åˆ›å»ºå»ºç­‘ç‰©
+	//Í¨¹ýBuildingsÀàÀ´´´½¨½¨ÖþÎï
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	auto electricStation = Buildings::creatWithBuildingTypes(START_ELECTRICSTATION);
 	electricStation->setAnchorPoint(Vec2(0, 0));
@@ -644,10 +653,11 @@ void GameScene::electricStationReady(float dt)
 	electricStation->setName("electricStation");
 	electricStation->createBar();
 	_tiledMap1->addChild(electricStation, 10, GameSceneNodeTagBuilding);
+	buildingSprites.push_back(electricStation);
 }
 void GameScene::tankFactoryReady(float dt)
 {
-	//é€šè¿‡Buildingç±»æ¥åˆ›å»ºå»ºç­‘ç‰©
+	//Í¨¹ýBuildingÀàÀ´´´½¨½¨ÖþÎï
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	auto tankFactory = Buildings::creatWithBuildingTypes(START_TANKFACTORY);
 	tankFactory->setAnchorPoint(Vec2(0, 0));
@@ -658,33 +668,34 @@ void GameScene::tankFactoryReady(float dt)
 	tankFactory->setName("tankFactory");
 	tankFactory->createBar();
 	_tiledMap1->addChild(tankFactory, 10, GameSceneNodeTagBuilding);
+	buildingSprites.push_back(tankFactory);
 }
 void GameScene::oreYardReady(float dt)
 {
-	//é€šè¿‡Buildingç±»æ¥åˆ›å»ºå»ºç­‘ç‰©
+	//Í¨¹ýBuildingÀàÀ´´´½¨½¨ÖþÎï
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	auto oreYard = Buildings::creatWithBuildingTypes(START_OREYARD);
 	oreYard->setAnchorPoint(Vec2(0, 0));
-	//oreYard->setScale(1);
+	oreYard->setScale(1);
 	float building_x = oreYard->getContentSize().width;
 	float building_y = oreYard->getContentSize().height;
-	oreYard->setPosition(Vec2(16, 96));
+	oreYard->setPosition(Vec2(16,96));
 	oreYard->setName("oreYard");
 	oreYard->createBar();
 	_tiledMap1->addChild(oreYard, 10, GameSceneNodeTagBuilding);
+	buildingSprites.push_back(oreYard);
 }
-
 
 void GameScene::moneyUpdate(float dt)
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	//å°†ä¸Šä¸€ä¸ªæ ‡ç­¾ç§»å‡º
+	//½«ÉÏÒ»¸ö±êÇ©ÒÆ³ö
 	if (this->getChildByTag(GameSceneNodeTagMoney))
 	{
 		this->removeChildByTag(GameSceneNodeTagMoney);
 	}
-	//åˆ›å»ºæ–°æ ‡ç­¾
+	//´´½¨ÐÂ±êÇ©
 	if (this->Money <= 0)
 	{
 		this->Money = 0;
@@ -701,6 +712,22 @@ void GameScene::moneyUpdate(float dt)
 void GameScene::update(float dt)
 {
 	scrollMap();
+	for (auto &s : soldierSprites)
+	{
+		if (s->isScheduled(schedule_selector(Soldiers::update)))
+		{
+			continue;
+		}
+		s->schedule(schedule_selector(Soldiers::update));
+	}
+	for (auto &b : buildingSprites)
+	{
+		if (b->isScheduled(schedule_selector(Buildings::update)))
+		{
+			continue;
+		}
+		b->schedule(schedule_selector(Buildings::update));
+	}
 }
 
 void GameScene::scrollMap()
@@ -796,7 +823,7 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 		if (target->getTag() == GameSceneNodeTagBuilding || target->getTag() == GameSceneNodeTagSoldier)
 		{
 			///////////////
-			//ç¼ºå°‘è¡€æ¡æ˜¾ç¤º
+			//È±ÉÙÑªÌõÏÔÊ¾
 			///////////////
 			log("search");
 			if (target->getTag() == GameSceneNodeTagSoldier && target->getifSelect())
@@ -807,37 +834,29 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 	}
 	else
 	{
-		select_rect = { MIN(last_maptouch.x, maptouch.x), MIN(last_maptouch.y, maptouch.y),
+		Rect select_rect = { MIN(last_maptouch.x, maptouch.x), MIN(last_maptouch.y, maptouch.y),
 			abs(last_maptouch.x - maptouch.x), abs(last_maptouch.y - maptouch.y) };
-		for (auto &sprite : _tiledMap1->getChildren())
+		for (auto &target_2 : soldierSprites)
 		{
-			if (!select_rect.containsPoint(sprite->getPosition()))
+			target_2->stopAllActions();
+			target_2->moveToPath.clear();
+			if (!select_rect.containsPoint(target_2->getPosition()))
 			{
-				if (sprite->getTag() == GameSceneNodeTagBuilding)
-				{
-					auto temp = dynamic_cast<Buildings *>(sprite);
-					temp->hideHpBar();
-					continue;
-				}
-				if (sprite->getTag() == GameSceneNodeTagSoldier)
-				{
-					auto temp = dynamic_cast<Soldiers *>(sprite);
-					temp->hideHpBar();
-					continue;
-				}
+				target_2->hideHpBar();
+				target_2->setifSelect(SELECT_OFF);
 				continue;
 			}
-			if (sprite->getTag() == GameSceneNodeTagBuilding)
+			target_2->displayHpBar();
+			target_2->setifSelect(SELECT_ON);
+		}
+		for (auto &target_1 : buildingSprites)
+		{
+			if (!select_rect.containsPoint(target_1->getPosition()))
 			{
-				auto temp = dynamic_cast<Buildings *>(sprite);
-				temp->displayHpBar();
+				target_1->hideHpBar();
+				continue;
 			}
-			if (sprite->getTag() == GameSceneNodeTagSoldier)
-			{
-				auto temp = dynamic_cast<Soldiers *>(sprite);
-				temp->displayHpBar();
-				temp->setifSelect(SELECT_ON);
-			}
+			target_1->displayHpBar();
 		}
 	}
 }
@@ -848,31 +867,31 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 	Director::getInstance()->getVisibleSize();
 	switch (keycode)
 	{
-		//W ä¸Šç§»
+		//W ÉÏÒÆ
 	case EventKeyboard::KeyCode::KEY_W:
 		mapCenter += Vec2(0, -100);
 		if (_tiledMap1->getBoundingBox().containsPoint(Vec2(0, 100) + Director::getInstance()->getVisibleSize()))
 			_tiledMap1->setPosition(mapCenter);
 		break;
-		//A å·¦ç§»
+		//A ×óÒÆ
 	case EventKeyboard::KeyCode::KEY_A:
 		mapCenter += Vec2(100, 0);
 		if (_tiledMap1->getBoundingBox().containsPoint(Vec2(-100, 0)))
 			_tiledMap1->setPosition(mapCenter);
 		break;
-		//S ä¸‹ç§»
+		//S ÏÂÒÆ
 	case EventKeyboard::KeyCode::KEY_S:
 		mapCenter += Vec2(0, 100);
 		if (_tiledMap1->getBoundingBox().containsPoint(Vec2(0, -100)))
 			_tiledMap1->setPosition(mapCenter);
 		break;
-		//D å³ç§»
+		//D ÓÒÒÆ
 	case EventKeyboard::KeyCode::KEY_D:
 		mapCenter += Vec2(-100, 0);
 		if (_tiledMap1->getBoundingBox().containsPoint(Vec2(100, 0) + Director::getInstance()->getVisibleSize()))
 			_tiledMap1->setPosition(mapCenter);
 		break;
-		//å…³é—­æˆ–å¼€å¯é¼ æ ‡ç§»åŠ¨å±å¹•
+		//¹Ø±Õ»ò¿ªÆôÊó±êÒÆ¶¯ÆÁÄ»
 	case EventKeyboard::KeyCode::KEY_P:
 		if (p_flag)
 		{
@@ -887,7 +906,7 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 		mouse_event->onMouseMove = CC_CALLBACK_1(GameScene::onMouseMove, this);
 		Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(mouse_event, 1);
 		break;
-		//æŒ‰ä¸‹controlé¼ æ ‡å¯ä»¥æˆ–è€…ä¸å¯ä»¥ç”»å‡ºçŸ©å½¢æ¡†
+		//°´ÏÂcontrolÊó±ê¿ÉÒÔ»òÕß²»¿ÉÒÔ»­³ö¾ØÐÎ¿ò
 	case EventKeyboard::KeyCode::KEY_CTRL:
 		if (ctrl_flag)
 		{
@@ -909,7 +928,7 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 		case EventKeyboard::KeyCode::KEY_X:
 		unit_manager->genCreateMessage(1, grid_map->getGridPoint(Vec2(Director::getInstance()->getVisibleSize().width / 2, Director::getInstance()->getVisibleSize().height / 2)));
 		break;
-		//ç©ºæ ¼ è¿”å›žåŸºåœ°
+		//¿Õ¸ñ ·µ»Ø»ùµØ
 		case EventKeyboard::KeyCode::KEY_SPACE:
 		focusOnBase();
 		break;
