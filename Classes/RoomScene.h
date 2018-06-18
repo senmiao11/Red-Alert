@@ -23,8 +23,6 @@ public:
 	virtual bool init();                                              //初始化场景
 	CREATE_FUNC(RoomScene);                                           //完成create方法代码的生成
 	void addMenuSprites();                                            //添加Menu
-	void popupChooseLayer();                                          //地图选择对话框
-	void chooseMapCallback(Node* pNode);                              //对话框按键的具体响应办法
 private:
 	Size visibleSize;                                                 //窗口尺寸
 	void addBackgroundSprite();                                       //添加场景背景

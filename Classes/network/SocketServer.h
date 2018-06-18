@@ -9,17 +9,14 @@
 #include <deque>
 #include "socket_message.h"
 #include "cocos2d.h"
+#include "GameMessageWrap.h"
 
 using asio::ip::tcp;
 
 typedef std::shared_ptr<tcp::socket> socket_ptr;
 
 class SocketServer;
-<<<<<<< HEAD
-class TcpConnection : public std::enable_shared_from_this<TcpConnection>
-=======
 class TcpConnection : public std::enable_shared_from_this<TcpConnection>          //管理单个连接
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 public:
 	typedef std::shared_ptr<TcpConnection> pointer;
@@ -34,10 +31,6 @@ private:
 	void handle_read_header(const asio::error_code& error);
 	void handle_read_body(const asio::error_code& error);
 	TcpConnection(asio::io_service& io_service, SocketServer* parent);;
-<<<<<<< HEAD
-	void check_timer();
-=======
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	void delete_from_parent();
 	tcp::socket socket_;
 	SocketServer* parent;
@@ -51,21 +44,6 @@ private:
 class SocketServer
 {
 public:
-<<<<<<< HEAD
-	//brief create a server on port number
-	//param port port number, default 8008
-	//return socket server
-	static SocketServer* create(int port = 8008);
-	//	~SocketServer() { acceptor_.close(); io_service_->stop(); }
-	void close();            // close the server
-	std::vector<TcpConnection::pointer> get_connection() const;       //return TcpConnection vector
-																	  //brief remove a connction, if there is a connction    param p tcp connection
-	void remove_connection(TcpConnection::pointer p);
-	void button_start();                                         //start the game
-	bool error() const;                                         //return if error occured
-	int connection_num() const;                                  //return total connction number
-private:
-=======
 	static SocketServer* create(int port = 8008);
 	void close();                                                     //关闭服务端
 	std::vector<TcpConnection::pointer> get_connection() const;       //返回TcpConnection vector
@@ -76,17 +54,12 @@ private:
 	
 private:
 	int connection_num_;
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	SocketServer(int port);
 	void start_accept();
 	void handle_accept(TcpConnection::pointer new_connection, const asio::error_code& error);
 	void loop_process();
 	tcp::acceptor acceptor_;
 	std::vector<TcpConnection::pointer> connections_;
-<<<<<<< HEAD
-	int connection_num_;
-=======
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	static asio::io_service* io_service_;
 	std::thread *thread_, *button_thread_{ nullptr };
 	std::mutex delete_mutex_;

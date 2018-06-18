@@ -829,7 +829,7 @@
   <object id="110" name="casern2" x="2713.33" y="2736" width="142.667" height="117.333"/>
   <object id="111" name="oreyard2" x="2714.67" y="2902.67" width="142.667" height="114.667"/>
   <object id="112" name="tankFactory2" x="3001.34" y="3062.67" width="142.667" height="116"/>
-  <object id="113" name="electricStation" x="3002.67" y="2897.33" width="145.333" height="114.667"/>
+  <object id="113" name="electricStation2" x="3002.67" y="2897.33" width="145.333" height="114.667"/>
   <object id="121" name="base4" x="24" y="26.6667" width="144" height="108"/>
   <object id="122" name="casern4" x="24" y="346.667" width="142.667" height="108"/>
   <object id="123" name="oreyard4" x="26.6667" y="182.667" width="140" height="110.667"/>

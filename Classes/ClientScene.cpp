@@ -147,10 +147,7 @@ void ClientScene::startSchedule(float f)
 		GameScene::playerid = socket_client_->camp();
 		log("%d", GameScene::playerid);
 		waitStart();
-<<<<<<< HEAD
-=======
 	}
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 }
 
 void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
@@ -170,11 +167,6 @@ void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
 			log("ip:%s, port:%d", ip.c_str(), port);
 			socket_client_ = SocketClient::create(ip, port);
 			schedule(schedule_selector(ClientScene::startSchedule), 0.1);
-<<<<<<< HEAD
-			//	std::async(&ClientMenu::wait_start, this);
-			//	wait_start();	
-=======
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 		}
 		break;
 	}

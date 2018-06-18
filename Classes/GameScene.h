@@ -13,8 +13,11 @@
 #include"network/SocketClient.h"
 #include"network/SocketServer.h"
 #include"network/socket_message.h"
+#include"network/GameManager.h"
+#include"network/GameMessage.pb.h"
 using namespace ui;
 USING_NS_CC;
+
 class MouseRect :public DrawNode
 {
 public:
@@ -29,8 +32,10 @@ public:
 
 class GameScene :public Layer
 {
+	friend class GameManager;
 	friend class Buildings;
 	friend class Soldiers;
+	friend class Notice;
 public:
 	static GameScene* create(SocketClient* _socket_client, SocketServer* _socket_server);
 	static Scene *createScene(SocketClient* _socket_client, SocketServer* _socket_server = nullptr);
@@ -43,27 +48,22 @@ public:
 	{
 		return _tiledMap1;
 	}
-<<<<<<< HEAD
 	static vector<Soldiers *> getSoldiers()
-=======
-	static void setMapType(int maptype);
-	static Rect getSelectRect()
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	{
 		return soldierSprites;
 	}
-<<<<<<< HEAD
-=======
-	static Rect select_rect;
+	static void setMapType(int maptype);
 	static int playerid ;
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
-
+	int playernum;
 
 private:
+	//EventListenerTouchOneByOne * touchBuildingListener;
 	//地图相关方法
 	EventListenerMouse * mouse_event;//地图移动的鼠标事件
 	void onMouseMove(Event *event);
 	bool p_flag = true;              //第一次按会关掉地图移动鼠标事件，再按可开启
+	void focusOn(Point pos);         //跳转至某点
+	void focusOnBase();              //跳转至基地
 
 	//键盘操作相关方法
 	EventListenerKeyboard * keyboard_listener;//各种键盘事件
@@ -87,14 +87,9 @@ private:
 	void minerReady(float dt);
 	void policemanReady(float dt);
 	void tankReady(float dt);
-<<<<<<< HEAD
-	static vector<Soldiers *> soldierSprites;//储存兵种
-	//兵种移动监听器
-	EventListenerTouchOneByOne *soldierMove;
-
-=======
 	void warriorReady(float dt);
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
+	static vector<Soldiers *> soldierSprites;//储存兵种					 
+	EventListenerTouchOneByOne *soldierMove; //兵种移动监听器
 
 	//金钱相关方法
 	void moneyUpdate(float dt);//实时刷新金钱
@@ -103,7 +98,7 @@ private:
 	static TMXTiledMap * _tiledMap1;  //瓦片地图
 	static int mapType;
 
-
+	GameManager * gamemanager;
 
 
 //Mouse Rect相关方法
@@ -119,18 +114,33 @@ private:
 	Rect mini_map_rect{};
 	Point last_touch{ 0, 0 };
 	Point crusor_position{ 0, 0 };
-<<<<<<< HEAD
 
 //network
 	SocketServer* socket_server = nullptr;
 	SocketClient* socket_client = nullptr;
+	unsigned long long frame_cnt = 0;
+	GameMessageSet msg_set;
+//check win or lose
+	bool start_flag = false;
+	bool end_flag = false;
+	Notice* notice = nullptr;
+	void win();
+	void lose();
+	void checkWinOrLose();                                        //判断胜利或失败
+
 };
-=======
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 
-//network
-	SocketServer* socket_server = nullptr;
-	SocketClient* socket_client = nullptr;
+class Notice : public cocos2d::LabelBMFont
+{
+public:
+	CREATE_FUNC(Notice);
+	void update(float f) override;
+	void displayNotice(std::string ntc, int _ntc_life);
+	void displayNotice(std::string ntc);
+	bool init() override;
+private:
+	int timer = 0;
+	int ntc_life = 0;
 };
 
 

@@ -75,9 +75,9 @@ typedef enum
 #define SELECT_OFF false
 
 #define MINER1 "soldiers/miner1.png"
-#define MIERN2 "soldiers/miner2.png"
-#define MIERN3 "soldiers/miner3.png"
-#define MIERN4 "soldiers/miner4.png"
+#define MINER2 "soldiers/miner2.png"
+#define MINER3 "soldiers/miner3.png"
+#define MINER4 "soldiers/miner4.png"
 #define POLICEMAN1 "soldiers/police1.png"
 #define POLICEMAN2 "soldiers/police2.png"
 #define POLICEMAN3 "soldiers/police3.png"
@@ -97,21 +97,19 @@ typedef enum
 #define MINER_POWER 20
 #define POLICEMAN_PRICE 150
 #define POLICEMAN_HEALTH 300
-<<<<<<< HEAD
 #define POLICEMAN_SPEED 0.3f
 #define POLICEMAN_ATK_RADIUS 80
 #define POLICEMAN_POWER 30
-=======
-#define POLICEMAN_SPEED 90
 #define WARRIOR_PRICE 220
 #define WARRIOR_HEALTH 370
-#define WARRIOR_SPEED 100
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
+#define WARRIOR_SPEED 0.5f
+#define WARRIOR_ATK_RADIUS 80
+#define WARRIOR_POWER 40
 #define TANK_PRICE 300
-#define TANK_HEALTH 450
-#define TANK_SPEED 0.2f
+#define TANK_HEALTH 500
+#define TANK_SPEED 0.25f
 #define TANK_ATK_RADIUS 80
 #define TANK_POWER 45
 
-
+#define KEY_FRAME 5
 #endif 

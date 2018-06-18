@@ -50,7 +50,6 @@ void Explosioneffect::updateRemove(float dt)
 	removeFromParent();
 }
 
-
 Soldiers::Soldiers(SoldierTypes soldierType)
 {
 	this->soldiertype = soldierType;
@@ -67,170 +66,73 @@ Soldiers::Soldiers(SoldierTypes soldierType)
 	this->ifAttack = false;
 }
 
-/*Soldiers::~Soldiers()
-{
-	CC_SAFE_RELEASE(sEnemy);
-	CC_SAFE_RELEASE(bEnemy);
-	CC_SAFE_RELEASE(attacker);
-}*/
-
-Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType)
+Soldiers * Soldiers::createWithSoldierTypes(SoldierTypes soldierType, char *soldierName)
 {
 	Soldiers *soldier = new Soldiers(soldierType);
-	const char *soldierName = "soldiername";
 	switch (soldierType)
 	{
-<<<<<<< HEAD
-		case START_MINER:
-		{
-			soldierName = MINER;
-			soldier->health = MINER_HEALTH;
-			soldier->price = MINER_PRICE;
-			soldier->ifselect = SELECT_OFF;
-			soldier->maxHealth = MINER_HEALTH;
-			soldier->speed = MINER_SPEED;
-			soldier->power = MINER_POWER;
-			soldier->atkRadius = MINER_ATK_RADIUS;
-			soldier->ifAttack = false;
-			break;
-		}
-		case START_POLICEMAN:
-		{
-			soldierName = POLICEMAN;
-			soldier->health = POLICEMAN_HEALTH;
-			soldier->price = POLICEMAN_PRICE;
-			soldier->ifselect = SELECT_OFF;
-			soldier->maxHealth = POLICEMAN_HEALTH;
-			soldier->speed = POLICEMAN_SPEED;
-			soldier->power = POLICEMAN_POWER;
-			soldier->atkRadius = POLICEMAN_ATK_RADIUS;
-			soldier->ifAttack = false;
-			break;
-		}
-		case START_TANK:
-		{
-			soldierName = TANK;
-			soldier->health = TANK_HEALTH;
-			soldier->price = TANK_PRICE;
-			soldier->ifselect = SELECT_OFF;
-			soldier->maxHealth = TANK_HEALTH;
-			soldier->speed = TANK_SPEED;
-			soldier->power = TANK_POWER;
-			soldier->atkRadius = TANK_ATK_RADIUS;
-			soldier->ifAttack = false;
-			break;
-		}
-			
-	    /*待添加*/
-		//已补充police.tank的health与price
-=======
 	case START_MINER:
 	{
-		soldierName = MINER1;
 		soldier->health = MINER_HEALTH;
 		soldier->price = MINER_PRICE;
 		soldier->ifselect = SELECT_OFF;
 		soldier->maxHealth = MINER_HEALTH;
 		soldier->speed = MINER_SPEED;
+		soldier->power = MINER_POWER;
+		soldier->atkRadius = MINER_ATK_RADIUS;
+		soldier->ifAttack = false;
 		break;
 	}
 	case START_POLICEMAN:
 	{
-		soldierName = POLICEMAN1;
 		soldier->health = POLICEMAN_HEALTH;
 		soldier->price = POLICEMAN_PRICE;
 		soldier->ifselect = SELECT_OFF;
 		soldier->maxHealth = POLICEMAN_HEALTH;
 		soldier->speed = POLICEMAN_SPEED;
+		soldier->power = POLICEMAN_POWER;
+		soldier->atkRadius = POLICEMAN_ATK_RADIUS;
+		soldier->ifAttack = false;
 		break;
 	}
 	case START_WARRIOR:
 	{
-		soldierName = WARRIOR1;
 		soldier->health = WARRIOR_HEALTH;
 		soldier->price = WARRIOR_PRICE;
 		soldier->ifselect = SELECT_OFF;
 		soldier->maxHealth = WARRIOR_HEALTH;
 		soldier->speed = WARRIOR_SPEED;
+		soldier->power = WARRIOR_POWER;
+		soldier->atkRadius = WARRIOR_ATK_RADIUS;
+		soldier->ifAttack = false;
 		break;
 	}
 	case START_TANK:
 	{
-		soldierName = TANK1;
 		soldier->health = TANK_HEALTH;
 		soldier->price = TANK_PRICE;
 		soldier->ifselect = SELECT_OFF;
 		soldier->maxHealth = TANK_HEALTH;
 		soldier->speed = TANK_SPEED;
+		soldier->power = TANK_POWER;
+		soldier->atkRadius = TANK_ATK_RADIUS;
+		soldier->ifAttack = false;
+		break;
 	}
-
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
-
 	}
 	if (soldier && soldier->initWithFile(soldierName))
 	{
 		soldier->autorelease();
-<<<<<<< HEAD
-		
-
 		auto body = PhysicsBody::createBox((soldier->getContentSize()) * 0.5);
 		body->setCategoryBitmask(0x01);
-=======
-		touchSoldierListener = EventListenerTouchOneByOne::create();
-		//touchSoldierListener->setSwallowTouches(true);
-		touchSoldierListener->onTouchBegan = [&](Touch *touch, Event *event)
-		{
-			log("soldier");
-			/*auto target = dynamic_cast<Soldiers *>(event->getCurrentTarget());
-			if (!target->getifSelect())
-			{
-			return false;
-			}*/
-			return true;
-		};
-		touchSoldierListener->onTouchEnded = [](Touch *touch, Event *event)
-		{
-			auto origin = Director::getInstance()->getVisibleOrigin();
-			//auto target = dynamic_cast<Soldiers *>(event->getCurrentTarget());
-			Rect rect = GameScene::getSelectRect();
-			for (auto &sprite : GameScene::gettiledMap()->getChildren())
-			{
-				/*if (!rect.containsPoint(sprite->getPosition()))
-				{
-				continue;
-				}*/
-				if (sprite->getTag() == GameSceneNodeTagSoldier)
-				{
-					auto target = dynamic_cast<Soldiers *>(sprite);
-					if (target->getifSelect())
-					{
-						auto pos1 = GameScene::gettiledMap()->convertTouchToNodeSpace(touch);
-						auto pos2 = target->getPosition();
-						float distance = sqrt(pow(pos1.x - pos2.x, 2) + pow(pos1.y - pos2.y, 2));
-						MoveTo *soldierMove = MoveTo::create(distance/target->speed, pos1);
-						target->runAction(soldierMove);
-						target->setifSelect(SELECT_OFF);
-					}
-				}
-			}
-		};
-
-		eventDispatcher = Director::getInstance()->getEventDispatcher();
-		eventDispatcher->addEventListenerWithSceneGraphPriority(touchSoldierListener, soldier);
-
-		auto body = PhysicsBody::createBox((soldier->getContentSize()));
-		body->setCategoryBitmask(0x02);
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 		body->setContactTestBitmask(0x02);
 		body->setCollisionBitmask(0x02);
 		soldier->setPhysicsBody(body);
-
 		return soldier;
 	}
 	CC_SAFE_DELETE(soldier);
 	return nullptr;
 }
-
 void Soldiers::soldierAutoMove()
 {
 	if (moveToPath.empty())
@@ -314,12 +216,11 @@ void Soldiers::attack()
 		bEnemy->setcurrentHealth(bEnemy->getcurrentHealth() - getPower());
 		bEnemy->displayHpBar();
 	}
-	
+
 }
 
 void Soldiers::update(float dt)
 {
-<<<<<<< HEAD
 	if (getcurrentHealth() <= 0)
 	{
 		auto explosion = Explosioneffect::create();
@@ -336,8 +237,8 @@ void Soldiers::update(float dt)
 	}
 	//if (getAttacker()/*getAttackerPower()*/)
 	//{
-		//setcurrentHealth(getcurrentHealth() - getAttacker()->getPower()/*getAttackerPower()*/);
-		//displayHpBar();
+	//setcurrentHealth(getcurrentHealth() - getAttacker()->getPower()/*getAttackerPower()*/);
+	//displayHpBar();
 	//}
 	if (!ifAttack)
 	{
@@ -353,11 +254,6 @@ void Soldiers::update(float dt)
 		attack();
 		attackCD = 30;
 	}
-=======
-	int x = vecPoint.x / 16;
-	int y = ((100 * 16) - vecPoint.y) / 16;
-	return Apoint(x, y);
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 }
 
 void Soldiers::createBar()
@@ -376,11 +272,9 @@ void Soldiers::displayHpBar()
 {
 	if (hpBar)
 	{
-		log("aksdhkjhuekkad");
 		hpBar->schedule(schedule_selector(Bar::update));
 		hpBar->setVisible(true);
 	}
-	log("askdksd");
 }
 
 void Soldiers::hideHpBar()

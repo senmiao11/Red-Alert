@@ -200,7 +200,7 @@ void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
 	{
 	case STRAT_GAME:
 	{
-		scheduleOnce(schedule_selector(MenuScene::jumpToRoomScene), 0.5);
+		popupChooseLayer();
 		break;
 	}
 	case INTRODUCTION:
@@ -238,4 +238,37 @@ void MenuScene::jumpToRoomScene(float dt)
 	auto sc = RoomScene::createScene();
 	auto reScene = TransitionFadeTR::create(0.5f, sc);
 	Director::getInstance()->pushScene(reScene);
+}
+
+void MenuScene::popupChooseLayer()
+{
+	//根据背景创建对话框
+	PopupLayer* popDialog = PopupLayer::create(DIALOG_BG);
+	//设置对话框大小
+	popDialog->setContentSize(CCSizeMake(350, 200));
+	//设置对话框标题，显示内容
+	popDialog->setTitle("提示", 18);
+	popDialog->setContentText("请选择地图", 22, 20, 100);
+	//在对话框中添加确定和取消的Menu按键，并设置各自的tag
+	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON, "地图1", 1);
+	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON, "地图2", 2);
+	//设置对话框的按键相应方法
+	popDialog->setCallbackFunc(this, callfuncN_selector(MenuScene::chooseMapCallback));
+	this->addChild(popDialog);
+}
+
+void MenuScene::chooseMapCallback(Node* pNode)
+{
+	if (pNode->getTag() == 1)
+	{
+		//选择地图一
+		GameScene::setMapType(1);
+		scheduleOnce(schedule_selector(MenuScene::jumpToRoomScene), 0.5);
+	}
+	else
+	{
+		//选择地图二
+		GameScene::setMapType(2);
+		scheduleOnce(schedule_selector(MenuScene::jumpToRoomScene), 0.5);
+	}
 }

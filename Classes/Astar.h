@@ -16,16 +16,13 @@ typedef enum
 	UNABLE,
 	START,
 	END,
-<<<<<<< HEAD
 	OCCUPATION
-=======
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 }flagType;
 
 class Apoint
 {
 private:
-	Apoint *parent;
+	Apoint * parent;
 
 public:
 	Apoint();
@@ -45,25 +42,14 @@ class Astar
 {
 	friend class GameScene;
 public:
-<<<<<<< HEAD
-=======
-
-	Astar(int _width, int _height, Apoint start, Apoint end);
-	void findPath();
-	vector<Apoint> getPath();
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 
 	Astar(int _width, int _height, Apoint start, Apoint end);
 	void findPath();
 	vector<Apoint> getPath();
 
+
 private:
 
-<<<<<<< HEAD
-private:
-
-=======
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	vector<Apoint *> openlist;
 	vector<Apoint *> closelist;
 	vector<vector<Apoint> > map_point;
@@ -71,18 +57,6 @@ private:
 	Apoint *end_point;
 	int width;
 	int height;
-	bool flag;
-
-	Apoint *nextPointByLeastF();
-	bool ifInOpenList(Apoint &nextPoint);
-	bool ifInCloseList(Apoint &nextPoint);
-	int calculateG(Apoint &currentPoint, Apoint &lastPoint);
-	int calculateH(Apoint &currentPoint, Apoint &end);
-	int calculateF(Apoint &point);
-	bool ifAbleReach(Apoint &nextPoint, Apoint &currentPoint);
-	void getSurroundingPoints(Apoint &currentPoint);
-
-public:
 
 
 	Apoint *nextPointByLeastF();

@@ -3,12 +3,7 @@
 
 asio::io_service* SocketServer::io_service_ = new asio::io_service;
 
-<<<<<<< HEAD
-
-TcpConnection::pointer TcpConnection::create(asio::io_service& io_service, SocketServer* parent)
-=======
 TcpConnection::pointer TcpConnection::create(asio::io_service& io_service, SocketServer* parent) 
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	return pointer(new TcpConnection(io_service, parent));
 }
@@ -83,11 +78,7 @@ void TcpConnection::do_close()
 	delete_from_parent();
 }
 
-<<<<<<< HEAD
-void TcpConnection::handle_read_header(const asio::error_code& error)
-=======
 void TcpConnection::handle_read_header(const asio::error_code& error)                               //¶ÁÏûÏ¢Í·
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	if (!error && read_msg_.decode_header())
 	{
@@ -174,17 +165,12 @@ bool SocketServer::error() const
 	return error_flag_;
 }
 
-<<<<<<< HEAD
-int SocketServer::connection_num() const
-=======
 int SocketServer::getconnection_num() const
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 {
 	return connections_.size();
 }
 
-SocketServer::SocketServer(int port) :
-	acceptor_(*io_service_, tcp::endpoint(tcp::v4(), port))
+SocketServer::SocketServer(int port) :acceptor_(*io_service_, tcp::endpoint(tcp::v4(), port))
 {
 	start_accept();
 }
@@ -206,11 +192,9 @@ void SocketServer::loop_process()
 				error_flag_ |= r->error();
 			ret.push_back(r->read_data());
 		}
-		/***************
 		auto game_msg = GameMessageWrap::combine_message(ret);
 		for (auto r : connections_)
 			r->write_data(game_msg);
-		*******************************/
 	}
 }
 
@@ -221,10 +205,6 @@ std::vector<TcpConnection::pointer> SocketServer::get_connection() const
 
 void SocketServer::remove_connection(TcpConnection::pointer p)
 {
-<<<<<<< HEAD
-	//		connections_.erase(std::remove(connections_.begin(), connections_.end(), p), connections_.end());
-=======
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	std::unique_lock<std::mutex> lock(delete_mutex_);
 	auto position = std::find(connections_.begin(), connections_.end(), p);
 	if (position == connections_.end())

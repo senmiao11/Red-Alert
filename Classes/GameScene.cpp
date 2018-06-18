@@ -22,17 +22,11 @@ void MouseRect::reset()
 
 int GameScene::Money;
 TMXTiledMap *GameScene::_tiledMap1;
-<<<<<<< HEAD
+int GameScene::mapType;
+int GameScene::playerid;
 vector<Buildings *> GameScene::buildingSprites;
 vector<Soldiers *> GameScene::soldierSprites;
 
-
-=======
-Rect GameScene::select_rect;
-int GameScene::mapType;
-int GameScene::playerid;
-
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 //Mouse Rect相关方法
 Rect GameScene::getvisionRect()
 {
@@ -81,17 +75,6 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 	
 	/************地图************/
 	//游戏地图
-<<<<<<< HEAD
-	_tiledMap1 = TMXTiledMap::create(GAMEMAP1);
-	_tiledMap1->setAnchorPoint(Vec2(0, 0));
-	_tiledMap1->setPosition(0, 0);
-	addChild(_tiledMap1, 0);
-	/*TMXLayer *colliableLayer = _tiledMap1->getLayer("CollidableLayer");
-	if (colliableLayer == nullptr)
-	{
-		log(" 11");
-	}
-=======
 	if (mapType == 1)
 	{
 		_tiledMap1 = TMXTiledMap::create(GAMEMAP1);
@@ -103,9 +86,7 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 	_tiledMap1->setAnchorPoint(Vec2(0, 0));
 	_tiledMap1->setPosition(0, 0);
 	addChild(_tiledMap1, 0);
-	//TMXLayer *colliableLayer = _tiledMap1->getLayer("CollidableLayer");
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
-	TMXObjectGroup *objectsGroup = _tiledMap1->objectGroupNamed("Objects");
+	/*TMXObjectGroup *objectsGroup = _tiledMap1->objectGroupNamed("Objects");
 	ValueVector objects = objectsGroup->getObjects();
 	for (auto obj : objects) 
 	{
@@ -125,10 +106,6 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 		sp->setPhysicsBody(phy);
 		_tiledMap1->addChild(sp);
 	}*/
-
-
-	//地图更新
-	schedule(schedule_selector(GameScene::update));
 	//地图移动的鼠标事件
 	mouse_event = EventListenerMouse::create();
 	mouse_event->onMouseMove = CC_CALLBACK_1(GameScene::onMouseMove, this);
@@ -148,8 +125,21 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 	mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
 
-<<<<<<< HEAD
-	///////////////////////////////////////////////////////////////////////
+	/*******************游戏管理器*****************/
+	playerid = socket_client->camp();
+	playernum = socket_client->total();
+	gamemanager = GameManager::create();
+	gamemanager->retain();
+	gamemanager->setMessageSet(&msg_set);
+	gamemanager->setTiledMap(_tiledMap1);
+	gamemanager->setSocketClient(socket_client);
+	gamemanager->setGameScene(this);
+	gamemanager->setPlayerID(socket_client->camp());
+	gamemanager->setPlayernum(socket_client->total());
+
+	schedule(schedule_selector(GameScene::update));
+
+	/*************************兵种移动************************/
 	soldierMove = EventListenerTouchOneByOne::create();
 	soldierMove->onTouchBegan = [this](Touch *touch, Event *event)
 	{
@@ -181,9 +171,6 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 			Apoint start(x, y);
 			//log("%f  %f", target->getPosition().x, target->getPosition().y);
 			//log("%d   %d", start.getX(), start.getY());
-			
-			
-			
 			Astar pathFinder(100, 100, start, end);
 			pathFinder.findPath();
 			vector<Apoint> path = pathFinder.getPath();
@@ -192,8 +179,6 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 				end.setX(path[path.size() - 2].getX());
 				end.setY(path[path.size() - 2].getY());
 			}
-			
-
 			for (auto it = path.begin(); it != path.end(); it++)
 			{
 				//log("%d,%d", it->getX(), it->getY());
@@ -205,131 +190,22 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 		}
 	};
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(soldierMove, _tiledMap1);
-	//////////////////////////////////////////////////////////////////////////////////
+	//通知
+	notice = Notice::create();
+	addChild(notice, 40);
+	notice->setAnchorPoint(Vec2(0, 0));
+	notice->setPosition(10, visibleSize.height / 2);
+	notice->setScale(0.7);
+	notice->schedule(schedule_selector(Notice::update));
+	gamemanager->setNotice(notice);
 
 
-	//创建一个基地精灵
-	Buildings *base = Buildings::creatWithBuildingTypes(START_BASE);
-	base->setAnchorPoint(Vec2(0, 0));
-	base->setScale(1);
-	base->setPosition(Vec2(16,16));
-	base->createBar();
-	_tiledMap1->addChild(base, 10, GameSceneNodeTagBuilding);
-	buildingSprites.push_back(base);
-
-=======
-	if (_socket_server)
-	{
-		int t = _socket_server->getconnection_num();
-		log("%d", t);
-	}
 	//创建基地
-	if ((_socket_server&&_socket_server->getconnection_num() >= 1)||(_socket_client&&_socket_client->total()>=1))
-	{
-		auto tiledmap = GameScene::gettiledMap();
-		auto group = tiledmap->getObjectGroup("Buildings");
-		ValueMap buildobj;
-		buildobj = group->getObject("base1");
-		float x1 = buildobj["x"].asFloat();
-		float y1 = buildobj["y"].asFloat();
-		float width1 = buildobj["width"].asFloat();
-		float height1 = buildobj["height"].asFloat();
-		PhysicsBody * phy1 = PhysicsBody::createBox(Size(width1, height1));
-		phy1->setDynamic(false);
-		Sprite * sp1 = Sprite::create();
-		sp1->setPosition(Vec2(x1, y1));
-		sp1->setAnchorPoint(ccp(0, 0));
-		sp1->setContentSize(Size(width1, height1));
-		sp1->setPhysicsBody(phy1);
-		_tiledMap1->addChild(sp1);
-		Buildings *base1 = Buildings::creatWithBuildingTypes(START_BASE);
-		base1->setAnchorPoint(Vec2(0, 0));
-		base1->setScale(1);
-		base1->setPosition(Vec2(16, 16));
-		base1->createBar();
-		base1->hpBar->setPosition(base1->hpBar->getPosition() - Vec2(10, 0));
-		_tiledMap1->addChild(base1, 10, GameSceneNodeTagBuilding);
-	}
-	if ((_socket_server&&_socket_server->getconnection_num() >= 2) || (_socket_client&&_socket_client->total() >= 2))
-	{
-		auto tiledmap = GameScene::gettiledMap();
-		auto group = tiledmap->getObjectGroup("Buildings");
-		ValueMap buildobj;
-		buildobj = group->getObject("base2");
-		float x2 = buildobj["x"].asFloat();
-		float y2 = buildobj["y"].asFloat();
-		float width2 = buildobj["width"].asFloat();
-		float height2 = buildobj["height"].asFloat();
-		PhysicsBody * phy2 = PhysicsBody::createBox(Size(width2, height2));
-		phy2->setDynamic(false);
-		Sprite * sp2 = Sprite::create();
-		sp2->setPosition(Vec2(x2, y2));
-		sp2->setAnchorPoint(ccp(0, 0));
-		sp2->setContentSize(Size(width2, height2));
-		sp2->setPhysicsBody(phy2);
-		_tiledMap1->addChild(sp2);
-		Buildings *base2 = Buildings::creatWithBuildingTypes(START_BASE);
-		base2->setAnchorPoint(Vec2(0, 0));
-		base2->setScale(1);
-		base2->setPosition(Vec2(x2, y2));
-		base2->createBar();
-		base2->hpBar->setPosition(base2->hpBar->getPosition() - Vec2(10, 0));
-		_tiledMap1->addChild(base2, 10, GameSceneNodeTagBuilding);
-	}
-	if ((_socket_server&&_socket_server->getconnection_num() >= 3) || (_socket_client&&_socket_client->total() >= 3))
-	{
-		auto tiledmap = GameScene::gettiledMap();
-		auto group = tiledmap->getObjectGroup("Buildings");
-		ValueMap buildobj;
-		buildobj = group->getObject("base3");
-		float x3 = buildobj["x"].asFloat();
-		float y3 = buildobj["y"].asFloat();
-		float width3 = buildobj["width"].asFloat();
-		float height3 = buildobj["height"].asFloat();
-		PhysicsBody * phy3 = PhysicsBody::createBox(Size(width3, height3));
-		phy3->setDynamic(false);
-		Sprite * sp3 = Sprite::create();
-		sp3->setPosition(Vec2(x3, y3));
-		sp3->setAnchorPoint(ccp(0, 0));
-		sp3->setContentSize(Size(width3, height3));
-		sp3->setPhysicsBody(phy3);
-		_tiledMap1->addChild(sp3);
-		Buildings *base3 = Buildings::creatWithBuildingTypes(START_BASE);
-		base3->setAnchorPoint(Vec2(0, 0));
-		base3->setScale(1);
-		base3->setPosition(Vec2(x3, y3));
-		base3->createBar();
-		base3->hpBar->setPosition(base3->hpBar->getPosition() - Vec2(10, 0));
-		_tiledMap1->addChild(base3, 10, GameSceneNodeTagBuilding);
-	}
-	if ((_socket_server&&_socket_server->getconnection_num() >= 4) || (_socket_client&&_socket_client->total() >= 4))
-	{
-		auto tiledmap = GameScene::gettiledMap();
-		auto group = tiledmap->getObjectGroup("Buildings");
-		ValueMap buildobj;
-		buildobj = group->getObject("base1");
-		float x4 = buildobj["x"].asFloat();
-		float y4 = buildobj["y"].asFloat();
-		float width4 = buildobj["width"].asFloat();
-		float height4 = buildobj["height"].asFloat();
-		PhysicsBody * phy4 = PhysicsBody::createBox(Size(width4, height4));
-		phy4->setDynamic(false);
-		Sprite * sp4 = Sprite::create();
-		sp4->setPosition(Vec2(x4, y4));
-		sp4->setAnchorPoint(ccp(0, 0));
-		sp4->setContentSize(Size(width4, height4));
-		sp4->setPhysicsBody(phy4);
-		_tiledMap1->addChild(sp4);
-		Buildings *base4 = Buildings::creatWithBuildingTypes(START_BASE);
-		base4->setAnchorPoint(Vec2(0, 0));
-		base4->setScale(1);
-		base4->setPosition(Vec2(x4, y4));
-		base4->createBar();
-		base4->hpBar->setPosition(base4->hpBar->getPosition() - Vec2(10, 0));
-		_tiledMap1->addChild(base4, 10, GameSceneNodeTagBuilding);
-	}
-	
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
+	auto _player_id = gamemanager->getPlayerID();
+	auto _id = gamemanager->getnextID();
+	gamemanager->produceBuildings(START_BASE,_player_id,_id);
+	gamemanager->genCreateBuildingMessage(START_BASE);
+	start_flag = true;
 	return true;
 }
 
@@ -422,11 +298,7 @@ void GameScene::onEnter()
 	
 
 	//创建矿工菜单
-<<<<<<< HEAD
-	MenuItemImage *soldierMenu1 = MenuItemImage::create(MINER, MINER, CC_CALLBACK_1(GameScene::soldiersCreate, this));
-=======
 	MenuItemImage *soldierMenu1 = MenuItemImage::create(MINER1, MINER1, CC_CALLBACK_1(GameScene::soldiersCreate, this));
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	soldierMenu1->setAnchorPoint(Vec2(0.5, 0.5));
 	soldierMenu1->setScale(1.2);
 	soldierMenu1->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - 200));
@@ -490,7 +362,6 @@ void GameScene::onEnter()
 	spriteContactListener = EventListenerPhysicsContact::create();
 	spriteContactListener->onContactBegin = [this](PhysicsContact &contact)
 	{
-		
 		Sprite *SpriteA = (Sprite *)(contact.getShapeA()->getBody()->getNode());
 		Sprite *SpriteB = (Sprite *)(contact.getShapeB()->getBody()->getNode());
 		if (!SpriteA || !SpriteB)
@@ -498,33 +369,31 @@ void GameScene::onEnter()
 			return false;
 		}
 		//此处为检测兵种接触
-<<<<<<< HEAD
 		/*if (SpriteA->getTag() == GameSceneNodeTagSoldier && SpriteB->getTag() == GameSceneNodeTagSoldier)
 		{
 			auto soldierSpriteA = dynamic_cast<Soldiers *>(SpriteA);
 			auto soldierSpriteB = dynamic_cast<Soldiers *>(SpriteB);
-
-			int ax = soldierSpriteA->getPosition().x / 16;
-			int ay = (100 * 16 - soldierSpriteA->getPosition().y) / 16;
-			float as = ax * 16 + CCRANDOM_MINUS1_1(16);
-			float at = (99.5 - ay) * 16 + CCRANDOM_MINUS1_1(16);
-			soldierSpriteA->stopAllActions();
-			MoveTo *Amoveto = MoveTo::create(0.1f, Vec2(as, at));
-			soldierSpriteA->runAction(Amoveto);
-			soldierSpriteA->soldierAutoMove();
-
-			int bx = soldierSpriteB->getPosition().x / 16;
-			int by = (100 * 16 - soldierSpriteB->getPosition().y) / 16;
-			float bs = bx * 16 + CCRANDOM_MINUS1_1(16);
-			float bt = (99.5 - by) * 16 + CCRANDOM_MINUS1_1(16);
-			soldierSpriteB->stopAllActions();
-			MoveTo *Bmoveto = MoveTo::create(0.1f, Vec2(bs, bt));
-			soldierSpriteB->runAction(Bmoveto);
-			soldierSpriteB->soldierAutoMove();
-
-			
+			if (!soldierSpriteA->getifSelect() && !soldierSpriteB->getifSelect())
+			{
+				//通过随机数重新设置位置
+				Size s = soldierSpriteA->getContentSize();
+				Vec2 rand = soldierSpriteB->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
+				soldierSpriteA->setPosition(rand);
+				return false;
+			}
+			if (!soldierSpriteA->getifSelect() && soldierSpriteB->getifSelect())
+			{
+			Size s = soldierSpriteA->getContentSize();
+			Vec2 rand = soldierSpriteA->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
+			soldierSpriteB->setPosition(rand);
+			return false;
+			}
+			return false;
+			Size s = soldierSpriteA->getContentSize();
+			Vec2 rand = soldierSpriteB->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
+			soldierSpriteA->setPosition(rand);
+			return false;
 		}*/
-
 		if (SpriteA->getTag() == GameSceneNodeTagSoldier && SpriteB->getTag() == GameSceneNodeTagBuilding)
 		{
 			auto soldierSpriteA = dynamic_cast<Soldiers *>(SpriteA);
@@ -548,45 +417,6 @@ void GameScene::onEnter()
 			soldierSpriteB->runAction(Bmoveto);
 		}
 		return false;
-=======
-		if (SpriteA->getTag() == GameSceneNodeTagSoldier && SpriteB->getTag() == GameSceneNodeTagSoldier)
-		{
-			auto soldierSpriteA = dynamic_cast<Soldiers *>(SpriteA);
-			auto soldierSpriteB = dynamic_cast<Soldiers *>(SpriteB);
-			if (!soldierSpriteA->getifSelect() && !soldierSpriteB->getifSelect())
-			{
-				//通过随机数重新设置位置
-				Size s = soldierSpriteA->getContentSize();
-				Vec2 rand = soldierSpriteB->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
-				soldierSpriteA->setPosition(rand);
-				return false;
-			}
-			/*if (!soldierSpriteA->getifSelect() && soldierSpriteB->getifSelect())
-			{
-			Size s = soldierSpriteA->getContentSize();
-			Vec2 rand = soldierSpriteA->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
-			soldierSpriteB->setPosition(rand);
-			return false;
-			}
-			return false;*/
-			/*Size s = soldierSpriteA->getContentSize();
-			Vec2 rand = soldierSpriteB->getPosition() + (Vec2(s.width, s.height) * (1 + CCRANDOM_0_1()));
-			soldierSpriteA->setPosition(rand);
-			return false;*/
-		}
-		if (SpriteA->getTag() == GameSceneNodeTagBuilding && SpriteB->getTag() == GameSceneNodeTagSoldier)
-		{
-			auto soldierSpriteA = dynamic_cast<Soldiers *>(SpriteA);
-			auto soldierSpriteB = dynamic_cast<Buildings *>(SpriteB);
-
-		}
-		return false;
-	};
-
-	spriteContactListener->onContactSeparate = [this](PhysicsContact &contact)
-	{
-		return;
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	};
 	_eventDispatcher->addEventListenerWithFixedPriority(spriteContactListener, 20);
 
@@ -641,20 +471,6 @@ void GameScene::onExit()
 //返回MenuScene
 void GameScene::backToMenuScene(Ref *pSender)
 {
-	if (socket_server)
-	{
-		socket_server->close();
-<<<<<<< HEAD
-		socket_server = nullptr;
-
-=======
-		//delete socket_server;
-		socket_server = nullptr;
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
-	}
-	socket_client->close();
-	delete socket_client;
-	socket_client = nullptr;
 	Scene *sc = Scene::create();
 	auto layer = MenuScene::create();
 	sc->addChild(layer);
@@ -673,16 +489,58 @@ void GameScene::buildingsCreate(Ref *pSender)
 		{
 			if (Money < CASERN_PRICE)//判断钱是否足够
 			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 1 &&( _tiledMap1->getChildByName("casern1") || !_tiledMap1->getChildByName("base1")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 2 && (_tiledMap1->getChildByName("casern2") || !_tiledMap1->getChildByName("base2")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 3 && (_tiledMap1->getChildByName("casern3") || !_tiledMap1->getChildByName("base3")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 4 && (_tiledMap1->getChildByName("casern4") || !_tiledMap1->getChildByName("base4")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
 			Money -= CASERN_PRICE;
 			//建筑物准备定时器，每种建筑物准备时间不同
 			this->scheduleOnce(schedule_selector(GameScene::casernReady), 2.0f);
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 			break;
 		}
 		case START_ELECTRICSTATION:
 		{
 			if (Money < ELECTRICSTATION_PRICE)//判断钱是否足够
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 1 &&( _tiledMap1->getChildByName("electricStation1")||!_tiledMap1->getChildByName("base1")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 2 && (_tiledMap1->getChildByName("electricStation2") || !_tiledMap1->getChildByName("base2")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 3 && (_tiledMap1->getChildByName("electricStation3") || !_tiledMap1->getChildByName("base3")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 4 && (_tiledMap1->getChildByName("electricStation4") || !_tiledMap1->getChildByName("base4")))
 			{
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
@@ -700,6 +558,26 @@ void GameScene::buildingsCreate(Ref *pSender)
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
+			if (playerid == 1 &&( _tiledMap1->getChildByName("tankFactory1") || !_tiledMap1->getChildByName("base1")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 2 && (_tiledMap1->getChildByName("tankFactory2") || !_tiledMap1->getChildByName("base2")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 3 && (_tiledMap1->getChildByName("tankFactory3") || !_tiledMap1->getChildByName("base3")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 4 && (_tiledMap1->getChildByName("tankFactory4") || !_tiledMap1->getChildByName("base4")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
 			Money -= TANKFACTORY_PRICE;
 			this->scheduleOnce(schedule_selector(GameScene::tankFactoryReady), 2.5f);
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
@@ -708,6 +586,26 @@ void GameScene::buildingsCreate(Ref *pSender)
 		case START_OREYARD:
 		{
 			if (Money < OREYARD_PRICE)         //判断钱是否足够
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 1 &&( _tiledMap1->getChildByName("oreyard1") || !_tiledMap1->getChildByName("base1")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 2 && (_tiledMap1->getChildByName("oreyard2") || !_tiledMap1->getChildByName("base2")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 3 && (_tiledMap1->getChildByName("oreyard3") || !_tiledMap1->getChildByName("base3")))
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+				break;
+			}
+			if (playerid == 4 && (_tiledMap1->getChildByName("oreyard4") || !_tiledMap1->getChildByName("base4")))
 			{
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
@@ -727,7 +625,27 @@ void GameScene::soldiersCreate(Ref *pSender)
 	{
 	case START_MINER:
 	{
-		if (Money < MINER_PRICE || !_tiledMap1->getChildByName("oreYard"))
+		if (Money < MINER_PRICE )
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 1 && (!_tiledMap1->getChildByName("oreyard1") || !_tiledMap1->getChildByName("base1")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 2 && (!_tiledMap1->getChildByName("oreyard2") || !_tiledMap1->getChildByName("base2")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 3 && (!_tiledMap1->getChildByName("oreyard3") || !_tiledMap1->getChildByName("base3")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 4 && (!_tiledMap1->getChildByName("oreyard4") || !_tiledMap1->getChildByName("base4")))
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
@@ -740,7 +658,27 @@ void GameScene::soldiersCreate(Ref *pSender)
 	}
 	case START_POLICEMAN:
 	{
-		if (Money < POLICEMAN_PRICE || !_tiledMap1->getChildByName("casern"))
+		if (Money < POLICEMAN_PRICE )
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 1 && (!_tiledMap1->getChildByName("casern1") || !_tiledMap1->getChildByName("base1")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 2 && (!_tiledMap1->getChildByName("casern2") || !_tiledMap1->getChildByName("base2")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 3 && (!_tiledMap1->getChildByName("casern3") || !_tiledMap1->getChildByName("base3")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 4 && (!_tiledMap1->getChildByName("casern4") || !_tiledMap1->getChildByName("base4")))
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
@@ -753,7 +691,27 @@ void GameScene::soldiersCreate(Ref *pSender)
 	}
 	case START_TANK:
 	{
-		if (Money < TANK_PRICE || !_tiledMap1->getChildByName("tankFactory"))
+		if (Money < TANK_PRICE )
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 1 &&( !_tiledMap1->getChildByName("tankFactory1") || !_tiledMap1->getChildByName("base1")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 2 && (!_tiledMap1->getChildByName("tankFactory2") || !_tiledMap1->getChildByName("base2")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 3 && (!_tiledMap1->getChildByName("tankFactory3") || !_tiledMap1->getChildByName("base3")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 4 && (!_tiledMap1->getChildByName("tankFactory4") || !_tiledMap1->getChildByName("base4")))
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
@@ -763,11 +721,29 @@ void GameScene::soldiersCreate(Ref *pSender)
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 		break;
 	}
-<<<<<<< HEAD
-=======
 	case START_WARRIOR:
 	{
-		if (Money < WARRIOR_PRICE || !_tiledMap1->getChildByName("casern"))
+		if (Money < WARRIOR_PRICE )
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 1 &&( !_tiledMap1->getChildByName("casern1") || !_tiledMap1->getChildByName("base1")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 2 && (!_tiledMap1->getChildByName("casern2") || !_tiledMap1->getChildByName("base2")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 3 && (!_tiledMap1->getChildByName("casern3") || !_tiledMap1->getChildByName("base3")))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+			break;
+		}
+		if (playerid == 4 && (!_tiledMap1->getChildByName("casern4") || !_tiledMap1->getChildByName("base4")))
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
@@ -777,143 +753,68 @@ void GameScene::soldiersCreate(Ref *pSender)
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 		break;
 	}
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	}
 }
 
 //兵种绘制
 void GameScene::minerReady(float dt)
 {
-	//通过Soldiers类来创建士兵
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto miner = Soldiers::createWithSoldierTypes(START_MINER);
-	miner->setAnchorPoint(Vec2(0.5, 0.5));
-	miner->setScale(1.2);
-	float soldiers_x = miner->getContentSize().width;
-	float soldiers_y = miner->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("oreYard")->getContentSize();
-	Vec2 position = _tiledMap1->getChildByName("oreYard")->getPosition() + Vec2(80, 0);
-	miner->setPosition(position);
-	//miner->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
-	miner->setName("miner");
-	miner->createBar();
-	_tiledMap1->addChild(miner, 10, GameSceneNodeTagSoldier);
-	soldierSprites.push_back(miner);
+	auto _player_id = gamemanager->getPlayerID();
+	auto _id = gamemanager->getnextID();
+	gamemanager->produceSoldiers(START_MINER,_player_id,_id);
+	gamemanager->genCreateSoldierMessage(START_MINER);
 }
 void GameScene::policemanReady(float dt)
 {
-	//通过Soldiers类来创建士兵
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto policeman = Soldiers::createWithSoldierTypes(START_POLICEMAN);
-	policeman->setAnchorPoint(Vec2(0.5, 0.5));
-	policeman->setScale(1.2);
-	float soldiers_x = policeman->getContentSize().width;
-	float soldiers_y = policeman->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("casern")->getContentSize();
-	Vec2 position = _tiledMap1->getChildByName("casern")->getPosition() + Vec2(80, 0);
-	policeman->setPosition(position);
-	//policeman->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
-	policeman->setName("policeman");
-	policeman->createBar();
-	_tiledMap1->addChild(policeman, 10, GameSceneNodeTagSoldier);
-	soldierSprites.push_back(policeman);
+	auto _player_id = gamemanager->getPlayerID();
+	auto _id = gamemanager->getnextID();
+	gamemanager->produceSoldiers(START_POLICEMAN,_player_id, _id);
+	gamemanager->genCreateSoldierMessage(START_POLICEMAN);
 }
 void GameScene::warriorReady(float dt)
 {
-	//通过Soldiers类来创建士兵
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto warrior = Soldiers::createWithSoldierTypes(START_WARRIOR);
-	warrior->setAnchorPoint(Vec2(0.5, 0.5));
-	warrior->setScale(1.2);
-	float soldiers_x = warrior->getContentSize().width;
-	float soldiers_y = warrior->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("casern")->getContentSize() * 0.3;
-	Vec2 position = _tiledMap1->getChildByName("casern")->getPosition() + Vec2(s.width, 0);
-	warrior->setPosition(position);
-	warrior->setName("warrior");
-	warrior->createBar();
-	_tiledMap1->addChild(warrior, 10, GameSceneNodeTagSoldier);
+	auto _player_id = gamemanager->getPlayerID();
+	auto _id = gamemanager->getnextID();
+	gamemanager->produceSoldiers(START_WARRIOR, _player_id, _id);
+	gamemanager->genCreateSoldierMessage(START_WARRIOR);
 }
 void GameScene::tankReady(float dt)
 {
-	//通过Soldiers类来创建士兵
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto tank = Soldiers::createWithSoldierTypes(START_TANK);
-	tank->setAnchorPoint(Vec2(0.5, 0.5));
-	tank->setScale(1.2);
-	float soldiers_x = tank->getContentSize().width;
-	float soldiers_y = tank->getContentSize().height;
-	Size s = _tiledMap1->getChildByName("tankFactory")->getContentSize();
-	Vec2 position = _tiledMap1->getChildByName("tankFactory")->getPosition() + Vec2(80, 0);
-	tank->setPosition(position);
-	//tank->setPosition(Vec2(visibleSize.width - soldiers_x, visibleSize.height - soldiers_y / 6));
-	tank->setName("tank");
-	tank->createBar();
-	_tiledMap1->addChild(tank, 10, GameSceneNodeTagSoldier);
-	soldierSprites.push_back(tank);
+	auto _player_id = gamemanager->getPlayerID();
+	auto _id = gamemanager->getnextID();
+	gamemanager->produceSoldiers(START_TANK, _player_id, _id);
+	gamemanager->genCreateSoldierMessage(START_TANK);
 }
-
 
 //建筑物绘制
 void GameScene::casernReady(float dt)
 {
-	//通过Buildings类来创建建筑物
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto casern = Buildings::creatWithBuildingTypes(START_CASERN);
-	casern->setAnchorPoint(Vec2(0, 0));
-	casern->setScale(1);
-	float building_x = casern->getContentSize().width;
-	float building_y = casern->getContentSize().height;
-	casern->setPosition(Vec2(16, 176));
-	casern->setName("casern");
-	casern->createBar();
-	_tiledMap1->addChild(casern, 10, GameSceneNodeTagBuilding);
-	buildingSprites.push_back(casern);
+	auto _player_id = gamemanager->getPlayerID();
+	auto _id = gamemanager->getnextID();
+	gamemanager->produceBuildings(START_CASERN, _player_id, _id);
+	gamemanager->genCreateBuildingMessage(START_CASERN);
 }
+
 void GameScene::electricStationReady(float dt)
 {
-	//通过Buildings类来创建建筑物
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto electricStation = Buildings::creatWithBuildingTypes(START_ELECTRICSTATION);
-	electricStation->setAnchorPoint(Vec2(0, 0));
-	electricStation->setScale(1);
-	float building_x = electricStation->getContentSize().width;
-	float building_y = electricStation->getContentSize().height;
-	electricStation->setPosition(Vec2(112, 176));
-	electricStation->setName("electricStation");
-	electricStation->createBar();
-	_tiledMap1->addChild(electricStation, 10, GameSceneNodeTagBuilding);
-	buildingSprites.push_back(electricStation);
+	auto _player_id = gamemanager->getPlayerID();
+	auto _id = gamemanager->getnextID();
+	gamemanager->produceBuildings(START_ELECTRICSTATION, _player_id, _id);
+	gamemanager->genCreateBuildingMessage(START_ELECTRICSTATION);
 }
 void GameScene::tankFactoryReady(float dt)
 {
-	//通过Building类来创建建筑物
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto tankFactory = Buildings::creatWithBuildingTypes(START_TANKFACTORY);
-	tankFactory->setAnchorPoint(Vec2(0, 0));
-	tankFactory->setScale(1);
-	float building_x = tankFactory->getContentSize().width;
-	float building_y = tankFactory->getContentSize().height;
-	tankFactory->setPosition(Vec2(112, 16));
-	tankFactory->setName("tankFactory");
-	tankFactory->createBar();
-	_tiledMap1->addChild(tankFactory, 10, GameSceneNodeTagBuilding);
-	buildingSprites.push_back(tankFactory);
+	auto _player_id = gamemanager->getPlayerID();
+	auto _id = gamemanager->getnextID();
+	gamemanager->produceBuildings(START_TANKFACTORY, _player_id, _id);
+	gamemanager->genCreateBuildingMessage(START_TANKFACTORY);
 }
 void GameScene::oreYardReady(float dt)
 {
-	//通过Building类来创建建筑物
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	auto oreYard = Buildings::creatWithBuildingTypes(START_OREYARD);
-	oreYard->setAnchorPoint(Vec2(0, 0));
-	oreYard->setScale(1);
-	float building_x = oreYard->getContentSize().width;
-	float building_y = oreYard->getContentSize().height;
-	oreYard->setPosition(Vec2(16,96));
-	oreYard->setName("oreYard");
-	oreYard->createBar();
-	_tiledMap1->addChild(oreYard, 10, GameSceneNodeTagBuilding);
-	buildingSprites.push_back(oreYard);
+	auto _player_id = gamemanager->getPlayerID();
+	auto _id = gamemanager->getnextID();
+	gamemanager->produceBuildings(START_OREYARD, _player_id, _id);
+	gamemanager->genCreateBuildingMessage(START_OREYARD);
 }
 
 void GameScene::moneyUpdate(float dt)
@@ -941,6 +842,7 @@ void GameScene::moneyUpdate(float dt)
 
 void GameScene::update(float dt)
 {
+	frame_cnt++;
 	scrollMap();
 	for (auto &s : soldierSprites)
 	{
@@ -957,6 +859,11 @@ void GameScene::update(float dt)
 			continue;
 		}
 		b->schedule(schedule_selector(Buildings::update));
+	}
+	if (frame_cnt % KEY_FRAME == 0 && start_flag)
+	{
+		gamemanager->updateGameState();
+		checkWinOrLose();
 	}
 }
 
@@ -1129,19 +1036,10 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEv
 		mouseRectListener->onTouchEnded = CC_CALLBACK_2(GameScene::mouseRectOnTouchEnded, this);
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseRectListener, this);
 		break;
-<<<<<<< HEAD
-		/*
-		//X
-		case EventKeyboard::KeyCode::KEY_X:
-		unit_manager->genCreateMessage(1, grid_map->getGridPoint(Vec2(Director::getInstance()->getVisibleSize().width / 2, Director::getInstance()->getVisibleSize().height / 2)));
-		break;
 		//空格 返回基地
-		case EventKeyboard::KeyCode::KEY_SPACE:
+	case EventKeyboard::KeyCode::KEY_SPACE:
 		focusOnBase();
 		break;
-		*/
-=======
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	default:
 		break;
 	}
@@ -1159,4 +1057,149 @@ void GameScene::setMapType(int maptype)
 		mapType = 2;
 	}
 }
+
+void GameScene::focusOn(Point pos)
+{
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 map_vec = pos - visibleSize / 2;
+	if (_tiledMap1->getBoundingBox().size.height < map_vec.y + visibleSize.height)
+		map_vec.y = _tiledMap1->getBoundingBox().size.height - visibleSize.height;
+	if (_tiledMap1->getBoundingBox().size.width < map_vec.x + visibleSize.width)
+		map_vec.x = _tiledMap1->getBoundingBox().size.width - visibleSize.width;
+	if (map_vec.x < 0)
+		map_vec.x = 0;
+	if (map_vec.y < 0)
+		map_vec.y = 0;
+	_tiledMap1->setPosition(Point(0, 0) - map_vec);
+}
+
+void GameScene::focusOnBase()
+{
+	if (playerid == 1)
+	{
+		focusOn(Vec2(0, 0));
+	}
+	if (playerid == 2)
+	{
+		focusOn(Vec2(1600, 0));
+	}
+	if (playerid == 3)
+	{
+		focusOn(Vec2(1600, 1600));
+	}
+	if (playerid == 4)
+	{
+		focusOn(Vec2(0, 1600));
+	}
+}
+
+void GameScene::win()
+{
+	log("win");
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	auto win_label = LabelBMFont::create("You Win!", "fonts/NoticeFont.fnt");
+	win_label->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y + visibleSize.height - win_label->getContentSize().height));
+	addChild(win_label, 100);
+	notice->displayNotice("You Win!");
+	end_flag = true;
+}
+
+void GameScene::lose()
+{
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	auto lose_label = LabelBMFont::create("You Lose!", "fonts/NoticeFont.fnt");
+	lose_label->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y + visibleSize.height - lose_label->getContentSize().height));
+	addChild(lose_label, 100);
+	notice->displayNotice("You Lose");
+	end_flag = true;
+}
+
+void GameScene::checkWinOrLose()
+{
+	int buildingnum = 0;
+	if (_tiledMap1->getChildByName("base1"))
+	{
+		buildingnum++;
+	}
+	if (_tiledMap1->getChildByName("base2"))
+	{
+		buildingnum++;
+	}
+	if (_tiledMap1->getChildByName("base3"))
+	{
+		buildingnum++;
+	}
+	if (_tiledMap1->getChildByName("base4"))
+	{
+		buildingnum++;
+	}
+	if (playerid == 1 && !_tiledMap1->getChildByName("base1"))
+	{
+		lose();
+	}
+	if (playerid == 2 && !_tiledMap1->getChildByName("base2"))
+	{
+		lose();
+	}
+	if (playerid == 3 && !_tiledMap1->getChildByName("base3"))
+	{
+		lose();
+	}
+	if (playerid == 4 && !_tiledMap1->getChildByName("base4"))
+	{
+		lose();
+	}
+	if (playerid == 1 && _tiledMap1->getChildByName("base1") && buildingnum == 1 && playernum >= 2)
+	{
+		win();
+	}
+	if (playerid == 2 && _tiledMap1->getChildByName("base2") && buildingnum == 1 && playernum >= 2)
+	{
+		win();
+	}
+	if (playerid == 3 && _tiledMap1->getChildByName("base3") && buildingnum == 1 && playernum >= 2)
+	{
+		win();
+	}
+	if (playerid == 4 && _tiledMap1->getChildByName("base4") && buildingnum == 1 && playernum >= 2)
+	{
+		win();
+	}
+}
+
+void Notice::update(float f)
+{
+	if (++timer == ntc_life)
+	{
+		setString("");
+		ntc_life = 0;
+		timer = 0;
+		unschedule(schedule_selector(Notice::update));
+	}
+}
+void Notice::displayNotice(std::string ntc, int _ntc_life)
+{
+	setString(ntc);
+	ntc_life = _ntc_life;
+	timer = 0;
+	if (!isScheduled(schedule_selector(Notice::update)))
+		schedule(schedule_selector(Notice::update));
+}
+void Notice::displayNotice(std::string ntc)
+{
+	setString(ntc);
+	ntc_life = 0;
+	timer = 0;
+	if (isScheduled(schedule_selector(Notice::update)))
+		unschedule(schedule_selector(Notice::update));
+}
+bool Notice::init()
+{
+	ntc_life = 100;
+	return true;
+}
+
+
 	

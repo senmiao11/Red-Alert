@@ -1,0 +1,22 @@
+﻿
+syntax="proto3";
+
+message GameMessage
+{
+	enum CmdCode
+	{
+		EMP = 0;
+		CRTB = 1;
+		CRTS = 2;
+	}
+	CmdCode cmd_code = 1;
+	int32 playerid = 2;              //玩家id
+	int32 id = 3;                    //单位id 
+	int32 btype = 4 ;                //建筑物类型
+	int32 stype = 5 ;                //兵种类型
+}
+
+message GameMessageSet 
+{
+    repeated GameMessage game_message = 1;
+}

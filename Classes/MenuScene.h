@@ -30,6 +30,8 @@ public:
 	void popupQuitLayer();                                            //创建对话框，设置类型与显示内容
 	void quitButtonCallback(Node* pNode);                             //对话框按键的具体响应办法
 	void menuMusicCallBack(cocos2d::Ref* pSender);
+	void popupChooseLayer();                                          //地图选择对话框
+	void chooseMapCallback(Node* pNode);                              //对话框按键的具体响应办法
 private:
 	Size visibleSize;                                                 //窗口尺寸
 	void addBackgroundSprite();                                       //添加场景背景

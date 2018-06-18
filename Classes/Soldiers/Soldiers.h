@@ -6,9 +6,9 @@
 #include"cocos2d.h"
 #include"ConstUtil.h"
 #include"GameScene.h"
-#include"Buildings/Buildings.h"
 #include"Bar.h"
 #include"Astar.h"
+#include"network/GameManager.h"
 USING_NS_CC;
 
 class Attackeffect :public ParticleFire
@@ -29,7 +29,6 @@ private:
 
 class Explosioneffect :public ParticleFire
 {
-<<<<<<< HEAD
 public:
 	bool init();
 	CREATE_FUNC(Explosioneffect);
@@ -37,70 +36,51 @@ private:
 	void updateRemove(float dt);
 };
 
+
 class Soldiers :public Sprite
 {
-	friend class Buildings;
-=======
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	friend class Bar;
 	friend class Astar;
 	friend class Apoint;
+	friend class Buildings;
+	friend class GameManager;
 public:
 	Soldiers(SoldierTypes soldierType);        //通过枚举类来判段需产生什么建筑物
-<<<<<<< HEAD
-	//~Soldiers();
-	static Soldiers *createWithSoldierTypes(SoldierTypes soldierType);
-	
+	static Soldiers *createWithSoldierTypes(SoldierTypes soldierType, char *soldierName);
 	void update(float dt);
-=======
-	static Soldiers *createWithSoldierTypes(SoldierTypes soldierType);
-
-
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
-private:
-	CC_SYNTHESIZE(SoldierTypes, soldiertype, SoldierType);
-	CC_SYNTHESIZE(int, health, currentHealth);
-	CC_SYNTHESIZE(int, price, Price);
-	CC_SYNTHESIZE(bool, ifselect, ifSelect);
-	CC_SYNTHESIZE(int, maxHealth, MaxHealth);
-<<<<<<< HEAD
-	CC_SYNTHESIZE(float, speed, Speed);
-	CC_SYNTHESIZE(int, power, Power);
-	CC_SYNTHESIZE(int, atkRadius, AtkRadius);
-	
-private:
-	CC_SYNTHESIZE(bool, ifAttack, IfAttack);
-	int attackCD = 30;
-	CC_SYNTHESIZE(Soldiers *, sEnemy, SoldierEnemy);
-	CC_SYNTHESIZE(Buildings *, bEnemy, BuildingEnemy);
-	CC_SYNTHESIZE_RETAIN(Soldiers *, attacker, Attacker);
-	//CC_SYNTHESIZE(int, attackerPower, AttackerPower);
-public:
 	void findEnemy();
 	void attack();
-
 
 	//移动相关方法
 	vector<Vec2> moveToPath;
 	void soldierAutoMove();
-
-=======
-	CC_SYNTHESIZE(int, speed, Speed);
-	//兵种监听器
-	static EventListenerTouchOneByOne *touchSoldierListener;
-	static EventDispatcher * eventDispatcher;
-
-	//像素坐标转换成瓦片坐标
-	static Apoint turnToApoint(Vec2 vecPoint);
->>>>>>> 34360dbd6820c2083d37348657fa6d8677657151
 	//血条
 	Bar *hpBar = nullptr;
 	void createBar();
 	void displayHpBar();
 	void hideHpBar();
+
+private:
+	int attackCD = 30;
+	CC_SYNTHESIZE(SoldierTypes, soldiertype, SoldierType);
+	CC_SYNTHESIZE(int, health, currentHealth);
+	CC_SYNTHESIZE(int, price, Price);
+	CC_SYNTHESIZE(bool, ifselect, ifSelect);
+	CC_SYNTHESIZE(int, maxHealth, MaxHealth);
+	CC_SYNTHESIZE(float, speed, Speed);
+	CC_SYNTHESIZE(int, player_id, playerID);
+	CC_SYNTHESIZE(int, id, ID);
+	CC_SYNTHESIZE(int, power, Power);
+	CC_SYNTHESIZE(int, atkRadius, AtkRadius);
+	CC_SYNTHESIZE(bool, ifAttack, IfAttack);
+	CC_SYNTHESIZE(Soldiers *, sEnemy, SoldierEnemy);
+	CC_SYNTHESIZE(Buildings *, bEnemy, BuildingEnemy);
+	CC_SYNTHESIZE_RETAIN(Soldiers *, attacker, Attacker);
+	GameManager * gamemanager;
+
 };
 
 
-#endif //!__Soldiers_H_
+#endif    //!__Soldiers_H_
 
 
