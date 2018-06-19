@@ -3,7 +3,6 @@
 #define __Soldiers_H_
 #include"cocos2d.h"
 #include<iostream>
-#include"cocos2d.h"
 #include"ConstUtil.h"
 #include"GameScene.h"
 #include"Bar.h"
@@ -50,6 +49,8 @@ public:
 	void update(float dt);
 	void findEnemy();
 	void attack();
+	vector<Soldiers *> &getAttackers();
+	void remove();
 
 	//移动相关方法
 	vector<Vec2> moveToPath;
@@ -75,8 +76,9 @@ private:
 	CC_SYNTHESIZE(bool, ifAttack, IfAttack);
 	CC_SYNTHESIZE(Soldiers *, sEnemy, SoldierEnemy);
 	CC_SYNTHESIZE(Buildings *, bEnemy, BuildingEnemy);
-	CC_SYNTHESIZE_RETAIN(Soldiers *, attacker, Attacker);
-	GameManager * gamemanager;
+	CC_SYNTHESIZE(bool, ifmoving, ifMoving);
+	vector<Soldiers *> attackers;
+	//CC_SYNTHESIZE_RETAIN(Soldiers *, attacker, Attacker);
 
 };
 

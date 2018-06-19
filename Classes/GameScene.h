@@ -48,13 +48,10 @@ public:
 	{
 		return _tiledMap1;
 	}
-	static vector<Soldiers *> getSoldiers()
-	{
-		return soldierSprites;
-	}
 	static void setMapType(int maptype);
 	static int playerid ;
 	int playernum;
+	static GameManager * gamemanager;
 
 private:
 	//EventListenerTouchOneByOne * touchBuildingListener;
@@ -81,14 +78,12 @@ private:
 	void electricStationReady(float dt);  //电厂准备
 	void tankFactoryReady(float dt);      //战车工厂准备
 	void oreYardReady(float dt);          //矿场准备
-	static vector<Buildings *> buildingSprites;//储存建筑物
 
 	//兵种准备方法
 	void minerReady(float dt);
 	void policemanReady(float dt);
 	void tankReady(float dt);
-	void warriorReady(float dt);
-	static vector<Soldiers *> soldierSprites;//储存兵种					 
+	void warriorReady(float dt);	 
 	EventListenerTouchOneByOne *soldierMove; //兵种移动监听器
 
 	//金钱相关方法
@@ -98,7 +93,6 @@ private:
 	static TMXTiledMap * _tiledMap1;  //瓦片地图
 	static int mapType;
 
-	GameManager * gamemanager;
 
 
 //Mouse Rect相关方法

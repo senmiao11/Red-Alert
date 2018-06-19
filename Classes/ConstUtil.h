@@ -107,9 +107,9 @@ typedef enum
 #define WARRIOR_POWER 40
 #define TANK_PRICE 300
 #define TANK_HEALTH 500
-#define TANK_SPEED 0.25f
+#define TANK_SPEED 0.15f
 #define TANK_ATK_RADIUS 80
-#define TANK_POWER 45
+#define TANK_POWER 500
 
 #define KEY_FRAME 5
 #endif 

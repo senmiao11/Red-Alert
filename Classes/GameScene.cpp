@@ -24,8 +24,7 @@ int GameScene::Money;
 TMXTiledMap *GameScene::_tiledMap1;
 int GameScene::mapType;
 int GameScene::playerid;
-vector<Buildings *> GameScene::buildingSprites;
-vector<Soldiers *> GameScene::soldierSprites;
+GameManager *GameScene::gamemanager;
 
 //Mouse Rect相关方法
 Rect GameScene::getvisionRect()
@@ -86,6 +85,7 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 	_tiledMap1->setAnchorPoint(Vec2(0, 0));
 	_tiledMap1->setPosition(0, 0);
 	addChild(_tiledMap1, 0);
+	focusOnBase();
 	/*TMXObjectGroup *objectsGroup = _tiledMap1->objectGroupNamed("Objects");
 	ValueVector objects = objectsGroup->getObjects();
 	for (auto obj : objects) 
@@ -156,37 +156,43 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 		{
 			return;
 		}
-		for (auto &target : this->getSoldiers())
+		for (auto &target : gamemanager->sid_map)
 		{
-			if (!target->getifSelect())
+			if (target.first % 4 == gamemanager->getPlayerID() % 4)
 			{
-				target->stopAllActions();
-				target->moveToPath.clear();
-				continue;
+				if (!target.second->getifSelect())
+				{
+					target.second->stopAllActions();
+					target.second->moveToPath.clear();
+					gamemanager->genMoveMessage(target.second->moveToPath, target.second->getID(), target.second->getSoldierType());
+					continue;
+				}
+				target.second->stopAllActions();
+				target.second->moveToPath.clear();
+				gamemanager->genMoveMessage(target.second->moveToPath, target.second->getID(), target.second->getSoldierType());
+				int x = target.second->getPosition().x / 16;
+				int y = ((100 * 16) - target.second->getPosition().y) / 16;
+				Apoint start(x, y);
+				//log("%f  %f", target->getPosition().x, target->getPosition().y);
+				//log("%d   %d", start.getX(), start.getY());
+				Astar pathFinder(100, 100, start, end);
+				pathFinder.findPath();
+				vector<Apoint> path = pathFinder.getPath();
+				if (path.size() >= 2)
+				{
+					end.setX(path[path.size() - 2].getX());
+					end.setY(path[path.size() - 2].getY());
+				}
+				for (auto it = path.begin(); it != path.end(); it++)
+				{
+					//log("%d,%d", it->getX(), it->getY());
+					float x = (it->getX()) * 16;
+					float y = (99.5 - it->getY()) * 16;
+					target.second->moveToPath.push_back(Vec2(x, y));
+				}
+				//target.second->soldierAutoMove();
+				gamemanager->genMoveMessage(target.second->moveToPath, target.second->getID(), target.second->getSoldierType());
 			}
-			target->stopAllActions();
-			target->moveToPath.clear();
-			int x = target->getPosition().x / 16;
-			int y = ((100 * 16) - target->getPosition().y) / 16;
-			Apoint start(x, y);
-			//log("%f  %f", target->getPosition().x, target->getPosition().y);
-			//log("%d   %d", start.getX(), start.getY());
-			Astar pathFinder(100, 100, start, end);
-			pathFinder.findPath();
-			vector<Apoint> path = pathFinder.getPath();
-			if (path.size() >= 2)
-			{
-				end.setX(path[path.size() - 2].getX());
-				end.setY(path[path.size() - 2].getY());
-			}
-			for (auto it = path.begin(); it != path.end(); it++)
-			{
-				//log("%d,%d", it->getX(), it->getY());
-				float x = (it->getX()) * 16;
-				float y = (99.5 - it->getY()) * 16;
-				target->moveToPath.push_back(Vec2(x, y));
-			}
-			target->soldierAutoMove();
 		}
 	};
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(soldierMove, _tiledMap1);
@@ -421,7 +427,7 @@ void GameScene::onEnter()
 	_eventDispatcher->addEventListenerWithFixedPriority(spriteContactListener, 20);
 
 	//实时刷新金钱
-	this->Money = 5000;
+	this->Money = 10000;
 	__String *currentMoney = __String::createWithFormat("Money:%d", this->Money);
 	auto MoneyLabel = LabelTTF::create(currentMoney->getCString(), "Marker Felt", 15);
 	float Money_x = MoneyLabel->getContentSize().width;
@@ -844,21 +850,21 @@ void GameScene::update(float dt)
 {
 	frame_cnt++;
 	scrollMap();
-	for (auto &s : soldierSprites)
+	for (auto &s : gamemanager->sid_map)
 	{
-		if (s->isScheduled(schedule_selector(Soldiers::update)))
+		if (s.second->isScheduled(schedule_selector(Soldiers::update)))
 		{
 			continue;
 		}
-		s->schedule(schedule_selector(Soldiers::update));
+		s.second->schedule(schedule_selector(Soldiers::update));
 	}
-	for (auto &b : buildingSprites)
+	for (auto &b : gamemanager->bid_map)
 	{
-		if (b->isScheduled(schedule_selector(Buildings::update)))
+		if (b.second->isScheduled(schedule_selector(Buildings::update)))
 		{
 			continue;
 		}
-		b->schedule(schedule_selector(Buildings::update));
+		b.second->schedule(schedule_selector(Buildings::update));
 	}
 	if (frame_cnt % KEY_FRAME == 0 && start_flag)
 	{
@@ -949,27 +955,34 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 	{
 		Rect select_rect = { MIN(last_maptouch.x, maptouch.x), MIN(last_maptouch.y, maptouch.y),
 			abs(last_maptouch.x - maptouch.x), abs(last_maptouch.y - maptouch.y) };
-		for (auto &target_2 : soldierSprites)
+		for (auto &target_2 : gamemanager->sid_map)
 		{
-			target_2->stopAllActions();
-			target_2->moveToPath.clear();
-			if (!select_rect.containsPoint(target_2->getPosition()))
+			if (target_2.first % 4 == gamemanager->getPlayerID()%4)
 			{
-				target_2->hideHpBar();
-				target_2->setifSelect(SELECT_OFF);
-				continue;
+				target_2.second->stopAllActions();
+				target_2.second->moveToPath.clear();
+				gamemanager->genMoveMessage(target_2.second->moveToPath, target_2.second->getID(), target_2.second->getSoldierType());
+				if (!select_rect.containsPoint(target_2.second->getPosition()))
+				{
+					target_2.second->hideHpBar();
+					target_2.second->setifSelect(SELECT_OFF);
+					continue;
+				}
+				target_2.second->displayHpBar();
+				target_2.second->setifSelect(SELECT_ON);
 			}
-			target_2->displayHpBar();
-			target_2->setifSelect(SELECT_ON);
 		}
-		for (auto &target_1 : buildingSprites)
+		for (auto &target_1 : gamemanager->bid_map)
 		{
-			if (!select_rect.containsPoint(target_1->getPosition()))
+			if (target_1.first % 4 == gamemanager->getPlayerID()%4)
 			{
-				target_1->hideHpBar();
-				continue;
+				if (!select_rect.containsPoint(target_1.second->getPosition()))
+				{
+					target_1.second->hideHpBar();
+					continue;
+				}
+				target_1.second->displayHpBar();
 			}
-			target_1->displayHpBar();
 		}
 	}
 }

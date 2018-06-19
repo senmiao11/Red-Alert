@@ -56,6 +56,66 @@ void GameManager::setNotice(Notice * _notice)
 	notice = _notice;
 }
 
+void GameManager::deleteAll(int _player_id)
+{
+	Map<int, Buildings*>::iterator elem;
+	for (elem = bid_map.begin(); elem != bid_map.end(); )
+	{
+		if (bid_map.size() == 0)
+		{
+			break;
+		}
+		if (elem == bid_map.begin() && elem->first % 4 == _player_id%4)
+		{
+			Buildings * building = bid_map.at(elem->first);
+			if (building)
+			{
+				building->remove();
+				elem = bid_map.begin();
+			}
+		}
+		else if (elem->first % 4 == _player_id%4)
+		{
+			Buildings * building = bid_map.at(elem->first);
+			if (building)
+			{
+				building->remove();
+			}
+			elem--;
+		}
+		else
+		{
+			elem++;
+		}
+	}
+	Map<int, Soldiers*>::iterator elems;
+	for (elems = sid_map.begin(); elems != sid_map.end(); )
+	{
+		if (elems == sid_map.begin() && elems->first % 4 == _player_id)
+		{
+			Soldiers *soldier = sid_map.at(elems->first);
+			if (soldier)
+			{
+				soldier->remove();
+				elems = sid_map.begin();
+			}
+		}
+		else if (elems->first % 4 == _player_id%4)
+		{
+			Soldiers *soldier = sid_map.at(elems->first);
+			if (soldier)
+			{
+				soldier->remove();
+			}
+			elems--;
+		}
+		else
+		{
+			elems++;
+		}
+
+	}
+}
 
 void GameManager::produceBuildings(BuildingTypes buildingType, int _player_id, int _id)
 {
@@ -116,11 +176,9 @@ void GameManager::produceBuildings(BuildingTypes buildingType, int _player_id, i
 			building->createBar();
 			building->hpBar->setPosition(building->hpBar->getPosition() - Vec2(10, 0));
 			tiledMap->addChild(building, 10, GameSceneNodeTagBuilding);
-			building->gamemanager = this;
 			building->player_id = _player_id;
 			building->id = _id;
 			bid_map.insert(building->id, building);
-			GameScene::buildingSprites.push_back(building);
 			break;
 		}
 		case START_CASERN:
@@ -179,11 +237,9 @@ void GameManager::produceBuildings(BuildingTypes buildingType, int _player_id, i
 			}
 			building->createBar();
 			tiledMap->addChild(building, 10, GameSceneNodeTagBuilding);
-			building->gamemanager = this;
 			building->player_id = _player_id;
 			building->id = _id;
 			bid_map.insert(building->id, building);
-			GameScene::buildingSprites.push_back(building);
 			break;
 		}
 		case START_ELECTRICSTATION:
@@ -242,11 +298,9 @@ void GameManager::produceBuildings(BuildingTypes buildingType, int _player_id, i
 			}
 			building->createBar();
 			tiledMap->addChild(building, 10, GameSceneNodeTagBuilding);
-			building->gamemanager = this;
 			building->player_id = _player_id;
 			building->id = _id;
 			bid_map.insert(building->id, building);
-			GameScene::buildingSprites.push_back(building);
 			break;
 		}
 		case START_TANKFACTORY:
@@ -305,11 +359,9 @@ void GameManager::produceBuildings(BuildingTypes buildingType, int _player_id, i
 			}
 			building->createBar();
 			tiledMap->addChild(building, 10, GameSceneNodeTagBuilding);
-			building->gamemanager = this;
 			building->player_id = _player_id;
 			building->id = _id;
 			bid_map.insert(building->id, building);
-			GameScene::buildingSprites.push_back(building);
 			break;
 		}
 		case START_OREYARD:
@@ -368,11 +420,9 @@ void GameManager::produceBuildings(BuildingTypes buildingType, int _player_id, i
 			}
 			building->createBar();
 			tiledMap->addChild(building, 10, GameSceneNodeTagBuilding);
-			building->gamemanager = this;
 			building->player_id = _player_id;
 			building->id = _id;
 			bid_map.insert(building->id, building);
-			GameScene::buildingSprites.push_back(building);
 			break;
 		}
 	}
@@ -399,11 +449,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("miner1");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			if (_player_id == 2)
 			{
@@ -418,11 +466,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("miner2");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
+
 			}
 			if (_player_id == 3)
 			{
@@ -437,11 +484,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("miner3");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			if (_player_id == 4)
 			{
@@ -456,11 +501,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("miner4");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			break;
 		}
@@ -480,11 +523,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("policeman1");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			if (_player_id == 2)
 			{
@@ -500,11 +541,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("policeman2");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}			
 			if (_player_id == 3)
 			{
@@ -520,11 +559,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("policeman3");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}			
 			if (_player_id == 4)
 			{
@@ -540,11 +577,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("policeman4");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			break;
 		}
@@ -564,11 +599,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("warrior1");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			if (_player_id == 2)
 			{
@@ -584,11 +617,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("warrior2");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			if (_player_id == 3)
 			{
@@ -604,11 +635,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("warrior3");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			if (_player_id == 4)
 			{
@@ -624,11 +653,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("warrior4");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			break;
 		}
@@ -648,11 +675,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("tank1");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			if (_player_id == 2)
 			{
@@ -668,11 +693,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("tank2");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			if (_player_id == 3)
 			{
@@ -688,11 +711,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("tank3");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			if (_player_id == 4)
 			{
@@ -708,11 +729,9 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->setName("tank4");
 				soldier->createBar();
 				tiledMap->addChild(soldier, 10, GameSceneNodeTagSoldier);
-				soldier->gamemanager = this;
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-				GameScene::soldierSprites.push_back(soldier);
 			}
 			break;
 		}
@@ -750,7 +769,9 @@ void GameManager::genCreateBuildingMessage(BuildingTypes buildingtype)
 			break;
 		}
 	}
-	msgs->add_game_message()->genGameMessage(GameMessage::CmdCode::GameMessage_CmdCode_CRTB, player_id, next_id, btype,0);
+	vector<Vec2> a;
+	a.clear();
+	msgs->add_game_message()->genGameMessage(GameMessage::CmdCode::GameMessage_CmdCode_CRTB, player_id, next_id, btype, 0, a);
 	next_id += 4;
 }
 
@@ -780,13 +801,31 @@ void GameManager::genCreateSoldierMessage(SoldierTypes soldiertype)
 			break;
 		}
 	}
-	msgs->add_game_message()->genGameMessage(GameMessage::CmdCode::GameMessage_CmdCode_CRTS, player_id, next_id,0, stype);
+	vector<Vec2> a;
+	a.clear();
+	msgs->add_game_message()->genGameMessage(GameMessage::CmdCode::GameMessage_CmdCode_CRTS, player_id, next_id, 0, stype, a);
 	next_id += 4;
+}
+
+void GameManager::genMoveMessage(vector<Vec2> moveToPath,int id,SoldierTypes soldiertype)
+{
+	int stype;
+	if (soldiertype == START_MINER)
+	{
+		stype = 0;
+	}
+	else
+	{
+		stype = 1;
+	}
+	msgs->add_game_message()->genGameMessage(GameMessage::CmdCode::GameMessage_CmdCode_MOV, player_id, id, 0, stype, moveToPath);
 }
 
 void GameManager::updateGameState()
 {
-	msgs->add_game_message()->genGameMessage(GameMessage::CmdCode::GameMessage_CmdCode_EMP, 0, 0, 0,0);
+	vector<Vec2> a;
+	a.clear();
+	msgs->add_game_message()->genGameMessage(GameMessage::CmdCode::GameMessage_CmdCode_EMP, 0, 0, 0, 0,a);
 	auto sent_msg_str = msgs->SerializeAsString();
 	socket_client->send_string(sent_msg_str);
 	int sent_msg_num = msgs->game_message_size();
@@ -856,7 +895,31 @@ void GameManager::updateGameState()
 			{
 				produceSoldiers(START_TANK, _player_id, _id);
 			}
-
+		}
+		else if (msg.cmd_code() == GameMessage::CmdCode::GameMessage_CmdCode_MOV)
+		{
+			int _id = msg.id();
+			int _player_id = msg.playerid();
+			int stype = msg.stype();
+			if (stype == 0)
+			{
+				break;
+			}
+			int size = msg.movepath().vec_size();
+			vector<Vec2> move_path(size);
+			for (int i = 0; i < size; i++)
+			{
+				move_path[i].x = msg.movepath().vec(i).x();
+				move_path[i].y = msg.movepath().vec(i).y();
+			}
+			Soldiers* soldier = sid_map.find(_id)->second;
+			if (soldier)
+			{
+				soldier->moveToPath.clear();
+				soldier->stopAllActions();
+				soldier->moveToPath = move_path;
+				soldier->soldierAutoMove();
+			}
 		}
 	}
 	msgs->clear_game_message();

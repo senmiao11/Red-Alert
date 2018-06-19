@@ -18,23 +18,35 @@
 // @@protoc_insertion_point(includes)
 class GameMessageDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<GameMessage> {
 } _GameMessage_default_instance_;
+class VecDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Vec> {
+} _Vec_default_instance_;
+class PathDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Path> {
+} _Path_default_instance_;
 class GameMessageSetDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<GameMessageSet> {
 } _GameMessageSet_default_instance_;
-void GameMessage::genGameMessage(CmdCode _cmd_code, int player_id, int id, int btype,int stype)
+
+void GameMessage::genGameMessage(CmdCode _cmd_code, int player_id, int id, int btype, int stype,const vector<Vec2> &_movepath)
 {
 	set_cmd_code(_cmd_code);
 	set_playerid(player_id);
 	set_id(id);
 	set_btype(btype);
 	set_stype(stype);
-
+	Path* movepath = mutable_movepath();
+	for (const auto & i: _movepath)
+	{
+		Vec* _vec = movepath->add_vec();
+		_vec->set_x(i.x);
+		_vec->set_y(i.y);
+	}
 }
+
 namespace protobuf_GameMessage_2eproto {
 
 
 namespace {
 
-::google::protobuf::Metadata file_level_metadata[2];
+::google::protobuf::Metadata file_level_metadata[4];
 const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[1];
 
 }  // namespace
@@ -52,6 +64,8 @@ PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
     TableStruct::schema[] = {
   { NULL, NULL, 0, -1, -1, false },
   { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
 };
 
 const ::google::protobuf::uint32 TableStruct::offsets[] = {
@@ -65,6 +79,20 @@ const ::google::protobuf::uint32 TableStruct::offsets[] = {
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameMessage, id_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameMessage, btype_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameMessage, stype_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameMessage, movepath_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Vec, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Vec, x_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Vec, y_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Path, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Path, vec_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameMessageSet, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -75,11 +103,15 @@ const ::google::protobuf::uint32 TableStruct::offsets[] = {
 
 static const ::google::protobuf::internal::MigrationSchema schemas[] = {
   { 0, -1, sizeof(GameMessage)},
-  { 10, -1, sizeof(GameMessageSet)},
+  { 11, -1, sizeof(Vec)},
+  { 18, -1, sizeof(Path)},
+  { 24, -1, sizeof(GameMessageSet)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&_GameMessage_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&_Vec_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&_Path_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&_GameMessageSet_default_instance_),
 };
 
@@ -101,7 +133,7 @@ void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 2);
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 4);
 }
 
 }  // namespace
@@ -109,8 +141,12 @@ void protobuf_RegisterTypes(const ::std::string&) {
 void TableStruct::Shutdown() {
   _GameMessage_default_instance_.Shutdown();
   delete file_level_metadata[0].reflection;
-  _GameMessageSet_default_instance_.Shutdown();
+  _Vec_default_instance_.Shutdown();
   delete file_level_metadata[1].reflection;
+  _Path_default_instance_.Shutdown();
+  delete file_level_metadata[2].reflection;
+  _GameMessageSet_default_instance_.Shutdown();
+  delete file_level_metadata[3].reflection;
 }
 
 void TableStruct::InitDefaultsImpl() {
@@ -118,7 +154,11 @@ void TableStruct::InitDefaultsImpl() {
 
   ::google::protobuf::internal::InitProtobufDefaults();
   _GameMessage_default_instance_.DefaultConstruct();
+  _Vec_default_instance_.DefaultConstruct();
+  _Path_default_instance_.DefaultConstruct();
   _GameMessageSet_default_instance_.DefaultConstruct();
+  _GameMessage_default_instance_.get_mutable()->movepath_ = const_cast< ::Path*>(
+      ::Path::internal_default_instance());
 }
 
 void InitDefaults() {
@@ -128,15 +168,18 @@ void InitDefaults() {
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] = {
-      "\n\021GameMessage.proto\"\231\001\n\013GameMessage\022&\n\010c"
+      "\n\021GameMessage.proto\"\273\001\n\013GameMessage\022&\n\010c"
       "md_code\030\001 \001(\0162\024.GameMessage.CmdCode\022\020\n\010p"
       "layerid\030\002 \001(\005\022\n\n\002id\030\003 \001(\005\022\r\n\005btype\030\004 \001(\005"
-      "\022\r\n\005stype\030\005 \001(\005\"&\n\007CmdCode\022\007\n\003EMP\020\000\022\010\n\004C"
-      "RTB\020\001\022\010\n\004CRTS\020\002\"4\n\016GameMessageSet\022\"\n\014gam"
-      "e_message\030\001 \003(\0132\014.GameMessageb\006proto3"
+      "\022\r\n\005stype\030\005 \001(\005\022\027\n\010movepath\030\006 \001(\0132\005.Path"
+      "\"/\n\007CmdCode\022\007\n\003EMP\020\000\022\010\n\004CRTB\020\001\022\010\n\004CRTS\020\002"
+      "\022\007\n\003MOV\020\003\"\033\n\003Vec\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\"\031"
+      "\n\004Path\022\021\n\003vec\030\001 \003(\0132\004.Vec\"4\n\016GameMessage"
+      "Set\022\"\n\014game_message\030\001 \003(\0132\014.GameMessageb"
+      "\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 237);
+      descriptor, 327);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "GameMessage.proto", &protobuf_RegisterTypes);
   ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
@@ -164,6 +207,7 @@ bool GameMessage_CmdCode_IsValid(int value) {
     case 0:
     case 1:
     case 2:
+    case 3:
       return true;
     default:
       return false;
@@ -174,6 +218,7 @@ bool GameMessage_CmdCode_IsValid(int value) {
 const GameMessage_CmdCode GameMessage::EMP;
 const GameMessage_CmdCode GameMessage::CRTB;
 const GameMessage_CmdCode GameMessage::CRTS;
+const GameMessage_CmdCode GameMessage::MOV;
 const GameMessage_CmdCode GameMessage::CmdCode_MIN;
 const GameMessage_CmdCode GameMessage::CmdCode_MAX;
 const int GameMessage::CmdCode_ARRAYSIZE;
@@ -187,6 +232,7 @@ const int GameMessage::kPlayeridFieldNumber;
 const int GameMessage::kIdFieldNumber;
 const int GameMessage::kBtypeFieldNumber;
 const int GameMessage::kStypeFieldNumber;
+const int GameMessage::kMovepathFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 GameMessage::GameMessage()
@@ -202,6 +248,11 @@ GameMessage::GameMessage(const GameMessage& from)
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_movepath()) {
+    movepath_ = new ::Path(*from.movepath_);
+  } else {
+    movepath_ = NULL;
+  }
   ::memcpy(&cmd_code_, &from.cmd_code_,
     reinterpret_cast<char*>(&stype_) -
     reinterpret_cast<char*>(&cmd_code_) + sizeof(stype_));
@@ -209,8 +260,8 @@ GameMessage::GameMessage(const GameMessage& from)
 }
 
 void GameMessage::SharedCtor() {
-  ::memset(&cmd_code_, 0, reinterpret_cast<char*>(&stype_) -
-    reinterpret_cast<char*>(&cmd_code_) + sizeof(stype_));
+  ::memset(&movepath_, 0, reinterpret_cast<char*>(&stype_) -
+    reinterpret_cast<char*>(&movepath_) + sizeof(stype_));
   _cached_size_ = 0;
 }
 
@@ -220,6 +271,9 @@ GameMessage::~GameMessage() {
 }
 
 void GameMessage::SharedDtor() {
+  if (this != internal_default_instance()) {
+    delete movepath_;
+  }
 }
 
 void GameMessage::SetCachedSize(int size) const {
@@ -247,6 +301,10 @@ GameMessage* GameMessage::New(::google::protobuf::Arena* arena) const {
 
 void GameMessage::Clear() {
 // @@protoc_insertion_point(message_clear_start:GameMessage)
+  if (GetArenaNoVirtual() == NULL && movepath_ != NULL) {
+    delete movepath_;
+  }
+  movepath_ = NULL;
   ::memset(&cmd_code_, 0, reinterpret_cast<char*>(&stype_) -
     reinterpret_cast<char*>(&cmd_code_) + sizeof(stype_));
 }
@@ -332,6 +390,18 @@ bool GameMessage::MergePartialFromCodedStream(
         break;
       }
 
+      // .Path movepath = 6;
+      case 6: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(50u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_movepath()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0 ||
@@ -385,6 +455,12 @@ void GameMessage::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->stype(), output);
   }
 
+  // .Path movepath = 6;
+  if (this->has_movepath()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      6, *this->movepath_, output);
+  }
+
   // @@protoc_insertion_point(serialize_end:GameMessage)
 }
 
@@ -420,6 +496,13 @@ void GameMessage::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->stype(), target);
   }
 
+  // .Path movepath = 6;
+  if (this->has_movepath()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        6, *this->movepath_, deterministic, target);
+  }
+
   // @@protoc_insertion_point(serialize_to_array_end:GameMessage)
   return target;
 }
@@ -427,6 +510,13 @@ void GameMessage::SerializeWithCachedSizes(
 size_t GameMessage::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:GameMessage)
   size_t total_size = 0;
+
+  // .Path movepath = 6;
+  if (this->has_movepath()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->movepath_);
+  }
 
   // .GameMessage.CmdCode cmd_code = 1;
   if (this->cmd_code() != 0) {
@@ -491,6 +581,9 @@ void GameMessage::MergeFrom(const GameMessage& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (from.has_movepath()) {
+    mutable_movepath()->::Path::MergeFrom(from.movepath());
+  }
   if (from.cmd_code() != 0) {
     set_cmd_code(from.cmd_code());
   }
@@ -531,6 +624,7 @@ void GameMessage::Swap(GameMessage* other) {
   InternalSwap(other);
 }
 void GameMessage::InternalSwap(GameMessage* other) {
+  std::swap(movepath_, other->movepath_);
   std::swap(cmd_code_, other->cmd_code_);
   std::swap(playerid_, other->playerid_);
   std::swap(id_, other->id_);
@@ -615,6 +709,581 @@ void GameMessage::set_stype(::google::protobuf::int32 value) {
   
   stype_ = value;
   // @@protoc_insertion_point(field_set:GameMessage.stype)
+}
+
+// .Path movepath = 6;
+bool GameMessage::has_movepath() const {
+  return this != internal_default_instance() && movepath_ != NULL;
+}
+void GameMessage::clear_movepath() {
+  if (GetArenaNoVirtual() == NULL && movepath_ != NULL) delete movepath_;
+  movepath_ = NULL;
+}
+const ::Path& GameMessage::movepath() const {
+  // @@protoc_insertion_point(field_get:GameMessage.movepath)
+  return movepath_ != NULL ? *movepath_
+                         : *::Path::internal_default_instance();
+}
+::Path* GameMessage::mutable_movepath() {
+  
+  if (movepath_ == NULL) {
+    movepath_ = new ::Path;
+  }
+  // @@protoc_insertion_point(field_mutable:GameMessage.movepath)
+  return movepath_;
+}
+::Path* GameMessage::release_movepath() {
+  // @@protoc_insertion_point(field_release:GameMessage.movepath)
+  
+  ::Path* temp = movepath_;
+  movepath_ = NULL;
+  return temp;
+}
+void GameMessage::set_allocated_movepath(::Path* movepath) {
+  delete movepath_;
+  movepath_ = movepath;
+  if (movepath) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:GameMessage.movepath)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int Vec::kXFieldNumber;
+const int Vec::kYFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+Vec::Vec()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_GameMessage_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:Vec)
+}
+Vec::Vec(const Vec& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&x_, &from.x_,
+    reinterpret_cast<char*>(&y_) -
+    reinterpret_cast<char*>(&x_) + sizeof(y_));
+  // @@protoc_insertion_point(copy_constructor:Vec)
+}
+
+void Vec::SharedCtor() {
+  ::memset(&x_, 0, reinterpret_cast<char*>(&y_) -
+    reinterpret_cast<char*>(&x_) + sizeof(y_));
+  _cached_size_ = 0;
+}
+
+Vec::~Vec() {
+  // @@protoc_insertion_point(destructor:Vec)
+  SharedDtor();
+}
+
+void Vec::SharedDtor() {
+}
+
+void Vec::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Vec::descriptor() {
+  protobuf_GameMessage_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_GameMessage_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const Vec& Vec::default_instance() {
+  protobuf_GameMessage_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+Vec* Vec::New(::google::protobuf::Arena* arena) const {
+  Vec* n = new Vec;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Vec::Clear() {
+// @@protoc_insertion_point(message_clear_start:Vec)
+  ::memset(&x_, 0, reinterpret_cast<char*>(&y_) -
+    reinterpret_cast<char*>(&x_) + sizeof(y_));
+}
+
+bool Vec::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:Vec)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // float x = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(13u)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &x_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // float y = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(21u)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &y_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:Vec)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:Vec)
+  return false;
+#undef DO_
+}
+
+void Vec::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:Vec)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // float x = 1;
+  if (this->x() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->x(), output);
+  }
+
+  // float y = 2;
+  if (this->y() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->y(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:Vec)
+}
+
+::google::protobuf::uint8* Vec::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Vec)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // float x = 1;
+  if (this->x() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->x(), target);
+  }
+
+  // float y = 2;
+  if (this->y() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->y(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:Vec)
+  return target;
+}
+
+size_t Vec::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Vec)
+  size_t total_size = 0;
+
+  // float x = 1;
+  if (this->x() != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float y = 2;
+  if (this->y() != 0) {
+    total_size += 1 + 4;
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Vec::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:Vec)
+  GOOGLE_DCHECK_NE(&from, this);
+  const Vec* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const Vec>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Vec)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:Vec)
+    MergeFrom(*source);
+  }
+}
+
+void Vec::MergeFrom(const Vec& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:Vec)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.x() != 0) {
+    set_x(from.x());
+  }
+  if (from.y() != 0) {
+    set_y(from.y());
+  }
+}
+
+void Vec::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:Vec)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Vec::CopyFrom(const Vec& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Vec)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Vec::IsInitialized() const {
+  return true;
+}
+
+void Vec::Swap(Vec* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Vec::InternalSwap(Vec* other) {
+  std::swap(x_, other->x_);
+  std::swap(y_, other->y_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Vec::GetMetadata() const {
+  protobuf_GameMessage_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_GameMessage_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Vec
+
+// float x = 1;
+void Vec::clear_x() {
+  x_ = 0;
+}
+float Vec::x() const {
+  // @@protoc_insertion_point(field_get:Vec.x)
+  return x_;
+}
+void Vec::set_x(float value) {
+  
+  x_ = value;
+  // @@protoc_insertion_point(field_set:Vec.x)
+}
+
+// float y = 2;
+void Vec::clear_y() {
+  y_ = 0;
+}
+float Vec::y() const {
+  // @@protoc_insertion_point(field_get:Vec.y)
+  return y_;
+}
+void Vec::set_y(float value) {
+  
+  y_ = value;
+  // @@protoc_insertion_point(field_set:Vec.y)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int Path::kVecFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+Path::Path()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_GameMessage_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:Path)
+}
+Path::Path(const Path& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      vec_(from.vec_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:Path)
+}
+
+void Path::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+Path::~Path() {
+  // @@protoc_insertion_point(destructor:Path)
+  SharedDtor();
+}
+
+void Path::SharedDtor() {
+}
+
+void Path::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Path::descriptor() {
+  protobuf_GameMessage_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_GameMessage_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const Path& Path::default_instance() {
+  protobuf_GameMessage_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+Path* Path::New(::google::protobuf::Arena* arena) const {
+  Path* n = new Path;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Path::Clear() {
+// @@protoc_insertion_point(message_clear_start:Path)
+  vec_.Clear();
+}
+
+bool Path::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:Path)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .Vec vec = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_vec()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:Path)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:Path)
+  return false;
+#undef DO_
+}
+
+void Path::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:Path)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .Vec vec = 1;
+  for (unsigned int i = 0, n = this->vec_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->vec(i), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:Path)
+}
+
+::google::protobuf::uint8* Path::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Path)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .Vec vec = 1;
+  for (unsigned int i = 0, n = this->vec_size(); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        1, this->vec(i), deterministic, target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:Path)
+  return target;
+}
+
+size_t Path::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Path)
+  size_t total_size = 0;
+
+  // repeated .Vec vec = 1;
+  {
+    unsigned int count = this->vec_size();
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->vec(i));
+    }
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Path::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:Path)
+  GOOGLE_DCHECK_NE(&from, this);
+  const Path* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const Path>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Path)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:Path)
+    MergeFrom(*source);
+  }
+}
+
+void Path::MergeFrom(const Path& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:Path)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  vec_.MergeFrom(from.vec_);
+}
+
+void Path::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:Path)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Path::CopyFrom(const Path& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Path)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Path::IsInitialized() const {
+  return true;
+}
+
+void Path::Swap(Path* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Path::InternalSwap(Path* other) {
+  vec_.InternalSwap(&other->vec_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Path::GetMetadata() const {
+  protobuf_GameMessage_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_GameMessage_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Path
+
+// repeated .Vec vec = 1;
+int Path::vec_size() const {
+  return vec_.size();
+}
+void Path::clear_vec() {
+  vec_.Clear();
+}
+const ::Vec& Path::vec(int index) const {
+  // @@protoc_insertion_point(field_get:Path.vec)
+  return vec_.Get(index);
+}
+::Vec* Path::mutable_vec(int index) {
+  // @@protoc_insertion_point(field_mutable:Path.vec)
+  return vec_.Mutable(index);
+}
+::Vec* Path::add_vec() {
+  // @@protoc_insertion_point(field_add:Path.vec)
+  return vec_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::Vec >*
+Path::mutable_vec() {
+  // @@protoc_insertion_point(field_mutable_list:Path.vec)
+  return &vec_;
+}
+const ::google::protobuf::RepeatedPtrField< ::Vec >&
+Path::vec() const {
+  // @@protoc_insertion_point(field_list:Path.vec)
+  return vec_;
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

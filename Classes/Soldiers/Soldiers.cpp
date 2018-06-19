@@ -48,6 +48,8 @@ bool Explosioneffect::init()
 void Explosioneffect::updateRemove(float dt)
 {
 	removeFromParent();
+
+	log(" ");
 }
 
 Soldiers::Soldiers(SoldierTypes soldierType)
@@ -61,7 +63,7 @@ Soldiers::Soldiers(SoldierTypes soldierType)
 	this->atkRadius = 0;
 	this->sEnemy = NULL;
 	this->bEnemy = NULL;
-	this->attacker = NULL;
+	//this->attacker = NULL;
 	//this->attackerPower = 0;
 	this->ifAttack = false;
 }
@@ -146,33 +148,41 @@ void Soldiers::soldierAutoMove()
 	this->runAction(Sequence::create(moveAction, moveCallback, nullptr));
 }
 
+vector<Soldiers *> & Soldiers::getAttackers()
+{
+	return attackers;
+}
+
 void Soldiers::findEnemy()
 {
-	for (auto &s : GameScene::soldierSprites)
+	for (auto &s : GameScene::gamemanager->sid_map)
 	{
-		if (s == this)
+		if (s.first % 4 != getplayerID()%4)
 		{
-			continue;
-		}
-		auto distance = this->getPosition().getDistance(s->getPosition());
-		if (distance <= this->getAtkRadius())
-		{
-			setSoldierEnemy(s);
-			s->setAttacker(this);
-			//s->setAttackerPower(this->getPower());
-			setIfAttack(true);
-			return;
+			auto distance = this->getPosition().getDistance(s.second->getPosition());
+			if (distance <= this->getAtkRadius())
+			{
+				setSoldierEnemy(s.second);
+				s.second->getAttackers().push_back(this);
+				//s->setAttackerPower(this->getPower());
+				setIfAttack(true);
+				return;
+			}
 		}
 	}
-	for (auto &b : GameScene::buildingSprites)
+	for (auto &b : GameScene::gamemanager->bid_map)
 	{
-		auto distance = this->getPosition().getDistance(b->getPosition());
-		if (distance <= this->getAtkRadius())
+		if (b.first % 4 != getplayerID() % 4)
 		{
-			setBuildingEnemy(b);
-			//b->setAttacker(this);
-			setIfAttack(true);
-			return;
+			auto distance = this->getPosition().getDistance(b.second->getPosition());
+			if (distance <= this->getAtkRadius())
+			{
+				setBuildingEnemy(b.second);
+				b.second->getAttackers().push_back(this);
+				//b->setAttacker(this);
+				setIfAttack(true);
+				return;
+			}
 		}
 	}
 }
@@ -188,7 +198,12 @@ void Soldiers::attack()
 		auto distance = this->getPosition().getDistance(sEnemy->getPosition());
 		if (distance > this->getAtkRadius())
 		{
-			sEnemy->setAttacker(NULL);
+			auto it = find(sEnemy->getAttackers().begin(), sEnemy->getAttackers().end(), this);
+			if (it != sEnemy->getAttackers().end())
+			{
+				sEnemy->getAttackers().erase(it);
+			}
+			//sEnemy->setAttacker(NULL);
 			//sEnemy->setAttackerPower(0);
 			setSoldierEnemy(NULL);
 			setIfAttack(false);
@@ -199,12 +214,18 @@ void Soldiers::attack()
 		GameScene::gettiledMap()->addChild(fire, 10, GameSceneNodeTagFire);
 		sEnemy->setcurrentHealth(sEnemy->getcurrentHealth() - getPower());
 		sEnemy->displayHpBar();
+		return;
 	}
 	if (bEnemy)
 	{
 		auto distance = this->getPosition().getDistance(bEnemy->getPosition());
 		if (distance > this->getAtkRadius())
 		{
+			auto it = find(bEnemy->getAttackers().begin(), bEnemy->getAttackers().end(), this);
+			if (it != bEnemy->getAttackers().end())
+			{
+				bEnemy->getAttackers().erase(it);
+			}
 			//bEnemy->setAttacker(NULL);
 			setBuildingEnemy(NULL);
 			setIfAttack(false);
@@ -215,6 +236,7 @@ void Soldiers::attack()
 		GameScene::gettiledMap()->addChild(fire, 10, GameSceneNodeTagFire);
 		bEnemy->setcurrentHealth(bEnemy->getcurrentHealth() - getPower());
 		bEnemy->displayHpBar();
+		return;
 	}
 
 }
@@ -223,16 +245,28 @@ void Soldiers::update(float dt)
 {
 	if (getcurrentHealth() <= 0)
 	{
-		auto explosion = Explosioneffect::create();
-		explosion->setPosition(getPosition());
-		GameScene::gettiledMap()->addChild(explosion, 15);
-		getAttacker()->setIfAttack(false);
-		auto it = find(GameScene::soldierSprites.begin(), GameScene::soldierSprites.end(), this);
-		if (it != GameScene::soldierSprites.end())
+		for (auto &atker : attackers)
 		{
-			GameScene::soldierSprites.erase(it);
+			atker->setSoldierEnemy(NULL);
 		}
-		removeFromParent();
+		if (sEnemy)
+		{
+			auto it = find(sEnemy->getAttackers().begin(), sEnemy->getAttackers().end(), this);
+			if (it != sEnemy->getAttackers().end())
+			{
+				sEnemy->getAttackers().erase(it);
+			}
+		}
+		if (bEnemy)
+		{
+			auto it = find(bEnemy->getAttackers().begin(), bEnemy->getAttackers().end(), this);
+			if (it != bEnemy->getAttackers().end())
+			{
+				bEnemy->getAttackers().erase(it);
+			}
+		}
+
+		remove();
 		return;
 	}
 	//if (getAttacker()/*getAttackerPower()*/)
@@ -283,5 +317,21 @@ void Soldiers::hideHpBar()
 	{
 		hpBar->unschedule(schedule_selector(Bar::update));
 		hpBar->setVisible(false);
+	}
+}
+
+void Soldiers::remove()
+{
+	auto explosion = Explosioneffect::create();
+	explosion->setPosition(getPosition());
+	GameScene::gettiledMap()->addChild(explosion, 15);
+	removeFromParent();
+	for (auto elem : GameScene::gamemanager->sid_map)
+	{
+		if (elem.first == id)
+		{
+			GameScene::gamemanager->sid_map.erase(elem.first);
+			break;
+		}
 	}
 }

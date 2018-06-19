@@ -51,27 +51,25 @@ Buildings * Buildings::creatWithBuildingTypes(BuildingTypes buildingType)
 	return nullptr;
 }
 
+vector<Soldiers *> & Buildings::getAttackers()
+{
+	return attackers;
+}
+
 void Buildings::update(float dt)
 {
-	if (getcurrentHealth() <= 0)
+	if (getcurrentHealth() <= 0 && buildingtype != START_BASE)
 	{
-		auto explosion = Explosioneffect::create();
-		explosion->setPosition(getPosition());
-		GameScene::gettiledMap()->addChild(explosion, 15);
-		//getAttacker()->setIfAttack(false);
-		auto it = find(GameScene::buildingSprites.begin(), GameScene::buildingSprites.end(), this);
-		if (it != GameScene::buildingSprites.end())
+		for (auto &atker : attackers)
 		{
-			GameScene::buildingSprites.erase(it);
+			atker->setBuildingEnemy(NULL);
 		}
-		removeFromParent();
-		return;
+		remove();
 	}
-	/*if (getAttacker())
+	else if (getcurrentHealth() <= 0 && buildingtype == START_BASE)
 	{
-	displayHpBar();
-	setcurrentHealth(getcurrentHealth() - getAttacker()->getPower());
-	}*/
+		GameScene::gamemanager->deleteAll(GameScene::gamemanager->getPlayerID());
+	}
 }
 
 void Buildings::createBar()
@@ -102,5 +100,21 @@ void Buildings::hideHpBar()
 	{
 		hpBar->unschedule(schedule_selector(Bar::update));
 		hpBar->setVisible(false);
+	}
+}
+
+void Buildings::remove()
+{
+	auto explosion = Explosioneffect::create();
+	explosion->setPosition(getPosition());
+	GameScene::gettiledMap()->addChild(explosion, 15);
+	removeFromParent();
+	for (auto elem : GameScene::gamemanager->bid_map)
+	{
+		if (elem.first  == id)
+		{
+			GameScene::gamemanager->bid_map.erase(elem.first);
+			break;
+		}
 	}
 }
