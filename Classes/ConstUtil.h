@@ -51,6 +51,7 @@ typedef enum
 #define GameSceneNodeTagMoney 1024
 #define GameSceneNodeTagSoldier 2048
 #define GameSceneNodeTagFire 4096
+#define GameSceneNodeTagPower 8192
 
 //µØÍ¼
 #define GAMEMAP1 "map/GameMap1.tmx"
@@ -74,6 +75,7 @@ typedef enum
 #define SELECT_ON true
 #define SELECT_OFF false
 
+#define POWER_PRICE 8000
 #define MINER1 "soldiers/miner1.png"
 #define MINER2 "soldiers/miner2.png"
 #define MINER3 "soldiers/miner3.png"
@@ -107,9 +109,11 @@ typedef enum
 #define WARRIOR_POWER 40
 #define TANK_PRICE 300
 #define TANK_HEALTH 500
-#define TANK_SPEED 0.15f
+#define TANK_SPEED 0.25f
 #define TANK_ATK_RADIUS 80
-#define TANK_POWER 500
+#define TANK_POWER 400
 
-#define KEY_FRAME 5
+#define KEYFRAME1 3
+#define KEYFRAME2 30
+#define KEYFRAME3 10
 #endif 

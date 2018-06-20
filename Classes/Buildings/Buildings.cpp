@@ -68,7 +68,7 @@ void Buildings::update(float dt)
 	}
 	else if (getcurrentHealth() <= 0 && buildingtype == START_BASE)
 	{
-		GameScene::gamemanager->deleteAll(GameScene::gamemanager->getPlayerID());
+		GameScene::gamemanager->deleteAll(this->getplayerID());
 	}
 }
 
@@ -105,13 +105,17 @@ void Buildings::hideHpBar()
 
 void Buildings::remove()
 {
+	for (auto &atker : attackers)
+	{
+		atker->setBuildingEnemy(NULL);
+	}
 	auto explosion = Explosioneffect::create();
 	explosion->setPosition(getPosition());
 	GameScene::gettiledMap()->addChild(explosion, 15);
 	removeFromParent();
 	for (auto elem : GameScene::gamemanager->bid_map)
 	{
-		if (elem.first  == id)
+		if (elem.first == id)
 		{
 			GameScene::gamemanager->bid_map.erase(elem.first);
 			break;

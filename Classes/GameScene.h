@@ -72,12 +72,13 @@ private:
 	void backToMenuScene(Ref *pSender);//返回MenuScene
 	void buildingsCreate(Ref *pSender);//选择建筑物建造，建筑物菜单回调方法
 	void soldiersCreate(Ref *pSender); //选择兵种生产，兵种菜单回调方法
-
+	void soldierUpdate(Ref *pSender);  //兵种升级菜单回调方法
 	//建筑物准备方法
 	void casernReady(float dt);           //兵营准备
 	void electricStationReady(float dt);  //电厂准备
 	void tankFactoryReady(float dt);      //战车工厂准备
 	void oreYardReady(float dt);          //矿场准备
+	void soldierUpdateReady(float dt);    //兵种升级
 
 	//兵种准备方法
 	void minerReady(float dt);
@@ -89,6 +90,8 @@ private:
 	//金钱相关方法
 	void moneyUpdate(float dt);//实时刷新金钱
 	static int Money;          //金钱
+	void powerUpdate(float dt);//实时刷新能量
+	static int Power;          //能量
 
 	static TMXTiledMap * _tiledMap1;  //瓦片地图
 	static int mapType;
@@ -112,7 +115,9 @@ private:
 //network
 	SocketServer* socket_server = nullptr;
 	SocketClient* socket_client = nullptr;
-	unsigned long long frame_cnt = 0;
+	unsigned long long frame_cnt1 = 0;
+	unsigned long long frame_cnt2 = 0;
+	unsigned long long frame_cnt3 = 0;
 	GameMessageSet msg_set;
 //check win or lose
 	bool start_flag = false;

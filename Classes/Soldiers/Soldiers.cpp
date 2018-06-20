@@ -210,7 +210,10 @@ void Soldiers::attack()
 			return;
 		}
 		auto fire = Attackeffect::create();
-		fire->setAtkPath(this->getPosition(), sEnemy->getPosition());
+		Vec2 sEnemyPosiotion;
+		sEnemyPosiotion.x = sEnemy->getContentSize().width + sEnemy->getPosition().x;
+		sEnemyPosiotion.y = sEnemy->getContentSize().width + sEnemy->getPosition().y;
+		fire->setAtkPath(this->getPosition(), sEnemyPosiotion);
 		GameScene::gettiledMap()->addChild(fire, 10, GameSceneNodeTagFire);
 		sEnemy->setcurrentHealth(sEnemy->getcurrentHealth() - getPower());
 		sEnemy->displayHpBar();
@@ -232,7 +235,10 @@ void Soldiers::attack()
 			return;
 		}
 		auto fire = Attackeffect::create();
-		fire->setAtkPath(this->getPosition(), bEnemy->getPosition());
+		Vec2 bEnemyPosiotion;
+		bEnemyPosiotion.x = bEnemy->getContentSize().width + bEnemy->getPosition().x;
+		bEnemyPosiotion.y = bEnemy->getContentSize().width + bEnemy->getPosition().y;
+		fire->setAtkPath(this->getPosition(), bEnemyPosiotion);
 		GameScene::gettiledMap()->addChild(fire, 10, GameSceneNodeTagFire);
 		bEnemy->setcurrentHealth(bEnemy->getcurrentHealth() - getPower());
 		bEnemy->displayHpBar();

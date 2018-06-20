@@ -24,7 +24,6 @@ class PathDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyC
 } _Path_default_instance_;
 class GameMessageSetDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<GameMessageSet> {
 } _GameMessageSet_default_instance_;
-
 void GameMessage::genGameMessage(CmdCode _cmd_code, int player_id, int id, int btype, int stype,const vector<Vec2> &_movepath)
 {
 	set_cmd_code(_cmd_code);
@@ -40,7 +39,6 @@ void GameMessage::genGameMessage(CmdCode _cmd_code, int player_id, int id, int b
 		_vec->set_y(i.y);
 	}
 }
-
 namespace protobuf_GameMessage_2eproto {
 
 
@@ -168,18 +166,18 @@ void InitDefaults() {
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] = {
-      "\n\021GameMessage.proto\"\273\001\n\013GameMessage\022&\n\010c"
+      "\n\021GameMessage.proto\"\305\001\n\013GameMessage\022&\n\010c"
       "md_code\030\001 \001(\0162\024.GameMessage.CmdCode\022\020\n\010p"
       "layerid\030\002 \001(\005\022\n\n\002id\030\003 \001(\005\022\r\n\005btype\030\004 \001(\005"
       "\022\r\n\005stype\030\005 \001(\005\022\027\n\010movepath\030\006 \001(\0132\005.Path"
-      "\"/\n\007CmdCode\022\007\n\003EMP\020\000\022\010\n\004CRTB\020\001\022\010\n\004CRTS\020\002"
-      "\022\007\n\003MOV\020\003\"\033\n\003Vec\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\"\031"
-      "\n\004Path\022\021\n\003vec\030\001 \003(\0132\004.Vec\"4\n\016GameMessage"
-      "Set\022\"\n\014game_message\030\001 \003(\0132\014.GameMessageb"
-      "\006proto3"
+      "\"9\n\007CmdCode\022\007\n\003EMP\020\000\022\010\n\004CRTB\020\001\022\010\n\004CRTS\020\002"
+      "\022\007\n\003MOV\020\003\022\010\n\004SUDT\020\004\"\033\n\003Vec\022\t\n\001x\030\001 \001(\002\022\t\n"
+      "\001y\030\002 \001(\002\"\031\n\004Path\022\021\n\003vec\030\001 \003(\0132\004.Vec\"4\n\016G"
+      "ameMessageSet\022\"\n\014game_message\030\001 \003(\0132\014.Ga"
+      "meMessageb\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 327);
+      descriptor, 337);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "GameMessage.proto", &protobuf_RegisterTypes);
   ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
@@ -208,6 +206,7 @@ bool GameMessage_CmdCode_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+    case 4:
       return true;
     default:
       return false;
@@ -219,6 +218,7 @@ const GameMessage_CmdCode GameMessage::EMP;
 const GameMessage_CmdCode GameMessage::CRTB;
 const GameMessage_CmdCode GameMessage::CRTS;
 const GameMessage_CmdCode GameMessage::MOV;
+const GameMessage_CmdCode GameMessage::SUDT;
 const GameMessage_CmdCode GameMessage::CmdCode_MIN;
 const GameMessage_CmdCode GameMessage::CmdCode_MAX;
 const int GameMessage::CmdCode_ARRAYSIZE;

@@ -79,9 +79,9 @@ void GameManager::deleteAll(int _player_id)
 			Buildings * building = bid_map.at(elem->first);
 			if (building)
 			{
+				elem++;
 				building->remove();
 			}
-			elem--;
 		}
 		else
 		{
@@ -105,9 +105,9 @@ void GameManager::deleteAll(int _player_id)
 			Soldiers *soldier = sid_map.at(elems->first);
 			if (soldier)
 			{
+				elem++;
 				soldier->remove();
 			}
-			elems--;
 		}
 		else
 		{
@@ -738,6 +738,26 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 	}
 }
 
+void GameManager::soldiersUpdate(int _player_id)
+{
+	for (auto elem : sid_map)
+	{
+		if (elem.first%4 == _player_id%4)
+		{
+			elem.second->setPower((elem.second->getPower())+2);
+			elem.second->setMaxHealth(elem.second->getMaxHealth() + 20);
+			elem.second->setcurrentHealth(elem.second->getcurrentHealth() + 20);
+		}
+	}
+}
+
+void GameManager::genSoldierUpdateMessage()
+{
+	vector<Vec2> a;
+	a.clear();
+	msgs->add_game_message()->genGameMessage(GameMessage::CmdCode::GameMessage_CmdCode_SUDT, player_id, 0, 0, 0, a);
+}
+
 void GameManager::genCreateBuildingMessage(BuildingTypes buildingtype)
 {
 	int btype;
@@ -852,23 +872,23 @@ void GameManager::updateGameState()
 			int _player_id = msg.playerid();
 			log("%d", _player_id);
 			int buildingtype = msg.btype();
-			if (buildingtype == 1 && _player_id!=player_id)
+			if (buildingtype == 1)
 			{
 				produceBuildings(START_BASE,_player_id,_id);
 			}
-			else if (buildingtype == 2 && _player_id != player_id)
+			else if (buildingtype == 2)
 			{
 				produceBuildings(START_CASERN, _player_id, _id);
 			}
-			else if (buildingtype == 3 && _player_id != player_id)
+			else if (buildingtype == 3)
 			{
 				produceBuildings(START_ELECTRICSTATION, _player_id, _id);
 			}
-			else if (buildingtype == 4 && _player_id != player_id)
+			else if (buildingtype == 4)
 			{
 				produceBuildings(START_TANKFACTORY, _player_id, _id);
 			}
-			else if (buildingtype == 5 && _player_id != player_id)
+			else if (buildingtype == 5)
 			{
 				produceBuildings(START_OREYARD, _player_id, _id);
 			}
@@ -879,19 +899,19 @@ void GameManager::updateGameState()
 			int _player_id = msg.playerid();
 			log("%d", _player_id);
 			int soldiertype = msg.stype();
-			if (soldiertype == 1 && _player_id != player_id)
+			if (soldiertype == 1)
 			{
 				produceSoldiers(START_MINER, _player_id, _id);
 			}
-			if (soldiertype == 2 && _player_id != player_id)
+			if (soldiertype == 2)
 			{
 				produceSoldiers(START_POLICEMAN, _player_id, _id);
 			}
-			if (soldiertype == 3 && _player_id != player_id)
+			if (soldiertype == 3)
 			{
 				produceSoldiers(START_WARRIOR, _player_id, _id);
 			}
-			if (soldiertype == 4 && _player_id != player_id)
+			if (soldiertype == 4)
 			{
 				produceSoldiers(START_TANK, _player_id, _id);
 			}
@@ -920,6 +940,11 @@ void GameManager::updateGameState()
 				soldier->moveToPath = move_path;
 				soldier->soldierAutoMove();
 			}
+		}
+		else if (msg.cmd_code() == GameMessage::CmdCode::GameMessage_CmdCode_SUDT)
+		{
+			int _player_id = msg.playerid();
+			soldiersUpdate(_player_id);
 		}
 	}
 	msgs->clear_game_message();

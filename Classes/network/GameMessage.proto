@@ -9,6 +9,7 @@ message GameMessage
 		CRTB = 1;
 		CRTS = 2;
 		MOV = 3;
+		SUDT = 4;
 	}
 	CmdCode cmd_code = 1;
 	int32 playerid = 2;              //玩家id
