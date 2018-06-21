@@ -8,12 +8,26 @@ message GameMessage
 		EMP = 0;
 		CRTB = 1;
 		CRTS = 2;
+		MOV = 3;
+		SUDT = 4;
 	}
 	CmdCode cmd_code = 1;
 	int32 playerid = 2;              //玩家id
 	int32 id = 3;                    //单位id 
-	int32 btype = 4 ;                //建筑物类型
+	int32 btype = 4 ;                //建筑物类型  检测兵种是否移动
 	int32 stype = 5 ;                //兵种类型
+	Path movepath = 6 ;              //移动路径
+}
+
+message Vec 
+{
+	float x = 1;
+	float y = 2;
+}
+
+message Path
+{
+	repeated Vec vec = 1;
 }
 
 message GameMessageSet 

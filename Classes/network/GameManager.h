@@ -40,7 +40,10 @@ public:
 	void updateGameState();                                      //通过网络收法消息，更新游戏状态
 	void genCreateBuildingMessage(BuildingTypes buildingtype);   //产生建筑物生产信息
 	void genCreateSoldierMessage(SoldierTypes soldiertype);       //产生兵种生产信息
+	void genMoveMessage(vector<Vec2> moveToPath, int id, SoldierTypes soldiertype);   //产生兵种移动信息
 	void deleteAll(int _player_id);                               //失败后移除所有建筑和士兵
+	void soldiersUpdate(int _player_id);                          //场上所有兵种升级
+	void genSoldierUpdateMessage();                               //产生兵种升级信息
 
 private:
 	Map<int, Soldiers*> sid_map;                                 //ID和士兵对应表

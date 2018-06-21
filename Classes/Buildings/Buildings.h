@@ -10,9 +10,6 @@
 USING_NS_CC;
 
 
-////////////////////////////////////
-//建筑物的血量减少和摧毁方法待添加
-////////////////////////////////////
 
 
 class Buildings :public Sprite
@@ -24,6 +21,9 @@ public:
 	Buildings(BuildingTypes buildingType);        //通过枚举类来判段需产生什么建筑物
 	static Buildings *creatWithBuildingTypes(BuildingTypes buildingType);
 	void update(float dt);
+	void remove();                                //从地图上移除
+
+	vector<Soldiers *> &getAttackers();
 private:
 	CC_SYNTHESIZE(BuildingTypes, buildingtype, BuildingType);
 	CC_SYNTHESIZE(int, health, currentHealth);
@@ -31,8 +31,9 @@ private:
 	CC_SYNTHESIZE(int, maxHealth, MaxHealth);
 	CC_SYNTHESIZE(int, player_id, playerID);
 	CC_SYNTHESIZE(int, id, ID);
+
+	vector<Soldiers *> attackers;
 	//CC_SYNTHESIZE(Soldiers *, attacker, Attacker);
-	GameManager * gamemanager;
 
 	//血条
 	Bar *hpBar = nullptr;

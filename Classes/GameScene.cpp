@@ -21,11 +21,11 @@ void MouseRect::reset()
 }
 
 int GameScene::Money;
+int GameScene::Power;
 TMXTiledMap *GameScene::_tiledMap1;
 int GameScene::mapType;
 int GameScene::playerid;
-vector<Buildings *> GameScene::buildingSprites;
-vector<Soldiers *> GameScene::soldierSprites;
+GameManager *GameScene::gamemanager;
 
 //Mouse Rect相关方法
 Rect GameScene::getvisionRect()
@@ -86,6 +86,7 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 	_tiledMap1->setAnchorPoint(Vec2(0, 0));
 	_tiledMap1->setPosition(0, 0);
 	addChild(_tiledMap1, 0);
+	focusOnBase();
 	/*TMXObjectGroup *objectsGroup = _tiledMap1->objectGroupNamed("Objects");
 	ValueVector objects = objectsGroup->getObjects();
 	for (auto obj : objects) 
@@ -156,37 +157,49 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 		{
 			return;
 		}
-		for (auto &target : this->getSoldiers())
+		for (auto &target : gamemanager->sid_map)
 		{
-			if (!target->getifSelect())
+			if (target.first % 4 == gamemanager->getPlayerID() % 4)
 			{
-				target->stopAllActions();
-				target->moveToPath.clear();
-				continue;
+				//////////////
+				if (target.second->getSoldierType() == START_MINER)
+				{
+					continue;
+				}
+				//////////////
+				if (!target.second->getifSelect())
+				{
+					target.second->stopAllActions();
+					target.second->moveToPath.clear();
+					gamemanager->genMoveMessage(target.second->moveToPath, target.second->getID(), target.second->getSoldierType());
+					continue;
+				}
+				target.second->stopAllActions();
+				target.second->moveToPath.clear();
+				gamemanager->genMoveMessage(target.second->moveToPath, target.second->getID(), target.second->getSoldierType());
+				int x = target.second->getPosition().x / 16;
+				int y = ((100 * 16) - target.second->getPosition().y) / 16;
+				Apoint start(x, y);
+				//log("%f  %f", target->getPosition().x, target->getPosition().y);
+				//log("%d   %d", start.getX(), start.getY());
+				Astar pathFinder(100, 100, start, end);
+				pathFinder.findPath();
+				vector<Apoint> path = pathFinder.getPath();
+				if (path.size() >= 2)
+				{
+					end.setX(path[path.size() - 2].getX());
+					end.setY(path[path.size() - 2].getY());
+				}
+				for (auto it = path.begin(); it != path.end(); it++)
+				{
+					//log("%d,%d", it->getX(), it->getY());
+					float x = (it->getX()) * 16;
+					float y = (99.5 - it->getY()) * 16;
+					target.second->moveToPath.push_back(Vec2(x, y));
+				}
+				//target.second->soldierAutoMove();
+				gamemanager->genMoveMessage(target.second->moveToPath, target.second->getID(), target.second->getSoldierType());
 			}
-			target->stopAllActions();
-			target->moveToPath.clear();
-			int x = target->getPosition().x / 16;
-			int y = ((100 * 16) - target->getPosition().y) / 16;
-			Apoint start(x, y);
-			//log("%f  %f", target->getPosition().x, target->getPosition().y);
-			//log("%d   %d", start.getX(), start.getY());
-			Astar pathFinder(100, 100, start, end);
-			pathFinder.findPath();
-			vector<Apoint> path = pathFinder.getPath();
-			if (path.size() >= 2)
-			{
-				end.setX(path[path.size() - 2].getX());
-				end.setY(path[path.size() - 2].getY());
-			}
-			for (auto it = path.begin(); it != path.end(); it++)
-			{
-				//log("%d,%d", it->getX(), it->getY());
-				float x = (it->getX()) * 16;
-				float y = (99.5 - it->getY()) * 16;
-				target->moveToPath.push_back(Vec2(x, y));
-			}
-			target->soldierAutoMove();
 		}
 	};
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(soldierMove, _tiledMap1);
@@ -357,6 +370,17 @@ void GameScene::onEnter()
 	soldierLabel4->setPosition(Vec2(visibleSize.width - 20, origin.y + visibleSize.height - 275));
 	this->addChild(soldierLabel4, 30);
 
+	//士兵升级菜单
+	auto updateLabel = LabelTTF::create(MyUtility::gbk_2_utf8("士兵升级"), "华文行楷", 12);
+	updateLabel->setColor(Color3B::GREEN);
+	auto updateMenu = MenuItemLabel::create(updateLabel, CC_CALLBACK_1(GameScene::soldierUpdate, this));
+	float update_x = updateMenu->getContentSize().width;  //获得菜单宽度
+	float update_y = updateMenu->getContentSize().height; //获得菜单长度
+	updateMenu->setPosition(Vec2(visibleSize.width - 25, origin.y + 85));
+	auto up = Menu::create(updateMenu, NULL);
+	up->setPosition(Vec2::ZERO);
+	this->addChild(up);
+
 
 	//建筑物接触检测监听器
 	spriteContactListener = EventListenerPhysicsContact::create();
@@ -421,7 +445,7 @@ void GameScene::onEnter()
 	_eventDispatcher->addEventListenerWithFixedPriority(spriteContactListener, 20);
 
 	//实时刷新金钱
-	this->Money = 5000;
+	this->Money = 10000;
 	__String *currentMoney = __String::createWithFormat("Money:%d", this->Money);
 	auto MoneyLabel = LabelTTF::create(currentMoney->getCString(), "Marker Felt", 15);
 	float Money_x = MoneyLabel->getContentSize().width;
@@ -429,8 +453,17 @@ void GameScene::onEnter()
 	MoneyLabel->setPosition(origin.x + visibleSize.width - Money_x * 0.75, origin.y + Money_y);
 	MoneyLabel->setColor(Color3B::RED);
 	this->addChild(MoneyLabel, 20, GameSceneNodeTagMoney);
-	this->schedule(schedule_selector(GameScene::moneyUpdate), 1.0f, CC_REPEAT_FOREVER, 0);
+	this->schedule(schedule_selector(GameScene::moneyUpdate), 0.1f, CC_REPEAT_FOREVER, 0);
 
+	this->Power = 120000;
+	__String *currentPower = __String::createWithFormat("Power:%d", this->Power);
+	auto PowerLabel = LabelTTF::create(currentPower->getCString(), "Marker Felt", 15);
+	float Power_x = PowerLabel->getContentSize().width;
+	float Power_y = PowerLabel->getContentSize().height;
+	PowerLabel->setPosition(origin.x + visibleSize.width - Power_x * 0.75, origin.y + Power_y + 20);
+	PowerLabel->setColor(Color3B::RED);
+	this->addChild(PowerLabel, 20, GameSceneNodeTagPower);
+	this->schedule(schedule_selector(GameScene::powerUpdate), 0.1f, CC_REPEAT_FOREVER, 0);
 }
 
 void GameScene::onExit()
@@ -618,6 +651,22 @@ void GameScene::buildingsCreate(Ref *pSender)
 	}
 }
 
+void GameScene::soldierUpdate(Ref *pSender)
+{
+	MenuItem *mnitm = (MenuItem *)pSender;
+	if (Power < POWER_PRICE)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
+		return;
+	}
+	else
+	{
+		Power -= POWER_PRICE;
+		this->scheduleOnce(schedule_selector(GameScene::soldierUpdateReady), 0.01f);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
+	}
+}
+
 void GameScene::soldiersCreate(Ref *pSender)
 {
 	MenuItem *mnitm = (MenuItem *)pSender;
@@ -761,29 +810,31 @@ void GameScene::minerReady(float dt)
 {
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
-	gamemanager->produceSoldiers(START_MINER,_player_id,_id);
 	gamemanager->genCreateSoldierMessage(START_MINER);
 }
 void GameScene::policemanReady(float dt)
 {
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
-	gamemanager->produceSoldiers(START_POLICEMAN,_player_id, _id);
 	gamemanager->genCreateSoldierMessage(START_POLICEMAN);
 }
 void GameScene::warriorReady(float dt)
 {
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
-	gamemanager->produceSoldiers(START_WARRIOR, _player_id, _id);
 	gamemanager->genCreateSoldierMessage(START_WARRIOR);
 }
 void GameScene::tankReady(float dt)
 {
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
-	gamemanager->produceSoldiers(START_TANK, _player_id, _id);
 	gamemanager->genCreateSoldierMessage(START_TANK);
+}
+
+void GameScene::soldierUpdateReady(float dt)
+{
+	auto _player_id = gamemanager->getPlayerID();
+	gamemanager->genSoldierUpdateMessage();
 }
 
 //建筑物绘制
@@ -791,7 +842,6 @@ void GameScene::casernReady(float dt)
 {
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
-	gamemanager->produceBuildings(START_CASERN, _player_id, _id);
 	gamemanager->genCreateBuildingMessage(START_CASERN);
 }
 
@@ -799,68 +849,156 @@ void GameScene::electricStationReady(float dt)
 {
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
-	gamemanager->produceBuildings(START_ELECTRICSTATION, _player_id, _id);
 	gamemanager->genCreateBuildingMessage(START_ELECTRICSTATION);
 }
 void GameScene::tankFactoryReady(float dt)
 {
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
-	gamemanager->produceBuildings(START_TANKFACTORY, _player_id, _id);
 	gamemanager->genCreateBuildingMessage(START_TANKFACTORY);
 }
 void GameScene::oreYardReady(float dt)
 {
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
-	gamemanager->produceBuildings(START_OREYARD, _player_id, _id);
 	gamemanager->genCreateBuildingMessage(START_OREYARD);
 }
 
 void GameScene::moneyUpdate(float dt)
 {
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	//将上一个标签移出
-	if (this->getChildByTag(GameSceneNodeTagMoney))
+	frame_cnt3++;
+	if (frame_cnt3 % KEYFRAME3 == 0)
 	{
-		this->removeChildByTag(GameSceneNodeTagMoney);
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+		//将上一个标签移出
+		if (this->getChildByTag(GameSceneNodeTagMoney))
+		{
+			this->removeChildByTag(GameSceneNodeTagMoney);
+		}
+		//创建新标签
+		if (this->Money <= 0)
+		{
+			this->Money = 0;
+		}
+		__String *currentMoney = __String::createWithFormat("Money:%d", (this->Money)++);
+		auto MoneyLabel = LabelTTF::create(currentMoney->getCString(), "Marker Felt", 15);
+		float Money_x = MoneyLabel->getContentSize().width;
+		float Money_y = MoneyLabel->getContentSize().height;
+		MoneyLabel->setPosition(origin.x + visibleSize.width - Money_x * 0.75, origin.y + Money_y);
+		MoneyLabel->setColor(Color3B::RED);
+		this->addChild(MoneyLabel, 20, GameSceneNodeTagMoney);
 	}
-	//创建新标签
-	if (this->Money <= 0)
+	else
 	{
-		this->Money = 0;
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+		//将上一个标签移出
+		if (this->getChildByTag(GameSceneNodeTagMoney))
+		{
+			this->removeChildByTag(GameSceneNodeTagMoney);
+		}
+		//创建新标签
+		if (this->Money <= 0)
+		{
+			this->Money = 0;
+		}
+		__String *currentMoney = __String::createWithFormat("Money:%d", (this->Money));
+		auto MoneyLabel = LabelTTF::create(currentMoney->getCString(), "Marker Felt", 15);
+		float Money_x = MoneyLabel->getContentSize().width;
+		float Money_y = MoneyLabel->getContentSize().height;
+		MoneyLabel->setPosition(origin.x + visibleSize.width - Money_x * 0.75, origin.y + Money_y);
+		MoneyLabel->setColor(Color3B::RED);
+		this->addChild(MoneyLabel, 20, GameSceneNodeTagMoney);
 	}
-	__String *currentMoney = __String::createWithFormat("Money:%d", (this->Money)++);
-	auto MoneyLabel = LabelTTF::create(currentMoney->getCString(), "Marker Felt", 15);
-	float Money_x = MoneyLabel->getContentSize().width;
-	float Money_y = MoneyLabel->getContentSize().height;
-	MoneyLabel->setPosition(origin.x + visibleSize.width - Money_x * 0.75, origin.y + Money_y);
-	MoneyLabel->setColor(Color3B::RED);
-	this->addChild(MoneyLabel, 20, GameSceneNodeTagMoney);
+}
+
+void GameScene::powerUpdate(float dt)
+{
+	frame_cnt2++;
+	if (frame_cnt2 % KEYFRAME2 == 0)
+	{
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+		//将上一个标签移出
+		if (this->getChildByTag(GameSceneNodeTagPower))
+		{
+			this->removeChildByTag(GameSceneNodeTagPower);
+		}
+		//创建新标签
+		if (this->Power <= 0)
+		{
+			this->Power = 0;
+		}
+		if ((gettiledMap()->getChildByName("electricStation1") && playerid == 1)
+			|| (gettiledMap()->getChildByName("electricStation2") && playerid == 2)
+			|| (gettiledMap()->getChildByName("electricStation3") && playerid == 3)
+			|| (gettiledMap()->getChildByName("electricStation4") && playerid == 4))
+		{
+			__String *currentPower = __String::createWithFormat("Power:%d", (this->Power) += 3);
+			auto PowerLabel = LabelTTF::create(currentPower->getCString(), "Marker Felt", 15);
+			float Power_x = PowerLabel->getContentSize().width;
+			float Power_y = PowerLabel->getContentSize().height;
+			PowerLabel->setPosition(origin.x + visibleSize.width - Power_x * 0.75, origin.y + Power_y + 20);
+			PowerLabel->setColor(Color3B::RED);
+			this->addChild(PowerLabel, 20, GameSceneNodeTagPower);
+		}
+		else
+		{
+			__String *currentPower = __String::createWithFormat("Power:%d", (this->Power)++);
+			auto PowerLabel = LabelTTF::create(currentPower->getCString(), "Marker Felt", 15);
+			float Power_x = PowerLabel->getContentSize().width;
+			float Power_y = PowerLabel->getContentSize().height;
+			PowerLabel->setPosition(origin.x + visibleSize.width - Power_x * 0.75, origin.y + Power_y + 20);
+			PowerLabel->setColor(Color3B::RED);
+			this->addChild(PowerLabel, 20, GameSceneNodeTagPower);
+		}
+	}
+	else
+	{
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+		//将上一个标签移出
+		if (this->getChildByTag(GameSceneNodeTagPower))
+		{
+			this->removeChildByTag(GameSceneNodeTagPower);
+		}
+		//创建新标签
+		if (this->Power <= 0)
+		{
+			this->Power = 0;
+		}
+		__String *currentPower = __String::createWithFormat("Power:%d", (this->Power));
+		auto PowerLabel = LabelTTF::create(currentPower->getCString(), "Marker Felt", 15);
+		float Power_x = PowerLabel->getContentSize().width;
+		float Power_y = PowerLabel->getContentSize().height;
+		PowerLabel->setPosition(origin.x + visibleSize.width - Power_x * 0.75, origin.y + Power_y + 20);
+		PowerLabel->setColor(Color3B::RED);
+		this->addChild(PowerLabel, 20, GameSceneNodeTagPower);
+	}
 }
 
 void GameScene::update(float dt)
 {
-	frame_cnt++;
+	frame_cnt1++;
 	scrollMap();
-	for (auto &s : soldierSprites)
+	for (auto &b : gamemanager->bid_map)
 	{
-		if (s->isScheduled(schedule_selector(Soldiers::update)))
+		if (b.second->isScheduled(schedule_selector(Buildings::update)))
 		{
 			continue;
 		}
-		s->schedule(schedule_selector(Soldiers::update));
+		b.second->schedule(schedule_selector(Buildings::update));
 	}
-	for (auto &b : buildingSprites)
+	for (auto &s : gamemanager->sid_map)
 	{
-		if (b->isScheduled(schedule_selector(Buildings::update)))
+		if (s.second->isScheduled(schedule_selector(Soldiers::update)))
 		{
 			continue;
 		}
-		b->schedule(schedule_selector(Buildings::update));
+		s.second->schedule(schedule_selector(Soldiers::update));
 	}
-	if (frame_cnt % KEY_FRAME == 0 && start_flag)
+	if (frame_cnt1 % KEYFRAME1 == 0 && start_flag)
 	{
 		gamemanager->updateGameState();
 		checkWinOrLose();
@@ -949,27 +1087,50 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 	{
 		Rect select_rect = { MIN(last_maptouch.x, maptouch.x), MIN(last_maptouch.y, maptouch.y),
 			abs(last_maptouch.x - maptouch.x), abs(last_maptouch.y - maptouch.y) };
-		for (auto &target_2 : soldierSprites)
+		for (auto &target_2 : gamemanager->sid_map)
 		{
-			target_2->stopAllActions();
-			target_2->moveToPath.clear();
-			if (!select_rect.containsPoint(target_2->getPosition()))
+			if (target_2.first % 4 == gamemanager->getPlayerID()%4)
 			{
-				target_2->hideHpBar();
-				target_2->setifSelect(SELECT_OFF);
-				continue;
+				//////////////
+				if (target_2.second->getSoldierType() == START_MINER
+					&& select_rect.containsPoint(target_2.second->getPosition()))
+				{
+					target_2.second->displayHpBar();
+					target_2.second->setifSelect(SELECT_OFF);
+					continue;
+				}
+				if (target_2.second->getSoldierType() == START_MINER
+					&& !select_rect.containsPoint(target_2.second->getPosition()))
+				{
+					target_2.second->hideHpBar();
+					target_2.second->setifSelect(SELECT_OFF);
+					continue;
+				}
+				//////////////
+				target_2.second->stopAllActions();
+				target_2.second->moveToPath.clear();
+				gamemanager->genMoveMessage(target_2.second->moveToPath, target_2.second->getID(), target_2.second->getSoldierType());
+				if (!select_rect.containsPoint(target_2.second->getPosition()))
+				{
+					target_2.second->hideHpBar();
+					target_2.second->setifSelect(SELECT_OFF);
+					continue;
+				}
+				target_2.second->displayHpBar();
+				target_2.second->setifSelect(SELECT_ON);
 			}
-			target_2->displayHpBar();
-			target_2->setifSelect(SELECT_ON);
 		}
-		for (auto &target_1 : buildingSprites)
+		for (auto &target_1 : gamemanager->bid_map)
 		{
-			if (!select_rect.containsPoint(target_1->getPosition()))
+			if (target_1.first % 4 == gamemanager->getPlayerID()%4)
 			{
-				target_1->hideHpBar();
-				continue;
+				if (!select_rect.containsPoint(target_1.second->getPosition()))
+				{
+					target_1.second->hideHpBar();
+					continue;
+				}
+				target_1.second->displayHpBar();
 			}
-			target_1->displayHpBar();
 		}
 	}
 }
@@ -1101,7 +1262,7 @@ void GameScene::win()
 	auto win_label = LabelBMFont::create("You Win!", "fonts/NoticeFont.fnt");
 	win_label->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y + visibleSize.height - win_label->getContentSize().height));
 	addChild(win_label, 100);
-	notice->displayNotice("You Win!");
+	//notice->displayNotice("You Win!");
 	end_flag = true;
 }
 
@@ -1112,7 +1273,7 @@ void GameScene::lose()
 	auto lose_label = LabelBMFont::create("You Lose!", "fonts/NoticeFont.fnt");
 	lose_label->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y + visibleSize.height - lose_label->getContentSize().height));
 	addChild(lose_label, 100);
-	notice->displayNotice("You Lose");
+	//notice->displayNotice("You Lose");
 	end_flag = true;
 }
 
