@@ -161,12 +161,15 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 		{
 			if (target.first % 4 == gamemanager->getPlayerID() % 4)
 			{
+<<<<<<< HEAD
 				//////////////
 				if (target.second->getSoldierType() == START_MINER)
 				{
 					continue;
 				}
 				//////////////
+=======
+>>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 				if (!target.second->getifSelect())
 				{
 					target.second->stopAllActions();
@@ -1091,6 +1094,7 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 		{
 			if (target_2.first % 4 == gamemanager->getPlayerID()%4)
 			{
+<<<<<<< HEAD
 				//////////////
 				if (target_2.second->getSoldierType() == START_MINER
 					&& select_rect.containsPoint(target_2.second->getPosition()))
@@ -1107,6 +1111,8 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 					continue;
 				}
 				//////////////
+=======
+>>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 				target_2.second->stopAllActions();
 				target_2.second->moveToPath.clear();
 				gamemanager->genMoveMessage(target_2.second->moveToPath, target_2.second->getID(), target_2.second->getSoldierType());

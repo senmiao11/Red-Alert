@@ -452,6 +452,7 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
+<<<<<<< HEAD
 				/////////
 				if (GameScene::mapType == 1)
 				{
@@ -462,6 +463,8 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 					soldier->minerAutoMoveInMap_2();
 				}
 				/////////
+=======
+>>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 			}
 			if (_player_id == 2)
 			{
@@ -479,6 +482,7 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
+<<<<<<< HEAD
 				/////////
 				if (GameScene::mapType == 1)
 				{
@@ -489,6 +493,8 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 					soldier->minerAutoMoveInMap_2();
 				}
 				/////////
+=======
+>>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 
 			}
 			if (_player_id == 3)
@@ -507,6 +513,7 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
+<<<<<<< HEAD
 				/////////
 				if (GameScene::mapType == 1)
 				{
@@ -517,6 +524,8 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 					soldier->minerAutoMoveInMap_2();
 				}
 				/////////
+=======
+>>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 			}
 			if (_player_id == 4)
 			{
@@ -534,6 +543,7 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
+<<<<<<< HEAD
 				/////////
 				if (GameScene::mapType == 1)
 				{
@@ -544,6 +554,8 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 					soldier->minerAutoMoveInMap_2();
 				}
 				/////////
+=======
+>>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 			}
 			break;
 		}
@@ -782,7 +794,11 @@ void GameManager::soldiersUpdate(int _player_id)
 {
 	for (auto elem : sid_map)
 	{
+<<<<<<< HEAD
 		if (elem.first % 4 == _player_id % 4)
+=======
+		if (elem.first%4 == _player_id%4)
+>>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 		{
 			elem.second->setPower((elem.second->getPower())+2);
 			elem.second->setMaxHealth(elem.second->getMaxHealth() + 20);

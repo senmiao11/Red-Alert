@@ -341,6 +341,7 @@ void Soldiers::remove()
 		}
 	}
 }
+<<<<<<< HEAD
 
 void Soldiers::minerRemoveAndAddMoney()
 {
@@ -469,3 +470,5 @@ void Soldiers::minerAutoMoveInMap_2()
 		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, addMoney, nullptr));
 	}
 }
+=======
+>>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
