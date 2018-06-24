@@ -44,6 +44,8 @@ public:
 	void deleteAll(int _player_id);                               //失败后移除所有建筑和士兵
 	void soldiersUpdate(int _player_id);                          //场上所有兵种升级
 	void genSoldierUpdateMessage();                               //产生兵种升级信息
+	void genGobackMessgage(int _player_id);                       //产生返回主菜单界面信息
+	void gobackMenu();                                            //返回开始菜单
 
 private:
 	Map<int, Soldiers*> sid_map;                                 //ID和士兵对应表

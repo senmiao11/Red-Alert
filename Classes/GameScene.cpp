@@ -161,15 +161,10 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 		{
 			if (target.first % 4 == gamemanager->getPlayerID() % 4)
 			{
-<<<<<<< HEAD
-				//////////////
 				if (target.second->getSoldierType() == START_MINER)
 				{
 					continue;
 				}
-				//////////////
-=======
->>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 				if (!target.second->getifSelect())
 				{
 					target.second->stopAllActions();
@@ -219,7 +214,6 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 	//创建基地
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
-	gamemanager->produceBuildings(START_BASE,_player_id,_id);
 	gamemanager->genCreateBuildingMessage(START_BASE);
 	start_flag = true;
 	return true;
@@ -234,7 +228,7 @@ void GameScene::onEnter()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//创建返回菜单
-	auto backLabel = LabelTTF::create(MyUtility::gbk_2_utf8("返回"), "华文行楷", 15);
+	/*auto backLabel = LabelTTF::create(MyUtility::gbk_2_utf8("返回"), "华文行楷", 15);
 	backLabel->setColor(Color3B::GREEN);
 	auto backMenu = MenuItemLabel::create(backLabel, CC_CALLBACK_1(GameScene::backToMenuScene, this));
 	float back_x = backMenu->getContentSize().width;  //获得菜单宽度
@@ -242,7 +236,7 @@ void GameScene::onEnter()
 	backMenu->setPosition(Vec2(visibleSize.width-20, origin.y + visibleSize.height - back_y));
 	auto mn = Menu::create(backMenu, NULL);
 	mn->setPosition(Vec2::ZERO);
-	this->addChild(mn);
+	this->addChild(mn);*/
 
 	//创建兵营菜单
 	MenuItemImage *buildingMenu1 = MenuItemImage::create(CASERN, CASERN, CC_CALLBACK_1(GameScene::buildingsCreate, this));
@@ -448,7 +442,7 @@ void GameScene::onEnter()
 	_eventDispatcher->addEventListenerWithFixedPriority(spriteContactListener, 20);
 
 	//实时刷新金钱
-	this->Money = 10000;
+	this->Money = 7000;
 	__String *currentMoney = __String::createWithFormat("Money:%d", this->Money);
 	auto MoneyLabel = LabelTTF::create(currentMoney->getCString(), "Marker Felt", 15);
 	float Money_x = MoneyLabel->getContentSize().width;
@@ -458,7 +452,7 @@ void GameScene::onEnter()
 	this->addChild(MoneyLabel, 20, GameSceneNodeTagMoney);
 	this->schedule(schedule_selector(GameScene::moneyUpdate), 0.1f, CC_REPEAT_FOREVER, 0);
 
-	this->Power = 120000;
+	this->Power = 4000;
 	__String *currentPower = __String::createWithFormat("Power:%d", this->Power);
 	auto PowerLabel = LabelTTF::create(currentPower->getCString(), "Marker Felt", 15);
 	float Power_x = PowerLabel->getContentSize().width;
@@ -486,12 +480,12 @@ void GameScene::onExit()
 		socket_client = nullptr;
 	}
 	std::this_thread::sleep_for(std::chrono::milliseconds(200));
-	if (socket_server)
+	/*if (socket_server)
 	{
 		socket_server->close();
 		delete socket_server;
 		socket_server = nullptr;
-	}
+	}*/
 	if (_onExitCallback)
 		_onExitCallback();
 	if (_componentContainer && !_componentContainer->isEmpty())
@@ -507,12 +501,7 @@ void GameScene::onExit()
 //返回MenuScene
 void GameScene::backToMenuScene(Ref *pSender)
 {
-	Scene *sc = Scene::create();
-	auto layer = MenuScene::create();
-	sc->addChild(layer);
-
-	auto reScene = TransitionSplitRows::create(1.0f, sc);
-	Director::getInstance()->replaceScene(reScene);
+	gamemanager->genGobackMessgage(playerid);
 }
 
 //选择建筑物建造
@@ -548,7 +537,7 @@ void GameScene::buildingsCreate(Ref *pSender)
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
-			Money -= CASERN_PRICE;
+			//Money -= CASERN_PRICE;
 			//建筑物准备定时器，每种建筑物准备时间不同
 			this->scheduleOnce(schedule_selector(GameScene::casernReady), 2.0f);
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
@@ -581,7 +570,7 @@ void GameScene::buildingsCreate(Ref *pSender)
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
-			Money -= ELECTRICSTATION_PRICE;
+			//Money -= ELECTRICSTATION_PRICE;
 			//建筑物准备定时器，每种建筑物准备时间不同
 			this->scheduleOnce(schedule_selector(GameScene::electricStationReady), 1.8f);
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
@@ -614,7 +603,7 @@ void GameScene::buildingsCreate(Ref *pSender)
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
-			Money -= TANKFACTORY_PRICE;
+			//Money -= TANKFACTORY_PRICE;
 			this->scheduleOnce(schedule_selector(GameScene::tankFactoryReady), 2.5f);
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 			break;
@@ -646,7 +635,7 @@ void GameScene::buildingsCreate(Ref *pSender)
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 				break;
 			}
-			Money -= OREYARD_PRICE;
+			//Money -= OREYARD_PRICE;
 			this->scheduleOnce(schedule_selector(GameScene::oreYardReady), 1.5f);
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 			break;
@@ -664,7 +653,6 @@ void GameScene::soldierUpdate(Ref *pSender)
 	}
 	else
 	{
-		Power -= POWER_PRICE;
 		this->scheduleOnce(schedule_selector(GameScene::soldierUpdateReady), 0.01f);
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 	}
@@ -702,7 +690,7 @@ void GameScene::soldiersCreate(Ref *pSender)
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
 		}
-		Money -= MINER_PRICE;
+		//Money -= MINER_PRICE;
 		//准备定时器
 		this->scheduleOnce(schedule_selector(GameScene::minerReady), 1.0f);
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
@@ -735,7 +723,7 @@ void GameScene::soldiersCreate(Ref *pSender)
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
 		}
-		Money -= POLICEMAN_PRICE;
+		//Money -= POLICEMAN_PRICE;
 		//准备定时器
 		this->scheduleOnce(schedule_selector(GameScene::policemanReady), 1.5f);
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
@@ -768,7 +756,7 @@ void GameScene::soldiersCreate(Ref *pSender)
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
 		}
-		Money -= TANK_PRICE;
+		//Money -= TANK_PRICE;
 		this->scheduleOnce(schedule_selector(GameScene::tankReady), 2.0f);
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 		break;
@@ -800,7 +788,7 @@ void GameScene::soldiersCreate(Ref *pSender)
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/insufficientfund.wav");
 			break;
 		}
-		Money -= WARRIOR_PRICE;
+		//Money -= WARRIOR_PRICE;
 		this->scheduleOnce(schedule_selector(GameScene::warriorReady), 2.0f);
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 		break;
@@ -811,12 +799,14 @@ void GameScene::soldiersCreate(Ref *pSender)
 //兵种绘制
 void GameScene::minerReady(float dt)
 {
+	Money -= MINER_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateSoldierMessage(START_MINER);
 }
 void GameScene::policemanReady(float dt)
 {
+	Money -= POLICEMAN_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateSoldierMessage(START_POLICEMAN);
@@ -826,9 +816,11 @@ void GameScene::warriorReady(float dt)
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateSoldierMessage(START_WARRIOR);
+	Money -= WARRIOR_PRICE;
 }
 void GameScene::tankReady(float dt)
 {
+	Money -= TANK_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateSoldierMessage(START_TANK);
@@ -836,6 +828,7 @@ void GameScene::tankReady(float dt)
 
 void GameScene::soldierUpdateReady(float dt)
 {
+	Power -= POWER_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	gamemanager->genSoldierUpdateMessage();
 }
@@ -843,6 +836,7 @@ void GameScene::soldierUpdateReady(float dt)
 //建筑物绘制
 void GameScene::casernReady(float dt)
 {
+	Money -= CASERN_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateBuildingMessage(START_CASERN);
@@ -850,18 +844,21 @@ void GameScene::casernReady(float dt)
 
 void GameScene::electricStationReady(float dt)
 {
+	Money -= ELECTRICSTATION_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateBuildingMessage(START_ELECTRICSTATION);
 }
 void GameScene::tankFactoryReady(float dt)
 {
+	Money -= TANKFACTORY_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateBuildingMessage(START_TANKFACTORY);
 }
 void GameScene::oreYardReady(float dt)
 {
+	Money -= OREYARD_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateBuildingMessage(START_OREYARD);
@@ -938,7 +935,7 @@ void GameScene::powerUpdate(float dt)
 			|| (gettiledMap()->getChildByName("electricStation3") && playerid == 3)
 			|| (gettiledMap()->getChildByName("electricStation4") && playerid == 4))
 		{
-			__String *currentPower = __String::createWithFormat("Power:%d", (this->Power) += 3);
+			__String *currentPower = __String::createWithFormat("Power:%d", (this->Power) += 15);
 			auto PowerLabel = LabelTTF::create(currentPower->getCString(), "Marker Felt", 15);
 			float Power_x = PowerLabel->getContentSize().width;
 			float Power_y = PowerLabel->getContentSize().height;
@@ -948,7 +945,7 @@ void GameScene::powerUpdate(float dt)
 		}
 		else
 		{
-			__String *currentPower = __String::createWithFormat("Power:%d", (this->Power)++);
+			__String *currentPower = __String::createWithFormat("Power:%d", (this->Power) += 2);
 			auto PowerLabel = LabelTTF::create(currentPower->getCString(), "Marker Felt", 15);
 			float Power_x = PowerLabel->getContentSize().width;
 			float Power_y = PowerLabel->getContentSize().height;
@@ -1092,9 +1089,8 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 			abs(last_maptouch.x - maptouch.x), abs(last_maptouch.y - maptouch.y) };
 		for (auto &target_2 : gamemanager->sid_map)
 		{
-			if (target_2.first % 4 == gamemanager->getPlayerID()%4)
+			if (target_2.first % 4 == gamemanager->getPlayerID() % 4)
 			{
-<<<<<<< HEAD
 				//////////////
 				if (target_2.second->getSoldierType() == START_MINER
 					&& select_rect.containsPoint(target_2.second->getPosition()))
@@ -1111,8 +1107,6 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 					continue;
 				}
 				//////////////
-=======
->>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 				target_2.second->stopAllActions();
 				target_2.second->moveToPath.clear();
 				gamemanager->genMoveMessage(target_2.second->moveToPath, target_2.second->getID(), target_2.second->getSoldierType());
@@ -1128,7 +1122,7 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 		}
 		for (auto &target_1 : gamemanager->bid_map)
 		{
-			if (target_1.first % 4 == gamemanager->getPlayerID()%4)
+			if (target_1.first % 4 == gamemanager->getPlayerID() % 4)
 			{
 				if (!select_rect.containsPoint(target_1.second->getPosition()))
 				{

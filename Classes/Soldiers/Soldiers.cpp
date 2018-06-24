@@ -211,8 +211,8 @@ void Soldiers::attack()
 		}
 		auto fire = Attackeffect::create();
 		Vec2 sEnemyPosiotion;
-		sEnemyPosiotion.x = sEnemy->getContentSize().width + sEnemy->getPosition().x;
-		sEnemyPosiotion.y = sEnemy->getContentSize().width + sEnemy->getPosition().y;
+		sEnemyPosiotion.x = sEnemy->getContentSize().width/2 + sEnemy->getPosition().x;
+		sEnemyPosiotion.y = sEnemy->getContentSize().width/2 + sEnemy->getPosition().y;
 		fire->setAtkPath(this->getPosition(), sEnemyPosiotion);
 		GameScene::gettiledMap()->addChild(fire, 10, GameSceneNodeTagFire);
 		sEnemy->setcurrentHealth(sEnemy->getcurrentHealth() - getPower());
@@ -236,8 +236,8 @@ void Soldiers::attack()
 		}
 		auto fire = Attackeffect::create();
 		Vec2 bEnemyPosiotion;
-		bEnemyPosiotion.x = bEnemy->getContentSize().width + bEnemy->getPosition().x;
-		bEnemyPosiotion.y = bEnemy->getContentSize().width + bEnemy->getPosition().y;
+		bEnemyPosiotion.x = bEnemy->getContentSize().width /2+ bEnemy->getPosition().x;
+		bEnemyPosiotion.y = bEnemy->getContentSize().width /2+ bEnemy->getPosition().y;
 		fire->setAtkPath(this->getPosition(), bEnemyPosiotion);
 		GameScene::gettiledMap()->addChild(fire, 10, GameSceneNodeTagFire);
 		bEnemy->setcurrentHealth(bEnemy->getcurrentHealth() - getPower());
@@ -341,7 +341,6 @@ void Soldiers::remove()
 		}
 	}
 }
-<<<<<<< HEAD
 
 void Soldiers::minerRemoveAndAddMoney()
 {
@@ -374,52 +373,102 @@ void Soldiers::minerRemoveAndAddMoney()
 			break;
 		}
 	}
-	(GameScene::Money) += this->getPrice() * 2;
+	(GameScene::Money) += this->getPrice() * 3;
 }
 
 void Soldiers::minerAutoMoveInMap_1()
 {
 	if (this->getName() == "miner1")
 	{
+		auto group = GameScene::gettiledMap()->getObjectGroup("PathObject");
+		auto obj1 = group->getObject("path11");
+		auto obj2 = group->getObject("path12");
+		auto obj3 = group->getObject("path13");
 		auto startPos = this->getPosition();
-		MoveTo *move_1 = MoveTo::create(startPos.getDistance(Vec2(608, 128)) / 40, Vec2(608, 128));
-		MoveTo *move_2 = MoveTo::create(Vec2(608, 128).getDistance(Vec2(608, 472)) / 40, Vec2(608, 472));
-		MoveTo *move_3 = MoveTo::create(Vec2(608, 472).getDistance(Vec2(608, 128)) / 40, Vec2(608, 128));
-		MoveTo *move_4 = MoveTo::create(Vec2(608, 128).getDistance(startPos) / 40, startPos);
+		auto path_11_pos = Vec2(obj1["x"].asFloat(), obj1["y"].asFloat());
+		auto path_12_pos = Vec2(obj2["x"].asFloat(), obj2["y"].asFloat());
+		auto path_13_pos = Vec2(obj3["x"].asFloat(), obj3["y"].asFloat());
+		MoveTo *move_1 = MoveTo::create(startPos.getDistance(path_11_pos) / 40, path_11_pos);
+		MoveTo *move_2 = MoveTo::create(path_11_pos.getDistance(path_12_pos) / 40, path_12_pos);
+		MoveTo *move_3 = MoveTo::create(path_12_pos.getDistance(path_13_pos) / 40, path_13_pos);
+		MoveTo *move_4 = MoveTo::create(path_13_pos.getDistance(path_12_pos) / 40, path_12_pos);
+		MoveTo *move_5 = MoveTo::create(path_12_pos.getDistance(path_11_pos) / 40, path_11_pos);
+		MoveTo *move_6 = MoveTo::create(path_11_pos.getDistance(startPos) / 40, startPos);
 		CallFunc *addMoney = CallFunc::create(CC_CALLBACK_0(Soldiers::minerRemoveAndAddMoney, this));
-		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, addMoney, nullptr));
+		this->runAction(Sequence::create(move_1, move_2, move_3, 
+			move_4, move_5, move_6, addMoney, nullptr));
 	}
 	if (this->getName() == "miner2")
 	{
+		auto group = GameScene::gettiledMap()->getObjectGroup("PathObject");
+		auto obj1 = group->getObject("path21");
+		auto obj2 = group->getObject("path22");
+		auto obj3 = group->getObject("path23");
+		auto obj4 = group->getObject("path24");
+		auto obj5 = group->getObject("path25");
 		auto startPos = this->getPosition();
-		MoveTo *move_1 = MoveTo::create(startPos.getDistance(Vec2(1401, 270)) / 40, Vec2(1401, 270));
-		MoveTo *move_2 = MoveTo::create(Vec2(1401, 270).getDistance(Vec2(1005, 270)) / 40, Vec2(1005, 270));
-		MoveTo *move_3 = MoveTo::create(Vec2(1005, 270).getDistance(Vec2(1005, 150)) / 40, Vec2(1005, 150));
-		MoveTo *move_4 = MoveTo::create(Vec2(1005, 150).getDistance(Vec2(1005, 270)) / 40, Vec2(1005, 270));
-		MoveTo *move_5 = MoveTo::create(Vec2(1005, 270).getDistance(Vec2(1401, 270)) / 40, Vec2(1401, 270));
-		MoveTo *move_6 = MoveTo::create(Vec2(1401, 270).getDistance(startPos) / 40, startPos);
+		auto path_21_pos = Vec2(obj1["x"].asFloat(), obj1["y"].asFloat());
+		auto path_22_pos = Vec2(obj2["x"].asFloat(), obj2["y"].asFloat());
+		auto path_23_pos = Vec2(obj3["x"].asFloat(), obj3["y"].asFloat());
+		auto path_24_pos = Vec2(obj4["x"].asFloat(), obj4["y"].asFloat());
+		auto path_25_pos = Vec2(obj5["x"].asFloat(), obj5["y"].asFloat());
+		MoveTo *move_1 = MoveTo::create(startPos.getDistance(path_21_pos) / 40, path_21_pos);
+		MoveTo *move_2 = MoveTo::create(path_21_pos.getDistance(path_22_pos) / 40, path_22_pos);
+		MoveTo *move_3 = MoveTo::create(path_22_pos.getDistance(path_23_pos) / 40, path_23_pos);
+		MoveTo *move_4 = MoveTo::create(path_23_pos.getDistance(path_24_pos) / 40, path_24_pos);
+		MoveTo *move_5 = MoveTo::create(path_24_pos.getDistance(path_25_pos) / 40, path_25_pos);
+		MoveTo *move_6 = MoveTo::create(path_25_pos.getDistance(path_24_pos) / 40, path_24_pos);
+		MoveTo *move_7 = MoveTo::create(path_24_pos.getDistance(path_23_pos) / 40, path_23_pos);
+		MoveTo *move_8 = MoveTo::create(path_23_pos.getDistance(path_22_pos) / 40, path_22_pos);
+		MoveTo *move_9 = MoveTo::create(path_22_pos.getDistance(path_21_pos) / 40, path_21_pos);
+		MoveTo *move_10 = MoveTo::create(path_21_pos.getDistance(startPos) / 40, startPos);
 		CallFunc *addMoney = CallFunc::create(CC_CALLBACK_0(Soldiers::minerRemoveAndAddMoney, this));
-		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, move_5, move_6, addMoney, nullptr));
+		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, move_5,
+			move_6, move_7, move_8, move_9, move_10, addMoney, nullptr));
 	}
 	if (this->getName() == "miner3")
 	{
+		auto group = GameScene::gettiledMap()->getObjectGroup("PathObject");
+		auto obj1 = group->getObject("path31");
+		auto obj2 = group->getObject("path32");
+		auto obj3 = group->getObject("path33");
 		auto startPos = this->getPosition();
-		MoveTo *move_1 = MoveTo::create(startPos.getDistance(Vec2(1154, 1395)) / 40, Vec2(1154, 1395));
-		MoveTo *move_2 = MoveTo::create(Vec2(1154, 1395).getDistance(Vec2(1154, 1078)) / 40, Vec2(1154, 1078));
-		MoveTo *move_3 = MoveTo::create(Vec2(1154, 1078).getDistance(Vec2(1154, 1395)) / 40, Vec2(1154, 1395));
-		MoveTo *move_4 = MoveTo::create(Vec2(1154, 1395).getDistance(startPos) / 40, startPos);
+		auto path_31_pos = Vec2(obj1["x"].asFloat(), obj1["y"].asFloat());
+		auto path_32_pos = Vec2(obj2["x"].asFloat(), obj2["y"].asFloat());
+		auto path_33_pos = Vec2(obj3["x"].asFloat(), obj3["y"].asFloat());
+		MoveTo *move_1 = MoveTo::create(startPos.getDistance(path_31_pos) / 40, path_31_pos);
+		MoveTo *move_2 = MoveTo::create(path_31_pos.getDistance(path_32_pos) / 40, path_32_pos);
+		MoveTo *move_3 = MoveTo::create(path_32_pos.getDistance(path_33_pos) / 40, path_33_pos);
+		MoveTo *move_4 = MoveTo::create(path_33_pos.getDistance(path_32_pos) / 40, path_32_pos);
+		MoveTo *move_5 = MoveTo::create(path_32_pos.getDistance(path_31_pos) / 40, path_31_pos);
+		MoveTo *move_6 = MoveTo::create(path_31_pos.getDistance(startPos) / 40, startPos);
 		CallFunc *addMoney = CallFunc::create(CC_CALLBACK_0(Soldiers::minerRemoveAndAddMoney, this));
-		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, addMoney, nullptr));
+		this->runAction(Sequence::create(move_1, move_2, move_3, 
+			move_4, move_5, move_6, addMoney, nullptr));
 	}
 	if (this->getName() == "miner4")
 	{
+		auto group = GameScene::gettiledMap()->getObjectGroup("PathObject");
+		auto obj1 = group->getObject("path41");
+		auto obj2 = group->getObject("path42");
+		auto obj3 = group->getObject("path43");
+		auto obj4 = group->getObject("path44");
 		auto startPos = this->getPosition();
-		MoveTo *move_1 = MoveTo::create(startPos.getDistance(Vec2(106, 1219)) / 40, Vec2(106, 1219));
-		MoveTo *move_2 = MoveTo::create(Vec2(106, 1219).getDistance(Vec2(464, 1219)) / 40, Vec2(464, 1219));
-		MoveTo *move_3 = MoveTo::create(Vec2(464, 1219).getDistance(Vec2(106, 1219)) / 40, Vec2(106, 1219));
-		MoveTo *move_4 = MoveTo::create(Vec2(106, 1219).getDistance(startPos) / 40, startPos);
+		auto path_41_pos = Vec2(obj1["x"].asFloat(), obj1["y"].asFloat());
+		auto path_42_pos = Vec2(obj2["x"].asFloat(), obj2["y"].asFloat());
+		auto path_43_pos = Vec2(obj3["x"].asFloat(), obj3["y"].asFloat());
+		auto path_44_pos = Vec2(obj4["x"].asFloat(), obj4["y"].asFloat());
+		MoveTo *move_1 = MoveTo::create(startPos.getDistance(path_41_pos) / 40, path_41_pos);
+		MoveTo *move_2 = MoveTo::create(path_41_pos.getDistance(path_42_pos) / 40, path_42_pos);
+		MoveTo *move_3 = MoveTo::create(path_42_pos.getDistance(path_43_pos) / 40, path_43_pos);
+		MoveTo *move_4 = MoveTo::create(path_43_pos.getDistance(path_44_pos) / 40, path_44_pos);
+		MoveTo *move_5 = MoveTo::create(path_44_pos.getDistance(path_43_pos) / 40, path_43_pos);
+		MoveTo *move_6 = MoveTo::create(path_43_pos.getDistance(path_42_pos) / 40, path_42_pos);
+		MoveTo *move_7 = MoveTo::create(path_42_pos.getDistance(path_41_pos) / 40, path_41_pos);
+		MoveTo *move_8 = MoveTo::create(path_41_pos.getDistance(startPos) / 40, startPos);
 		CallFunc *addMoney = CallFunc::create(CC_CALLBACK_0(Soldiers::minerRemoveAndAddMoney, this));
-		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, addMoney, nullptr));
+		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, 
+			move_5, move_6, move_7, move_8, addMoney, nullptr));
 	}
 }
 
@@ -427,48 +476,99 @@ void Soldiers::minerAutoMoveInMap_2()
 {
 	if (this->getName() == "miner1")
 	{
+		auto group = GameScene::gettiledMap()->getObjectGroup("PathObject");
+		auto obj1 = group->getObject("path11");
+		auto obj2 = group->getObject("path12");
+		auto obj3 = group->getObject("path13");
+		auto obj4 = group->getObject("path14");
 		auto startPos = this->getPosition();
-		MoveTo *move_1 = MoveTo::create(startPos.getDistance(Vec2(487, 112)) / 40, Vec2(487, 112));
-		MoveTo *move_2 = MoveTo::create(Vec2(487, 112).getDistance(Vec2(487, 450)) / 40, Vec2(487, 450));
-		MoveTo *move_3 = MoveTo::create(Vec2(487, 450).getDistance(Vec2(186, 450)) / 40, Vec2(186, 450));
-		MoveTo *move_4 = MoveTo::create(Vec2(186, 450).getDistance(Vec2(487, 450)) / 40, Vec2(487, 450));
-		MoveTo *move_5 = MoveTo::create(Vec2(487, 450).getDistance(Vec2(487, 112)) / 40, Vec2(487, 112));
-		MoveTo *move_6 = MoveTo::create(Vec2(487, 112).getDistance(startPos) / 40, startPos);
+		auto path_11_pos = Vec2(obj1["x"].asFloat(), obj1["y"].asFloat());
+		auto path_12_pos = Vec2(obj2["x"].asFloat(), obj2["y"].asFloat());
+		auto path_13_pos = Vec2(obj3["x"].asFloat(), obj3["y"].asFloat());
+		auto path_14_pos = Vec2(obj4["x"].asFloat(), obj4["y"].asFloat());
+		MoveTo *move_1 = MoveTo::create(startPos.getDistance(path_11_pos) / 40, path_11_pos);
+		MoveTo *move_2 = MoveTo::create(path_11_pos.getDistance(path_12_pos) / 40, path_12_pos);
+		MoveTo *move_3 = MoveTo::create(path_12_pos.getDistance(path_13_pos) / 40, path_13_pos);
+		MoveTo *move_4 = MoveTo::create(path_13_pos.getDistance(path_14_pos) / 40, path_14_pos);
+		MoveTo *move_5 = MoveTo::create(path_14_pos.getDistance(path_13_pos) / 40, path_13_pos);
+		MoveTo *move_6 = MoveTo::create(path_13_pos.getDistance(path_12_pos) / 40, path_12_pos);
+		MoveTo *move_7 = MoveTo::create(path_12_pos.getDistance(path_11_pos) / 40, path_11_pos);
+		MoveTo *move_8 = MoveTo::create(path_11_pos.getDistance(startPos) / 40, startPos);
 		CallFunc *addMoney = CallFunc::create(CC_CALLBACK_0(Soldiers::minerRemoveAndAddMoney, this));
-		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, move_5, move_6, addMoney, nullptr));
+		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, 
+			move_5, move_6, move_7, move_8, addMoney, nullptr));
 	}
 	if (this->getName() == "miner2")
 	{
+		auto group = GameScene::gettiledMap()->getObjectGroup("PathObject");
+		auto obj1 = group->getObject("path21");
+		auto obj2 = group->getObject("path22");
+		auto obj3 = group->getObject("path23");
+		auto obj4 = group->getObject("path24");
+		auto obj5 = group->getObject("path25");
 		auto startPos = this->getPosition();
-		MoveTo *move_1 = MoveTo::create(startPos.getDistance(Vec2(1370, 296)) / 40, Vec2(1370, 296));
-		MoveTo *move_2 = MoveTo::create(Vec2(1370, 296).getDistance(Vec2(953, 296)) / 40, Vec2(953, 296));
-		MoveTo *move_3 = MoveTo::create(Vec2(953, 296).getDistance(Vec2(953, 234)) / 40, Vec2(953, 234));
-		MoveTo *move_4 = MoveTo::create(Vec2(953, 234).getDistance(Vec2(953, 296)) / 40, Vec2(953, 296));
-		MoveTo *move_5 = MoveTo::create(Vec2(953, 296).getDistance(Vec2(1370, 296)) / 40, Vec2(1370, 296));
-		MoveTo *move_6 = MoveTo::create(Vec2(1370, 296).getDistance(startPos) / 40, startPos);
+		auto path_21_pos = Vec2(obj1["x"].asFloat(), obj1["y"].asFloat());
+		auto path_22_pos = Vec2(obj2["x"].asFloat(), obj2["y"].asFloat());
+		auto path_23_pos = Vec2(obj3["x"].asFloat(), obj3["y"].asFloat());
+		auto path_24_pos = Vec2(obj4["x"].asFloat(), obj4["y"].asFloat());
+		auto path_25_pos = Vec2(obj5["x"].asFloat(), obj5["y"].asFloat());
+		MoveTo *move_1 = MoveTo::create(startPos.getDistance(path_21_pos) / 40, path_21_pos);
+		MoveTo *move_2 = MoveTo::create(path_21_pos.getDistance(path_22_pos) / 40, path_22_pos);
+		MoveTo *move_3 = MoveTo::create(path_22_pos.getDistance(path_23_pos) / 40, path_23_pos);
+		MoveTo *move_4 = MoveTo::create(path_23_pos.getDistance(path_24_pos) / 40, path_24_pos);
+		MoveTo *move_5 = MoveTo::create(path_24_pos.getDistance(path_25_pos) / 40, path_25_pos);
+		MoveTo *move_6 = MoveTo::create(path_25_pos.getDistance(path_24_pos) / 40, path_24_pos);
+		MoveTo *move_7 = MoveTo::create(path_24_pos.getDistance(path_23_pos) / 40, path_23_pos);
+		MoveTo *move_8 = MoveTo::create(path_23_pos.getDistance(path_22_pos) / 40, path_22_pos);
+		MoveTo *move_9 = MoveTo::create(path_22_pos.getDistance(path_21_pos) / 40, path_21_pos);
+		MoveTo *move_10 = MoveTo::create(path_21_pos.getDistance(startPos) / 40, startPos);
 		CallFunc *addMoney = CallFunc::create(CC_CALLBACK_0(Soldiers::minerRemoveAndAddMoney, this));
-		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, move_5, move_6, addMoney, nullptr));
+		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, move_5,
+			move_6, move_7, move_8, move_9, move_10, addMoney, nullptr));
 	}
 	if (this->getName() == "miner3")
 	{
+		auto group = GameScene::gettiledMap()->getObjectGroup("PathObject");
+		auto obj1 = group->getObject("path31");
+		auto obj2 = group->getObject("path32");
+		auto obj3 = group->getObject("path33");
 		auto startPos = this->getPosition();
-		MoveTo *move_1 = MoveTo::create(startPos.getDistance(Vec2(918, 1380)) / 40, Vec2(918, 1380));
-		MoveTo *move_2 = MoveTo::create(Vec2(918, 1380).getDistance(Vec2(918, 1210)) / 40, Vec2(918, 1210));
-		MoveTo *move_3 = MoveTo::create(Vec2(918, 1210).getDistance(Vec2(918, 1380)) / 40, Vec2(918, 1380));
-		MoveTo *move_4 = MoveTo::create(Vec2(918, 1380).getDistance(startPos) / 40, startPos);
+		auto path_31_pos = Vec2(obj1["x"].asFloat(), obj1["y"].asFloat());
+		auto path_32_pos = Vec2(obj2["x"].asFloat(), obj2["y"].asFloat());
+		auto path_33_pos = Vec2(obj3["x"].asFloat(), obj3["y"].asFloat());
+		MoveTo *move_1 = MoveTo::create(startPos.getDistance(path_31_pos) / 40, path_31_pos);
+		MoveTo *move_2 = MoveTo::create(path_31_pos.getDistance(path_32_pos) / 40, path_32_pos);
+		MoveTo *move_3 = MoveTo::create(path_32_pos.getDistance(path_33_pos) / 40, path_33_pos);
+		MoveTo *move_4 = MoveTo::create(path_33_pos.getDistance(path_32_pos) / 40, path_32_pos);
+		MoveTo *move_5 = MoveTo::create(path_32_pos.getDistance(path_31_pos) / 40, path_31_pos);
+		MoveTo *move_6 = MoveTo::create(path_31_pos.getDistance(startPos) / 40, startPos);
 		CallFunc *addMoney = CallFunc::create(CC_CALLBACK_0(Soldiers::minerRemoveAndAddMoney, this));
-		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, addMoney, nullptr));
+		this->runAction(Sequence::create(move_1, move_2, move_3,
+			move_4, move_5, move_6, addMoney, nullptr));
 	}
 	if (this->getName() == "miner4")
 	{
+		auto group = GameScene::gettiledMap()->getObjectGroup("PathObject");
+		auto obj1 = group->getObject("path41");
+		auto obj2 = group->getObject("path42");
+		auto obj3 = group->getObject("path43");
+		auto obj4 = group->getObject("path44");
 		auto startPos = this->getPosition();
-		MoveTo *move_1 = MoveTo::create(startPos.getDistance(Vec2(100, 1039)) / 40, Vec2(100, 1039));
-		MoveTo *move_2 = MoveTo::create(Vec2(100, 1039).getDistance(Vec2(153, 1039)) / 40, Vec2(153, 1039));
-		MoveTo *move_3 = MoveTo::create(Vec2(153, 1039).getDistance(Vec2(100, 1039)) / 40, Vec2(100, 1039));
-		MoveTo *move_4 = MoveTo::create(Vec2(100, 1039).getDistance(startPos) / 40, startPos);
+		auto path_41_pos = Vec2(obj1["x"].asFloat(), obj1["y"].asFloat());
+		auto path_42_pos = Vec2(obj2["x"].asFloat(), obj2["y"].asFloat());
+		auto path_43_pos = Vec2(obj3["x"].asFloat(), obj3["y"].asFloat());
+		auto path_44_pos = Vec2(obj4["x"].asFloat(), obj4["y"].asFloat());
+		MoveTo *move_1 = MoveTo::create(startPos.getDistance(path_41_pos) / 40, path_41_pos);
+		MoveTo *move_2 = MoveTo::create(path_41_pos.getDistance(path_42_pos) / 40, path_42_pos);
+		MoveTo *move_3 = MoveTo::create(path_42_pos.getDistance(path_43_pos) / 40, path_43_pos);
+		MoveTo *move_4 = MoveTo::create(path_43_pos.getDistance(path_44_pos) / 40, path_44_pos);
+		MoveTo *move_5 = MoveTo::create(path_44_pos.getDistance(path_43_pos) / 40, path_43_pos);
+		MoveTo *move_6 = MoveTo::create(path_43_pos.getDistance(path_42_pos) / 40, path_42_pos);
+		MoveTo *move_7 = MoveTo::create(path_42_pos.getDistance(path_41_pos) / 40, path_41_pos);
+		MoveTo *move_8 = MoveTo::create(path_41_pos.getDistance(startPos) / 40, startPos);
 		CallFunc *addMoney = CallFunc::create(CC_CALLBACK_0(Soldiers::minerRemoveAndAddMoney, this));
-		this->runAction(Sequence::create(move_1, move_2, move_3, move_4, addMoney, nullptr));
+		this->runAction(Sequence::create(move_1, move_2, move_3, move_4,
+			move_5, move_6, move_7, move_8, addMoney, nullptr));
 	}
 }
-=======
->>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
+

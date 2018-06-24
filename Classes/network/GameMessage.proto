@@ -11,9 +11,9 @@ message GameMessage
 		MOV = 3;
 		SUDT = 4;
 	}
-	CmdCode cmd_code = 1;
-	int32 playerid = 2;              //玩家id
-	int32 id = 3;                    //单位id 
+	CmdCode cmd_code = 1;            //若player_id = 0,则为空指令，若不然，则为返回指令
+	int32 playerid = 2;              //玩家id  
+	int32 id = 3;                    //单位id   若id为0，则返回主菜单界面
 	int32 btype = 4 ;                //建筑物类型  检测兵种是否移动
 	int32 stype = 5 ;                //兵种类型
 	Path movepath = 6 ;              //移动路径

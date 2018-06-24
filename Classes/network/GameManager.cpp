@@ -91,21 +91,25 @@ void GameManager::deleteAll(int _player_id)
 	Map<int, Soldiers*>::iterator elems;
 	for (elems = sid_map.begin(); elems != sid_map.end(); )
 	{
-		if (elems == sid_map.begin() && elems->first % 4 == _player_id)
+		if (elems == sid_map.begin() && elems->first % 4 == _player_id % 4)
 		{
 			Soldiers *soldier = sid_map.at(elems->first);
 			if (soldier)
 			{
+				soldier->stopAllActions();
+				soldier->moveToPath.clear();
 				soldier->remove();
 				elems = sid_map.begin();
 			}
 		}
-		else if (elems->first % 4 == _player_id%4)
+		else if (elems->first % 4 == _player_id % 4)
 		{
 			Soldiers *soldier = sid_map.at(elems->first);
 			if (soldier)
 			{
-				elem++;
+				elems++;
+				soldier->stopAllActions();
+				soldier->moveToPath.clear();
 				soldier->remove();
 			}
 		}
@@ -113,7 +117,6 @@ void GameManager::deleteAll(int _player_id)
 		{
 			elems++;
 		}
-
 	}
 }
 
@@ -452,8 +455,6 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-<<<<<<< HEAD
-				/////////
 				if (GameScene::mapType == 1)
 				{
 					soldier->minerAutoMoveInMap_1();
@@ -462,9 +463,6 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				{
 					soldier->minerAutoMoveInMap_2();
 				}
-				/////////
-=======
->>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 			}
 			if (_player_id == 2)
 			{
@@ -482,8 +480,6 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-<<<<<<< HEAD
-				/////////
 				if (GameScene::mapType == 1)
 				{
 					soldier->minerAutoMoveInMap_1();
@@ -492,9 +488,6 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				{
 					soldier->minerAutoMoveInMap_2();
 				}
-				/////////
-=======
->>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 
 			}
 			if (_player_id == 3)
@@ -513,8 +506,6 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-<<<<<<< HEAD
-				/////////
 				if (GameScene::mapType == 1)
 				{
 					soldier->minerAutoMoveInMap_1();
@@ -523,9 +514,6 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				{
 					soldier->minerAutoMoveInMap_2();
 				}
-				/////////
-=======
->>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 			}
 			if (_player_id == 4)
 			{
@@ -543,8 +531,6 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				soldier->player_id = _player_id;
 				soldier->id = _id;
 				sid_map.insert(soldier->id, soldier);
-<<<<<<< HEAD
-				/////////
 				if (GameScene::mapType == 1)
 				{
 					soldier->minerAutoMoveInMap_1();
@@ -553,9 +539,6 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 				{
 					soldier->minerAutoMoveInMap_2();
 				}
-				/////////
-=======
->>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 			}
 			break;
 		}
@@ -794,17 +777,22 @@ void GameManager::soldiersUpdate(int _player_id)
 {
 	for (auto elem : sid_map)
 	{
-<<<<<<< HEAD
 		if (elem.first % 4 == _player_id % 4)
-=======
-		if (elem.first%4 == _player_id%4)
->>>>>>> fa63348f743efecafca0ae512f2c880b27663c10
 		{
 			elem.second->setPower((elem.second->getPower())+2);
 			elem.second->setMaxHealth(elem.second->getMaxHealth() + 20);
 			elem.second->setcurrentHealth(elem.second->getcurrentHealth() + 20);
 		}
 	}
+}
+
+void GameManager::gobackMenu()
+{
+	Scene *sc = Scene::create();
+	auto layer = MenuScene::create();
+	sc->addChild(layer);
+	auto reScene = TransitionSplitRows::create(1.0f, sc);
+	Director::getInstance()->replaceScene(reScene);
 }
 
 void GameManager::genSoldierUpdateMessage()
@@ -897,6 +885,13 @@ void GameManager::genMoveMessage(vector<Vec2> moveToPath,int id,SoldierTypes sol
 	msgs->add_game_message()->genGameMessage(GameMessage::CmdCode::GameMessage_CmdCode_MOV, player_id, id, 0, stype, moveToPath);
 }
 
+void GameManager::genGobackMessgage(int _player_id)
+{
+	vector<Vec2> a;
+	a.clear();
+	msgs->add_game_message()->genGameMessage(GameMessage::CmdCode::GameMessage_CmdCode_EMP, _player_id, 0, 0, 0, a);
+}
+
 void GameManager::updateGameState()
 {
 	vector<Vec2> a;
@@ -920,7 +915,15 @@ void GameManager::updateGameState()
 		log("GameManager: Read Message %d Success", i);
 		if (msg.cmd_code() == GameMessage::CmdCode::GameMessage_CmdCode_EMP)
 		{
-			log("Empty Message, there must be something wrong");
+			int _player_id = msg.playerid();
+			if (_player_id == 0)
+			{
+				log("Empty Message");
+			}
+			else
+			{
+				gobackMenu();
+			}
 		}
 		else if (msg.cmd_code() == GameMessage::CmdCode::GameMessage_CmdCode_CRTB)
 		{
