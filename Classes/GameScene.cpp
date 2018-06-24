@@ -169,12 +169,12 @@ bool GameScene::init(SocketClient* _socket_client, SocketServer* _socket_server)
 				{
 					target.second->stopAllActions();
 					target.second->moveToPath.clear();
-					gamemanager->genMoveMessage(target.second->moveToPath, target.second->getID(), target.second->getSoldierType());
+					//->genMoveMessage(target.second->moveToPath, target.second->getID(), target.second->getSoldierType());
 					continue;
 				}
 				target.second->stopAllActions();
 				target.second->moveToPath.clear();
-				gamemanager->genMoveMessage(target.second->moveToPath, target.second->getID(), target.second->getSoldierType());
+				//gamemanager->genMoveMessage(target.second->moveToPath, target.second->getID(), target.second->getSoldierType());
 				int x = target.second->getPosition().x / 16;
 				int y = ((100 * 16) - target.second->getPosition().y) / 16;
 				Apoint start(x, y);
@@ -653,6 +653,7 @@ void GameScene::soldierUpdate(Ref *pSender)
 	}
 	else
 	{
+		Power -= POWER_PRICE;
 		this->scheduleOnce(schedule_selector(GameScene::soldierUpdateReady), 0.01f);
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("music/unitready.wav");
 	}
@@ -799,17 +800,17 @@ void GameScene::soldiersCreate(Ref *pSender)
 //兵种绘制
 void GameScene::minerReady(float dt)
 {
-	Money -= MINER_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateSoldierMessage(START_MINER);
+	Money -= MINER_PRICE;
 }
 void GameScene::policemanReady(float dt)
 {
-	Money -= POLICEMAN_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateSoldierMessage(START_POLICEMAN);
+	Money -= POLICEMAN_PRICE;
 }
 void GameScene::warriorReady(float dt)
 {
@@ -820,15 +821,14 @@ void GameScene::warriorReady(float dt)
 }
 void GameScene::tankReady(float dt)
 {
-	Money -= TANK_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateSoldierMessage(START_TANK);
+	Money -= TANK_PRICE;
 }
 
 void GameScene::soldierUpdateReady(float dt)
 {
-	Power -= POWER_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	gamemanager->genSoldierUpdateMessage();
 }
@@ -836,32 +836,32 @@ void GameScene::soldierUpdateReady(float dt)
 //建筑物绘制
 void GameScene::casernReady(float dt)
 {
-	Money -= CASERN_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateBuildingMessage(START_CASERN);
+	Money -= CASERN_PRICE;
 }
 
 void GameScene::electricStationReady(float dt)
 {
-	Money -= ELECTRICSTATION_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateBuildingMessage(START_ELECTRICSTATION);
+	Money -= ELECTRICSTATION_PRICE;
 }
 void GameScene::tankFactoryReady(float dt)
 {
-	Money -= TANKFACTORY_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateBuildingMessage(START_TANKFACTORY);
+	Money -= TANKFACTORY_PRICE;
 }
 void GameScene::oreYardReady(float dt)
 {
-	Money -= OREYARD_PRICE;
 	auto _player_id = gamemanager->getPlayerID();
 	auto _id = gamemanager->getnextID();
 	gamemanager->genCreateBuildingMessage(START_OREYARD);
+	Money -= OREYARD_PRICE;
 }
 
 void GameScene::moneyUpdate(float dt)
@@ -935,7 +935,7 @@ void GameScene::powerUpdate(float dt)
 			|| (gettiledMap()->getChildByName("electricStation3") && playerid == 3)
 			|| (gettiledMap()->getChildByName("electricStation4") && playerid == 4))
 		{
-			__String *currentPower = __String::createWithFormat("Power:%d", (this->Power) += 15);
+			__String *currentPower = __String::createWithFormat("Power:%d", (this->Power) += 3);
 			auto PowerLabel = LabelTTF::create(currentPower->getCString(), "Marker Felt", 15);
 			float Power_x = PowerLabel->getContentSize().width;
 			float Power_y = PowerLabel->getContentSize().height;
@@ -945,7 +945,7 @@ void GameScene::powerUpdate(float dt)
 		}
 		else
 		{
-			__String *currentPower = __String::createWithFormat("Power:%d", (this->Power) += 2);
+			__String *currentPower = __String::createWithFormat("Power:%d", (this->Power)++);
 			auto PowerLabel = LabelTTF::create(currentPower->getCString(), "Marker Felt", 15);
 			float Power_x = PowerLabel->getContentSize().width;
 			float Power_y = PowerLabel->getContentSize().height;
@@ -1073,9 +1073,6 @@ void GameScene::mouseRectOnTouchEnded(Touch *pTouch, Event *event)
 		}
 		if (target->getTag() == GameSceneNodeTagBuilding || target->getTag() == GameSceneNodeTagSoldier)
 		{
-			///////////////
-			//缺少血条显示
-			///////////////
 			log("search");
 			if (target->getTag() == GameSceneNodeTagSoldier && target->getifSelect())
 			{
@@ -1260,6 +1257,7 @@ void GameScene::win()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	auto win_label = LabelBMFont::create("You Win!", "fonts/NoticeFont.fnt");
+	win_label->setColor(Color3B::RED);
 	win_label->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y + visibleSize.height - win_label->getContentSize().height));
 	addChild(win_label, 100);
 	//notice->displayNotice("You Win!");
@@ -1271,6 +1269,7 @@ void GameScene::lose()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	auto lose_label = LabelBMFont::create("You Lose!", "fonts/NoticeFont.fnt");
+	lose_label->setColor(Color3B::BLUE);
 	lose_label->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y + visibleSize.height - lose_label->getContentSize().height));
 	addChild(lose_label, 100);
 	//notice->displayNotice("You Lose");

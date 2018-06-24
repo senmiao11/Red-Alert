@@ -227,9 +227,9 @@ void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
 void MenuScene::jumpToIntroduction(float dt)
 {
 	//´ıÌî
-	/*auto sc = IntroScene::createScene();
+	auto sc = IntroductionScene::createScene();
 	auto reScene = TransitionFadeTR::create(0.5f, sc);
-	Director::getInstance()->pushScene(reScene);*/
+	Director::getInstance()->pushScene(reScene);
 }
 
 //Ìø×ªµ½RoomScene

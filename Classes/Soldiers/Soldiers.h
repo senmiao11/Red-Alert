@@ -65,7 +65,7 @@ public:
 	void hideHpBar();
 
 private:
-	int attackCD = 30;
+	int attackCD = 60;
 	CC_SYNTHESIZE(SoldierTypes, soldiertype, SoldierType);
 	CC_SYNTHESIZE(int, health, currentHealth);
 	CC_SYNTHESIZE(int, price, Price);

@@ -17,6 +17,7 @@
 #include"RoomScene.h"
 #include"SimpleAudioEngine.h"
 #include"Music/AudioControl.h"
+#include"Introduce.h"
 using namespace ui;
 USING_NS_CC_EXT;
 USING_NS_CC;

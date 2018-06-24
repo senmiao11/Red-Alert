@@ -251,6 +251,8 @@ void Soldiers::update(float dt)
 {
 	if (getcurrentHealth() <= 0)
 	{
+		stopAllActions();
+		setifSelect(SELECT_OFF);
 		for (auto &atker : attackers)
 		{
 			atker->setSoldierEnemy(NULL);
@@ -292,7 +294,7 @@ void Soldiers::update(float dt)
 			return;
 		}
 		attack();
-		attackCD = 30;
+		attackCD = 60;
 	}
 }
 
@@ -331,8 +333,9 @@ void Soldiers::remove()
 	auto explosion = Explosioneffect::create();
 	explosion->setPosition(getPosition());
 	GameScene::gettiledMap()->addChild(explosion, 15);
+	//stopAllActions();
 	removeFromParent();
-	for (auto elem : GameScene::gamemanager->sid_map)
+	for (auto &elem : GameScene::gamemanager->sid_map)
 	{
 		if (elem.first == id)
 		{
@@ -365,7 +368,7 @@ void Soldiers::minerRemoveAndAddMoney()
 		}
 	}
 	removeFromParent();
-	for (auto elem : GameScene::gamemanager->sid_map)
+	for (auto &elem : GameScene::gamemanager->sid_map)
 	{
 		if (elem.first == id)
 		{
@@ -373,7 +376,10 @@ void Soldiers::minerRemoveAndAddMoney()
 			break;
 		}
 	}
-	(GameScene::Money) += this->getPrice() * 3;
+	if (this->id % 4 == GameScene::playerid % 4)
+	{
+		(GameScene::Money) += this->getPrice() * 3;
+	}
 }
 
 void Soldiers::minerAutoMoveInMap_1()

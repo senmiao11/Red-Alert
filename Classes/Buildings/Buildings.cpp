@@ -113,7 +113,7 @@ void Buildings::remove()
 	explosion->setPosition(getPosition());
 	GameScene::gettiledMap()->addChild(explosion, 15);
 	removeFromParent();
-	for (auto elem : GameScene::gamemanager->bid_map)
+	for (auto &elem : GameScene::gamemanager->bid_map)
 	{
 		if (elem.first == id)
 		{

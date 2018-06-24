@@ -441,6 +441,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			Size visibleSize = Director::getInstance()->getVisibleSize();
 			if (_player_id == 1)
 			{
+				if (!tiledMap->getChildByName("oreyard1"))
+				{
+					break;
+				}
 				auto soldier = Soldiers::createWithSoldierTypes(START_MINER,MINER1);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
 				soldier->setScale(1.2);
@@ -466,6 +470,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}
 			if (_player_id == 2)
 			{
+				if (!tiledMap->getChildByName("oreyard2"))
+				{
+					break;
+				}
 				auto soldier = Soldiers::createWithSoldierTypes(START_MINER, MINER2);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
 				soldier->setScale(1.2);
@@ -492,6 +500,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}
 			if (_player_id == 3)
 			{
+				if (!tiledMap->getChildByName("oreyard3"))
+				{
+					break;
+				}
 				auto soldier = Soldiers::createWithSoldierTypes(START_MINER, MINER3);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
 				soldier->setScale(1.2);
@@ -517,6 +529,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}
 			if (_player_id == 4)
 			{
+				if (!tiledMap->getChildByName("oreyard4"))
+				{
+					break;
+				}
 				auto soldier = Soldiers::createWithSoldierTypes(START_MINER, MINER4);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
 				soldier->setScale(1.2);
@@ -546,6 +562,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 		{
 			if (_player_id == 1)
 			{
+				if (!tiledMap->getChildByName("casern1"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_POLICEMAN, POLICEMAN1);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -564,6 +584,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}
 			if (_player_id == 2)
 			{
+				if (!tiledMap->getChildByName("casern2"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_POLICEMAN, POLICEMAN2);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -582,6 +606,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}			
 			if (_player_id == 3)
 			{
+				if (!tiledMap->getChildByName("casern3"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_POLICEMAN, POLICEMAN3);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -600,6 +628,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}			
 			if (_player_id == 4)
 			{
+				if (!tiledMap->getChildByName("casern4"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_POLICEMAN, POLICEMAN4);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -622,6 +654,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 		{
 			if (_player_id == 1)
 			{
+				if (!tiledMap->getChildByName("casern1"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_WARRIOR,WARRIOR1);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -640,6 +676,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}
 			if (_player_id == 2)
 			{
+				if (!tiledMap->getChildByName("casern2"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_WARRIOR, WARRIOR2);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -658,6 +698,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}
 			if (_player_id == 3)
 			{
+				if (!tiledMap->getChildByName("casern3"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_WARRIOR, WARRIOR3);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -676,6 +720,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}
 			if (_player_id == 4)
 			{
+				if (!tiledMap->getChildByName("casern4"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_WARRIOR, WARRIOR4);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -698,6 +746,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 		{
 			if (_player_id == 1)
 			{
+				if (!tiledMap->getChildByName("tankFactory1"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_TANK, TANK1);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -716,6 +768,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}
 			if (_player_id == 2)
 			{
+				if (!tiledMap->getChildByName("tankFactory2"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_TANK, TANK2);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -734,6 +790,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}
 			if (_player_id == 3)
 			{
+				if (!tiledMap->getChildByName("tankFactory3"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_TANK, TANK3);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
@@ -752,6 +812,10 @@ void GameManager::produceSoldiers(SoldierTypes soldierType, int _player_id, int 
 			}
 			if (_player_id == 4)
 			{
+				if (!tiledMap->getChildByName("tankFactory4"))
+				{
+					break;
+				}
 				Size visibleSize = Director::getInstance()->getVisibleSize();
 				auto soldier = Soldiers::createWithSoldierTypes(START_TANK, TANK4);
 				soldier->setAnchorPoint(Vec2(0.5, 0.5));
