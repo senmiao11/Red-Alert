@@ -14,14 +14,14 @@ bool ClientScene::init()
 	{
 		return false;
 	}
-	//³õÊ¼»¯´°¿Ú³ß´ç±äÁ¿
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ú³ß´ï¿½ï¿½ï¿½ï¿½
 	visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	//Ìí¼Ó³¡¾°±³¾°
+	//ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addBackgroundSprite();
-	//Ìí¼ÓMenu
+	//ï¿½ï¿½ï¿½ï¿½Menu
 	addMenuSprites();
-	//Ìí¼Óip_box
+	//ï¿½ï¿½ï¿½ï¿½ip_box
 	auto ip_box = ui::EditBox::create(Size(150, 60), ui::Scale9Sprite::create(INPUT_IP));
 	ip_box->setPosition(Vec2(origin.x + visibleSize.width / 2 - ip_box->getContentSize().width / 2,origin.y + visibleSize.height - ip_box->getContentSize().height));
 	ip_box->setTextHorizontalAlignment(TextHAlignment::CENTER);
@@ -31,7 +31,7 @@ bool ClientScene::init()
 	ip_box->setFontColor(Color3B::WHITE);
 	ip_box->setText("127.0.0.1");
 	ip_box->setTag(1);
-	//Ìí¼Óport_box
+	//ï¿½ï¿½ï¿½ï¿½port_box
 	auto port_box = ui::EditBox::create(Size(80, 60), ui::Scale9Sprite::create(INPUT_PORT));
 	port_box->setPosition(Vec2(origin.x + visibleSize.width / 2 + port_box->getContentSize().width,origin.y + visibleSize.height - port_box->getContentSize().height));
 	port_box->setTextHorizontalAlignment(TextHAlignment::CENTER);
@@ -53,13 +53,13 @@ bool ClientScene::init()
 
 void ClientScene::addBackgroundSprite()
 {
-	//Ìí¼Ó±³¾°Í¼Æ¬
+	//ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½Í¼Æ¬
 	Sprite * MenuBackgroundSprite = Sprite::create(MENU_BACKGROUND);
-	//³¡¾°×îÖÐÑëÏÔÊ¾Í¼Æ¬
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Í¼Æ¬
 	MenuBackgroundSprite->setPosition(ccp(visibleSize.width / 2, visibleSize.height / 2));
-	//ÉèÖÃÃªµãÔÚ×îÖÐÑë
+	//ï¿½ï¿½ï¿½ï¿½Ãªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	MenuBackgroundSprite->setAnchorPoint(ccp(0.5, 0.5));
-	//ÉèÖÃ±³¾°´óÐ¡£¬ÓëÆÁÄ»°´±ÈÀýÊÊÅä
+	//ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Size WinSize = CCDirector::sharedDirector()->getWinSize();
 	float winx = WinSize.width;
 	float winy = WinSize.height;
@@ -67,68 +67,64 @@ void ClientScene::addBackgroundSprite()
 	float backgroundy = MenuBackgroundSprite->getTextureRect().getMaxY();
 	MenuBackgroundSprite->setScaleX(winx / backgroundx);
 	MenuBackgroundSprite->setScaleY(winy / backgroundy);
-	//Ìí¼Ó±³¾°ÖÁ³¡¾°
+	//ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	this->addChild(MenuBackgroundSprite,-5);
 }
 
-//Ìí¼ÓMenu
+//ï¿½ï¿½ï¿½ï¿½Menu
 void ClientScene::addMenuSprites()
 {
-	//ÉèÖÃ²Ëµ¥µÄÕý³£Í¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * NormalButton1 = Scale9Sprite::create(NORMAL_MENU);
-	//ÉèÖÃ²Ëµ¥°´ÏÂÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * PressButton1 = Scale9Sprite::create(PRESS_MENU);
-	//´´½¨²Ëµ¥ËùÐèÒªµÄLabel¶ÔÏó
-	LabelTTF * joinGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("¼ÓÈëÓÎÏ·"), "»ªÎÄÐÐ¿¬", 25);
-	//´´½¨controlButton
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Labelï¿½ï¿½ï¿½ï¿½
+	LabelTTF * joinGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·"), "ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½", 25);
+	//ï¿½ï¿½ï¿½ï¿½controlButton
 	ControlButton * joinGameBtn = ControlButton::create(joinGameTTF, NormalButton1);
-	//Ìí¼Ó°´ÏÂµÄÐ§¹ûÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ó°ï¿½ï¿½Âµï¿½Ð§ï¿½ï¿½Í¼Æ¬
 	joinGameBtn->setBackgroundSpriteForState(PressButton1, Control::State::SELECTED);
-	//ÉèÖÃ²Ëµ¥ÏîµÄÎ»ÖÃ
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	joinGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.58);
-	//ÉèÖÃµã»÷µÄ»Øµ÷·½·¨
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	joinGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ClientScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
-	//ÉèÖÃ²Ëµ¥°´Å¥µÄTag
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½Å¥ï¿½ï¿½Tag
 	joinGameBtn->setTag(JOIN_GAME);
-	//Ìí¼ÓMenuµ½³¡¾°
+	//ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addChild(joinGameBtn);
 
-	//ÉèÖÃ²Ëµ¥µÄÕý³£Í¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * NormalButton2 = Scale9Sprite::create(NORMAL_MENU);
-	//ÉèÖÃ²Ëµ¥°´ÏÂÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * PressButton2 = Scale9Sprite::create(PRESS_MENU);
-	//´´½¨²Ëµ¥ËùÐèÒªµÄLabel¶ÔÏó
-	LabelTTF * backGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("·µ»Ø"), "»ªÎÄÐÐ¿¬", 25);
-	//´´½¨controlButton
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Labelï¿½ï¿½ï¿½ï¿½
+	LabelTTF * backGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ï¿½ï¿½ï¿½ï¿½"), "ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½", 25);
+	//ï¿½ï¿½ï¿½ï¿½controlButton
 	ControlButton * backGameBtn = ControlButton::create(backGameTTF, NormalButton2);
-	//Ìí¼Ó²Ëµ¥°´ÏÂµÄÐ§¹ûÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ó²Ëµï¿½ï¿½ï¿½ï¿½Âµï¿½Ð§ï¿½ï¿½Í¼Æ¬
 	backGameBtn->setBackgroundSpriteForState(PressButton2, Control::State::SELECTED);
-	//ÉèÖÃ²Ëµ¥ÏîµÄÎ»ÖÃ
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	backGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.45);
-	//ÉèÖÃµã»÷µÄ»Øµ÷·½·¨
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	backGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ClientScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
-	//ÉèÖÃ²Ëµ¥°´Å¥µÄTag
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½Å¥ï¿½ï¿½Tag
 	backGameBtn->setTag(GO_BACK);
-	//Ìí¼ÓMenuµ½³¡¾°
+	//ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addChild(backGameBtn);
 }
 
 void ClientScene::waitStart()
 {
-	/***********
 	//socket_client_->camp();
 	unscheduleAllCallbacks();
 	log("get the camp");
 	log("start game");
-	auto scene = BattleScene::createScene(socket_client_, nullptr);
-	//	auto scene = BattleScene::createScene(socket_client_);
+	auto scene = GameScene::createScene(socket_client_, nullptr);
 	Director::getInstance()->replaceScene(TransitionSplitCols::create(0.5, scene));
-	**************/
 }
 
 void ClientScene::startSchedule(float f)
 {
-	/**************
 	if (socket_client_->error())
 	{
 		unscheduleAllCallbacks();
@@ -148,7 +144,6 @@ void ClientScene::startSchedule(float f)
 	}
 	if (socket_client_->started())
 		waitStart();
-	****************/
 }
 
 void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
@@ -159,7 +154,6 @@ void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
 	{
 	case JOIN_GAME:
 	{
-		/***********
 		if (!socket_client_)
 		{
 			auto ip_box = static_cast<ui::EditBox*>(getChildByTag(1));
@@ -168,16 +162,14 @@ void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
 			int port = atoi(port_box->getText());
 			log("ip:%s, port:%d", ip.c_str(), port);
 			socket_client_ = SocketClient::create(ip, port);
-			schedule(schedule_selector(ClientMenu::startSchedule), 0.1);
+			schedule(schedule_selector(ClientScene::startSchedule), 0.1);
 			//	std::async(&ClientMenu::wait_start, this);
 			//	wait_start();	
 		}
-		************/
 		break;
 	}
 	case GO_BACK:
 	{
-		/**********
 		if (socket_client_)
 		{
 			unscheduleAllSelectors();
@@ -185,7 +177,6 @@ void ClientScene::menuTouchDown(Object *pSender, Control::EventType event)
 			delete socket_client_;
 			socket_client_ = nullptr;
 		}
-		************/
 		Director::getInstance()->popScene();
 		break;
 	}

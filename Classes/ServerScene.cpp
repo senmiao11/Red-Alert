@@ -14,14 +14,14 @@ bool ServerScene::init()
 	{
 		return false;
 	}
-	//³õÊ¼»¯´°¿Ú³ß´ç±äÁ¿
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ú³ß´ï¿½ï¿½ï¿½ï¿½
 	visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	//Ìí¼Ó³¡¾°±³¾°
+	//ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addBackgroundSprite();
-	//Ìí¼ÓMenu
+	//ï¿½ï¿½ï¿½ï¿½Menu
 	addMenuSprites();
-	//Ìí¼Ó¶Ë¿ÚÐÅÏ¢
+	//ï¿½ï¿½ï¿½Ó¶Ë¿ï¿½ï¿½ï¿½Ï¢
 	auto inputbox = ui::EditBox::create(Size(80, 60), ui::Scale9Sprite::create(INPUT_IP));
 	inputbox->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y + visibleSize.height - inputbox->getContentSize().height));
 	inputbox->setTextHorizontalAlignment(TextHAlignment::CENTER);
@@ -32,7 +32,7 @@ bool ServerScene::init()
 	inputbox->setText("8008");
 	inputbox->setInputMode(ui::EditBox::InputMode::NUMERIC);
 	this->addChild(inputbox, 1);
-	//ÐÅÏ¢label
+	//ï¿½ï¿½Ï¢label
 	connection_msg_ = Label::createWithTTF("", "/fonts/arial.ttf", 18);
 	connection_msg_->setAnchorPoint(Vec2(0.5, 0));
 	connection_msg_->setPosition(Vec2(origin.x + visibleSize.width / 2,origin.y));
@@ -40,16 +40,16 @@ bool ServerScene::init()
 	return true;
 }
 
-//Ìí¼Ó±³¾°Í¼Æ¬
+//ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½Í¼Æ¬
 void ServerScene::addBackgroundSprite()
 {
-	//Ìí¼Ó±³¾°Í¼Æ¬
+	//ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½Í¼Æ¬
 	Sprite * MenuBackgroundSprite = Sprite::create(MENU_BACKGROUND);
-	//³¡¾°×îÖÐÑëÏÔÊ¾Í¼Æ¬
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Í¼Æ¬
 	MenuBackgroundSprite->setPosition(ccp(visibleSize.width / 2, visibleSize.height / 2));
-	//ÉèÖÃÃªµãÔÚ×îÖÐÑë
+	//ï¿½ï¿½ï¿½ï¿½Ãªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	MenuBackgroundSprite->setAnchorPoint(ccp(0.5, 0.5));
-	//ÉèÖÃ±³¾°´óÐ¡£¬ÓëÆÁÄ»°´±ÈÀýÊÊÅä
+	//ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Size WinSize = CCDirector::sharedDirector()->getWinSize();
 	float winx = WinSize.width;
 	float winy = WinSize.height;
@@ -57,75 +57,75 @@ void ServerScene::addBackgroundSprite()
 	float backgroundy = MenuBackgroundSprite->getTextureRect().getMaxY();
 	MenuBackgroundSprite->setScaleX(winx / backgroundx);
 	MenuBackgroundSprite->setScaleY(winy / backgroundy);
-	//Ìí¼Ó±³¾°ÖÁ³¡¾°
+	//ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	this->addChild(MenuBackgroundSprite,-5);
 }
 
-//Ìí¼ÓMenu
+//ï¿½ï¿½ï¿½ï¿½Menu
 void ServerScene::addMenuSprites()
 {
-	//1 ÏÔÊ¾·þÎñÆ÷ÐÅÏ¢
-	//ÉèÖÃ²Ëµ¥µÄÕý³£Í¼Æ¬
+	//1 ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * NormalButton1 = Scale9Sprite::create(NORMAL_MENU);
-	//ÉèÖÃ²Ëµ¥°´ÏÂÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * PressButton1 = Scale9Sprite::create(PRESS_MENU);
-	//´´½¨²Ëµ¥ËùÐèÒªµÄLabel¶ÔÏó
-	LabelTTF * MessageTTF = LabelTTF::create(MyUtility::gbk_2_utf8("·þÎñÆ÷ÐÅÏ¢"), "»ªÎÄÐÐ¿¬", 25);
-	//´´½¨controlButton
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Labelï¿½ï¿½ï¿½ï¿½
+	LabelTTF * MessageTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"), "ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½", 25);
+	//ï¿½ï¿½ï¿½ï¿½controlButton
 	ControlButton * MessageBtn = ControlButton::create(MessageTTF, NormalButton1);
-	//Ìí¼Ó²Ëµ¥°´ÏÂµÄÐ§¹ûÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ó²Ëµï¿½ï¿½ï¿½ï¿½Âµï¿½Ð§ï¿½ï¿½Í¼Æ¬
 	MessageBtn->setBackgroundSpriteForState(PressButton1, Control::State::SELECTED);
-	//ÉèÖÃ²Ëµ¥ÏîµÄÎ»ÖÃ
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	MessageBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.58);
-	//ÉèÖÃµã»÷µÄ»Øµ÷·½·¨
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	MessageBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ServerScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
-	//ÉèÖÃ²Ëµ¥°´Å¥µÄTag
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½Å¥ï¿½ï¿½Tag
 	MessageBtn->setTag(START_SERVER);
-	//Ìí¼ÓMenuµ½³¡¾°
+	//ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addChild(MessageBtn);
 
-	//2 ¿ªÊ¼ÓÎÏ·
-	//ÉèÖÃ²Ëµ¥µÄÕý³£Í¼Æ¬
+	//2 ï¿½ï¿½Ê¼ï¿½ï¿½Ï·
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * NormalButton2 = Scale9Sprite::create(NORMAL_MENU);
-	//ÉèÖÃ²Ëµ¥°´ÏÂÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * PressButton2 = Scale9Sprite::create(PRESS_MENU);
-	//´´½¨²Ëµ¥ËùÐèÒªµÄLabel¶ÔÏó
-	LabelTTF * startGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("¿ªÊ¼ÓÎÏ·"), "»ªÎÄÐÐ¿¬", 25);
-	//´´½¨controlButton
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Labelï¿½ï¿½ï¿½ï¿½
+	LabelTTF * startGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ï¿½ï¿½Ê¼ï¿½ï¿½Ï·"), "ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½", 25);
+	//ï¿½ï¿½ï¿½ï¿½controlButton
 	ControlButton * startGameBtn = ControlButton::create(startGameTTF, NormalButton2);
-	//Ìí¼Ó²Ëµ¥°´ÏÂµÄÐ§¹ûÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ó²Ëµï¿½ï¿½ï¿½ï¿½Âµï¿½Ð§ï¿½ï¿½Í¼Æ¬
 	startGameBtn->setBackgroundSpriteForState(PressButton2, Control::State::SELECTED);
-	//ÉèÖÃ²Ëµ¥ÏîµÄÎ»ÖÃ
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	startGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.45);
-	//ÉèÖÃµã»÷µÄ»Øµ÷·½·¨
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	startGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ServerScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
-	//ÉèÖÃ²Ëµ¥°´Å¥µÄTag
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½Å¥ï¿½ï¿½Tag
 	startGameBtn->setTag(START_GAME);
-	//Ìí¼ÓMenuµ½³¡¾°
+	//ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addChild(startGameBtn);
 
-	//3 ·µ»ØÉÏÒ»½çÃæ(RoomScene)
-	//ÉèÖÃ²Ëµ¥µÄÕý³£Í¼Æ¬
+	//3 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½(RoomScene)
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * NormalButton3 = Scale9Sprite::create(NORMAL_MENU);
-	//ÉèÖÃ²Ëµ¥°´ÏÂÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * PressButton3 = Scale9Sprite::create(PRESS_MENU);
-	//´´½¨²Ëµ¥ËùÐèÒªµÄLabel¶ÔÏó
-	LabelTTF * backTTF = LabelTTF::create(MyUtility::gbk_2_utf8("·µ»Ø"), "»ªÎÄÐÐ¿¬", 25);
-	//´´½¨controlButton
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Labelï¿½ï¿½ï¿½ï¿½
+	LabelTTF * backTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ï¿½ï¿½ï¿½ï¿½"), "ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½", 25);
+	//ï¿½ï¿½ï¿½ï¿½controlButton
 	ControlButton * backBtn = ControlButton::create(backTTF, NormalButton3);
-	//Ìí¼Ó²Ëµ¥°´ÏÂµÄÐ§¹ûÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ó²Ëµï¿½ï¿½ï¿½ï¿½Âµï¿½Ð§ï¿½ï¿½Í¼Æ¬
 	backBtn->setBackgroundSpriteForState(PressButton3, Control::State::SELECTED);
-	//ÉèÖÃµ¥»úÓÎÏ·²Ëµ¥ÏîµÄÎ»ÖÃ
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	backBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.32);
-	//ÉèÖÃµã»÷µÄ»Øµ÷·½·¨
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	backBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(ServerScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
-	//ÉèÖÃ²Ëµ¥°´Å¥µÄTag
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½Å¥ï¿½ï¿½Tag
 	backBtn->setTag(GO_BACK);
-	//Ìí¼ÓMenuµ½³¡¾°
+	//ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addChild(backBtn);
 }
 
-//·µ»ØÊäÈëµÄ¶Ë¿ÚÐÅÏ¢
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶Ë¿ï¿½ï¿½ï¿½Ï¢
 void ServerScene::editBoxReturn(EditBox* editBox)
 {
 	log(editBox->getText());
@@ -134,12 +134,10 @@ void ServerScene::editBoxReturn(EditBox* editBox)
 
 void ServerScene::connectionSchdeule(float f)
 {
-	/*********************
 	if (socket_server_->connection_num())
 		connection_msg_->setString("Total connection num: " + std::to_string(socket_server_->connection_num()));
 	else
 		connection_msg_->setString("Port already used, please change another one");
-	************************/
 }
 
 void ServerScene::menuTouchDown(Object *pSender, Control::EventType event)
@@ -150,36 +148,34 @@ void ServerScene::menuTouchDown(Object *pSender, Control::EventType event)
 	{
 	case START_SERVER:
 	{
-		/****************
 		if (!socket_server_)
 		{
 			socket_server_ = SocketServer::create();
 			socket_client_ = SocketClient::create();
 			log("create server and client on 8008");
-			schedule(schedule_selector(ServerMenu::connectionSchdeule), 0.1);
+			schedule(schedule_selector(ServerScene::connectionSchdeule), 0.1);
 		}
-		***************/
 		break;
 	}
 	case START_GAME:
 	{
+		/*
 		auto sc = GameScene::createScene();
 		auto reScene = TransitionFadeTR::create(0.5f, sc);
 		Director::getInstance()->pushScene(reScene);
-		/**************************
+		*/
 		if (socket_server_)
 		{
 			socket_server_->button_start();
-			auto scene = BattleScene::createScene(socket_client_, socket_server_);
-			Director::getInstance()->replaceScene(TransitionSplitCols::create(0.5, scene));
+			auto sc = GameScene::createScene(socket_client_, socket_server_);
+			auto reScene = TransitionFadeTR::create(0.5f, sc);
+			Director::getInstance()->pushScene(reScene);
 			log("start game");
 		}
-		**********************************/
 		break;
 	}
 	case GO_BACK:
 	{
-		/****************
 		if (socket_server_)
 		{
 			unscheduleAllCallbacks();
@@ -191,7 +187,6 @@ void ServerScene::menuTouchDown(Object *pSender, Control::EventType event)
 			delete socket_server_;
 			socket_server_ = nullptr;
 		}
-		********************/
 		Director::getInstance()->popScene();
 	}
 	break;

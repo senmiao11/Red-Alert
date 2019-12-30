@@ -1,10 +1,11 @@
-/*²Ëµ¥³¡¾°*/
+/*ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½*/
 
 #ifndef __MenuScene_H_
 #define __MenuScene_H_
 #define STRAT_GAME    1
 #define INTRODUCTION  2
 #define QUIT_GAME     3
+#define SETTINGS      4
 
 #include"cocos2d.h"
 #include<iostream>
@@ -14,24 +15,29 @@
 #include"SplashScene.h"
 #include"MyUtility.h"
 #include"RoomScene.h"
+#include"SimpleAudioEngine.h"
+#include"Music/AudioControl.h"
+using namespace ui;
 USING_NS_CC_EXT;
 USING_NS_CC;
 
 class MenuScene :public Layer
 {
 public:
-	static Scene* createScene();                                      //´´½¨³¡¾°
-	virtual bool init();                                              //³õÊ¼»¯³¡¾°
-	CREATE_FUNC(MenuScene);                                           //Íê³Écreate·½·¨´úÂëµÄÉú³É
-	void popupQuitLayer();                                            //´´½¨¶Ô»°¿ò£¬ÉèÖÃÀàÐÍÓëÏÔÊ¾ÄÚÈÝ
-	void quitButtonCallback(Node* pNode);                             //¶Ô»°¿ò°´¼üµÄ¾ßÌåÏìÓ¦°ì·¨
+	static Scene* createScene();                                      //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	virtual bool init();                                              //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	CREATE_FUNC(MenuScene);                                           //ï¿½ï¿½ï¿½createï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	void popupQuitLayer();                                            //ï¿½ï¿½ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+	void quitButtonCallback(Node* pNode);                             //ï¿½Ô»ï¿½ï¿½ò°´¼ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ì·¨
+	void menuMusicCallBack(cocos2d::Ref* pSender);
 private:
-	Size visibleSize;                                                 //´°¿Ú³ß´ç
-	void addBackgroundSprite();                                       //Ìí¼Ó³¡¾°±³¾°
-	void addMenuSprites();                                            //Ìí¼ÓMenu
-	void menuTouchDown(Object *pSender,Control::EventType event);     //Menuµã»÷»Øµ÷·½·¨
-	void jumpToIntroduction(float dt);                                //Ìø×ªµ½IntroScene
-	void jumpToRoomScene(float dt);                                   //Ìø×ªµ½RoomScene
+	Size visibleSize;                                                 //ï¿½ï¿½ï¿½Ú³ß´ï¿½
+	void addBackgroundSprite();                                       //ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	void addMenuSprites();                                            //ï¿½ï¿½ï¿½ï¿½Menu
+	void menuTouchDown(Object *pSender,Control::EventType event);     //Menuï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
+	void jumpToIntroduction(float dt);                                //ï¿½ï¿½×ªï¿½ï¿½IntroScene
+	void jumpToRoomScene(float dt);                                   //ï¿½ï¿½×ªï¿½ï¿½RoomScene
+	bool is_paused;
 };
 
 #endif // !__MenuScene_H_

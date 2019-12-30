@@ -1,4 +1,4 @@
-//ÓÎÏ·½çÃæ
+//ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½
 
 #ifndef __GameScene_H_
 #define __GameScene_H_
@@ -8,73 +8,117 @@
 #include"ConstUtil.h"
 #include"MenuScene.h"
 #include"Buildings/Buildings.h"
-
+#include"Soldiers/Soldiers.h"
+#include"SimpleAudioEngine.h"
+#include"network/SocketClient.h"
+#include"network/SocketServer.h"
+#include"network/socket_message.h"
+using namespace ui;
 USING_NS_CC;
-
 class MouseRect :public DrawNode
 {
 public:
 	CREATE_FUNC(MouseRect);
-	Point touch_start, touch_end;
-	Point start, end;
-	void update(float dt);
-	void reset();
+	Point touch_start;             //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+	Point touch_end;               //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	Point start, end;              //Ñ¡ï¿½ï¿½Ê¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	void update(float dt);         //ï¿½ï¿½ï¿½ï¿½ï¿½ÎµÄ¸ï¿½ï¿½Âºï¿½ï¿½ï¿½
+	void reset();                  //ï¿½ï¿½ï¿½ï¿½ï¿½è¶¨ï¿½ï¿½ï¿½ï¿½
 };
-
 
 
 class GameScene :public Layer
 {
 public:
-
-	static Scene *createScene();
-	virtual bool init();
+	static GameScene* create(SocketClient* _socket_client, SocketServer* _socket_server);
+	static Scene *createScene(SocketClient* _socket_client, SocketServer* _socket_server = nullptr);
+	virtual bool init(SocketClient* _socket_client, SocketServer* _socket_server);
 	virtual void onEnter();
 	virtual void onExit();
-	CREATE_FUNC(GameScene);
 	void update(float dt);
 	void scrollMap();
-
-	//»ñµÃÊÇ·ñ¿ÉÒÔ½¨ÔìµÄ±êÇ©
-	static LabelTTF *getIfBuild()
+	static TMXTiledMap *gettiledMap()
 	{
-		return ifBuild;
+		return _tiledMap1;
 	}
+	static Rect getSelectRect()
+	{
+		return select_rect;
+	}
+	static Rect select_rect;
+
 
 private:
 	//EventListenerTouchOneByOne * touchBuildingListener;
-	EventListenerMouse * mouse_event;//µØÍ¼ÒÆ¶¯µÄÊó±êÊÂ¼þ
+	//ï¿½ï¿½Í¼ï¿½ï¿½Ø·ï¿½ï¿½ï¿½
+	EventListenerMouse * mouse_event;//ï¿½ï¿½Í¼ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 	void onMouseMove(Event *event);
-	bool p_flag = true;//µÚÒ»´Î°´»á¹ØµôµØÍ¼ÒÆ¶¯Êó±êÊÂ¼þ£¬ÔÙ°´¿É¿ªÆô
-	EventListenerKeyboard * keyboard_listener;//¸÷ÖÖ¼üÅÌÊÂ¼þ
-	void onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEvent);
-	EventListenerPhysicsContact * buildingContactListener;//½¨ÖþÎï½Ó´¥¼àÌýÆ÷
+	bool p_flag = true;              //ï¿½ï¿½Ò»ï¿½Î°ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½Í¼ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ù°ï¿½ï¿½É¿ï¿½ï¿½ï¿½
 
+	//ï¿½ï¿½ï¿½Ì²ï¿½ï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½
+	EventListenerKeyboard * keyboard_listener;//ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+	void onKeyPressed(EventKeyboard::KeyCode keycode, cocos2d::Event* pEvent);
+
+	EventListenerPhysicsContact * spriteContactListener;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+	//ï¿½Ëµï¿½ï¿½ï¿½Å¥
+	void backToMenuScene(Ref *pSender);//ï¿½ï¿½ï¿½ï¿½MenuScene
+	void buildingsCreate(Ref *pSender);//Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï½¨ï¿½ì£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
+	void soldiersCreate(Ref *pSender); //Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö²Ëµï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
+
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	void casernReady(float dt);           //ï¿½ï¿½Óª×¼ï¿½ï¿½
+	void electricStationReady(float dt);  //ï¿½ç³§×¼ï¿½ï¿½
+	void tankFactoryReady(float dt);      //Õ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¼ï¿½ï¿½
+	void oreYardReady(float dt);          //ï¿½ï¿½×¼ï¿½ï¿½
+
+	//ï¿½ï¿½ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	void minerReady(float dt);
+	void policemanReady(float dt);
+	void tankReady(float dt);
+
+	//ï¿½ï¿½Ç®ï¿½ï¿½Ø·ï¿½ï¿½ï¿½
+	void moneyUpdate(float dt);//ÊµÊ±Ë¢ï¿½Â½ï¿½Ç®
+	static int Money;          //ï¿½ï¿½Ç®
+
+	static TMXTiledMap * _tiledMap1;  //ï¿½ï¿½Æ¬ï¿½ï¿½Í¼
+
+
+
+//Mouse Rectï¿½ï¿½Ø·ï¿½ï¿½ï¿½
+public:
+	Rect getvisionRect();
+private:
 	MouseRect *mouseRect = nullptr;
 	EventListenerTouchOneByOne *mouseRectListener;
-	bool ctrl_flag = true;//µÚÒ»´Î°´ctrl»á¹Øµô»­¾ØÐÎ¿ò£¬ÔÙ°´¿ÉÒÔ¿ªÆô
+	bool ctrl_flag = true;//ï¿½ï¿½Ò»ï¿½Î°ï¿½ctrlï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¿ï¿½ï¿½Ù°ï¿½ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½
 	bool mouseRectOnTouchBegan(Touch *pTouch, Event *event);
 	void mouseRectOnTouchMoved(Touch *pTouch, Event *event);
 	void mouseRectOnTouchEnded(Touch *pTouch, Event *event);
-
-
-	void backToMenuScene(Ref *pSender);//·µ»ØMenuScene
-	void buildingsCreate(Ref *pSender);//Ñ¡Ôñ½¨ÖþÎï½¨Ôì£¬½¨ÖþÎï²Ëµ¥»Øµ÷·½·¨
-
-	void casernReady(float dt);//±øÓª×¼±¸
-	//////////////////////////////
-	//´ýÌí¼ÓÆäËû½¨ÖþÎïµÄ×¼±¸·½·¨
-	//////////////////////////////
-
-	void moneyUpdate(float dt);//ÊµÊ±Ë¢ÐÂ½ðÇ®
-
-	static int Money;//½ðÇ®
-	static LabelTTF *ifBuild;//½¨ÖþÎï²»¿É½¨ÔìÊ±ÏÔÊ¾µÄ±êÇ©
-
-	TMXTiledMap * _tiledMap1;
+	//MiniMap* mini_map = nullptr;
+	Rect mini_map_rect{};
+	Point last_touch{ 0, 0 };
 	Point crusor_position{ 0, 0 };
-	
+
+//network
+	SocketServer* socket_server = nullptr;
+	SocketClient* socket_client = nullptr;
 };
 
+/***************************************************
+class MiniMap : public cocos2d::DrawNode
+{
+public:
+	CREATE_FUNC(MiniMap);
+	void update(float dt) override;
+	void setGridMap(GridMap* _grid_map);
+	void setUnitManager(UnitManager* _unit_manager);
+	void setBattleScene(GameScene* _battle_scene);
+private:
+	GridMap * grid_map;
+	UnitManager* unit_manager;
+	GameSceneScene* battle_scene;
+};
+***************************************************/
 
 #endif // !__GameScene_H_

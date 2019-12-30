@@ -1,4 +1,4 @@
-/*¿Í»§¶Ë½çÃæ*/
+/*ï¿½Í»ï¿½ï¿½Ë½ï¿½ï¿½ï¿½*/
 
 #ifndef __ClientScene_H_
 #define __ClientScene_H_
@@ -8,6 +8,10 @@
 #include "extensions/cocos-ext.h"  
 #include "popupLayer/PopupLayer.h"
 #include"MyUtility.h"
+#include"network/SocketClient.h"
+#include"network/SocketServer.h"
+#include"network/socket_message.h"
+#include"GameScene.h"
 USING_NS_CC_EXT;
 USING_NS_CC;
 #define JOIN_GAME 10
@@ -16,18 +20,18 @@ USING_NS_CC;
 class ClientScene :public Layer
 {
 public:
-	static Scene* createScene();                                      //´´½¨³¡¾°
-	virtual bool init();                                              //³õÊ¼»¯³¡¾°
-	CREATE_FUNC(ClientScene);                                         //Íê³Écreate·½·¨´úÂëµÄÉú³É
-	void addMenuSprites();                                            //Ìí¼ÓMenu
-	void waitStart();                                                 //µÈ´ý·þÎñ¶ËÖ¸Áî
+	static Scene* createScene();                                      //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	virtual bool init();                                              //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	CREATE_FUNC(ClientScene);                                         //ï¿½ï¿½ï¿½createï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	void addMenuSprites();                                            //ï¿½ï¿½ï¿½ï¿½Menu
+	void waitStart();                                                 //ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 	void startSchedule(float f);
 private:
-	Size visibleSize;                                                 //´°¿Ú³ß´ç
-	void addBackgroundSprite();                                       //Ìí¼Ó³¡¾°±³¾°
-	void menuTouchDown(Object *pSender, Control::EventType event);    //Menuµã»÷»Øµ÷·½·¨
+	Size visibleSize;                                                 //ï¿½ï¿½ï¿½Ú³ß´ï¿½
+	void addBackgroundSprite();                                       //ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	void menuTouchDown(Object *pSender, Control::EventType event);    //Menuï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	Label * connection_msg_;
-	/**********SocketClient* socket_client_{ nullptr };       *********/
+	SocketClient* socket_client_{ nullptr };     
 	int timer_ = 0;
 };
 

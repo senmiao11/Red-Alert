@@ -1,4 +1,4 @@
-//·þÎñ¶Ë½çÃæ
+//ï¿½ï¿½ï¿½ï¿½Ë½ï¿½ï¿½ï¿½
 
 #ifndef __ServerScene_H_
 #define __ServerScene_H_
@@ -9,6 +9,9 @@
 #include "popupLayer/PopupLayer.h"
 #include"MyUtility.h"
 #include"GameScene.h"
+#include"network/SocketClient.h"
+#include"network/SocketServer.h"
+#include"network/socket_message.h"
 USING_NS_CC_EXT;
 USING_NS_CC;
 #define START_SERVER 4
@@ -18,17 +21,19 @@ USING_NS_CC;
 class ServerScene :public Layer
 {
 public:
-	static Scene* createScene();                                      //´´½¨³¡¾°
-	virtual bool init();                                              //³õÊ¼»¯³¡¾°
-	CREATE_FUNC(ServerScene);                                         //Íê³Écreate·½·¨´úÂëµÄÉú³É
-	void addMenuSprites();                                            //Ìí¼ÓMenu
+	static Scene* createScene();                                      //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	virtual bool init();                                              //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	CREATE_FUNC(ServerScene);                                         //ï¿½ï¿½ï¿½createï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	void addMenuSprites();                                            //ï¿½ï¿½ï¿½ï¿½Menu
 private:
-	Size visibleSize;                                                 //´°¿Ú³ß´ç
-	void addBackgroundSprite();                                       //Ìí¼Ó³¡¾°±³¾°
-	void menuTouchDown(Object *pSender, Control::EventType event);    //Menuµã»÷»Øµ÷·½·¨
-	void editBoxReturn(EditBox* editBox);                             //·µ»ØÊäÈëµÄ¶Ë¿ÚÐÅÏ¢
+	Size visibleSize;                                                 //ï¿½ï¿½ï¿½Ú³ß´ï¿½
+	void addBackgroundSprite();                                       //ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	void menuTouchDown(Object *pSender, Control::EventType event);    //Menuï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
+	void editBoxReturn(EditBox* editBox);                             //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶Ë¿ï¿½ï¿½ï¿½Ï¢
 	void connectionSchdeule(float f);
-	Label* connection_msg_;                                           //Á¬½ÓÐÅÏ¢
+	SocketServer* socket_server_{ nullptr };
+	SocketClient* socket_client_{ nullptr };
+	Label* connection_msg_;                                           //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 };
 
 #endif // !__ServerScene_H_

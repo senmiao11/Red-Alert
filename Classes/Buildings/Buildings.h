@@ -5,38 +5,41 @@
 #include"cocos2d.h"
 #include"ConstUtil.h"
 #include"GameScene.h"
-
+#include"Bar.h"
 USING_NS_CC;
 
 
 ////////////////////////////////////
-//½¨ÖþÎïµÄÑªÁ¿¼õÉÙºÍ´Ý»Ù·½·¨´ýÌí¼Ó
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñªï¿½ï¿½ï¿½ï¿½ï¿½ÙºÍ´Ý»Ù·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ////////////////////////////////////
 
 
 class Buildings :public Sprite
 {
+	friend class Bar;
 public:
 	friend class GameScene;
 
-	Buildings(BuildingTypes buildingType);        //Í¨¹ýÃ¶¾ÙÀàÀ´ÅÐ¶ÎÐè²úÉúÊ²Ã´½¨ÖþÎï
+	Buildings(BuildingTypes buildingType);        //Í¨ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê²Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	static Buildings *creatWithBuildingTypes(BuildingTypes buildingType);
 
 private:
 	CC_SYNTHESIZE(BuildingTypes, buildingtype, BuildingType);
 	CC_SYNTHESIZE(int, health, currentHealth);
 	CC_SYNTHESIZE(int, price, Price);
-	CC_SYNTHESIZE(bool, if_move, ifMove);
+	CC_SYNTHESIZE(int, maxHealth, MaxHealth);
 
-	//½¨ÖþÎï¼àÌýÆ÷
-	static EventListenerTouchOneByOne *touchBuildingListener;
-	static EventDispatcher *eventDispatcher;
+	//Ñªï¿½ï¿½
+	Bar *hpBar = nullptr;
+	void createBar();
+	void displayHpBar();
+	void hideHpBar();
 };
 
 
 
 
-#endif // 1__Buildings_H_
+#endif // !__Buildings_H_
 
 
 

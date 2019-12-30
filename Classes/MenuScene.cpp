@@ -1,22 +1,33 @@
 #include"MenuScene.h"
-//³õÊ¼»¯³¡¾°
+//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 bool MenuScene::init()
 {
 	if (!Layer::init())
 	{
 		return false;
 	}
-	//³õÊ¼»¯´°¿Ú³ß´ç±äÁ¿
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ú³ß´ï¿½ï¿½ï¿½ï¿½
 	visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	//Ìí¼Ó³¡¾°±³¾°
+	//ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addBackgroundSprite();
-	//Ìí¼ÓMenu
+	//ï¿½ï¿½ï¿½ï¿½Menu
 	addMenuSprites();
+	//ï¿½ï¿½ï¿½ï¿½
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("music/BackgroundMusic.mp3", true);
+	is_paused = false;
+	auto music_button = MenuItemImage::create("MusicOn.png", "Music0ff.png");
+	auto pause_button = MenuItemImage::create("MusicOff.png", "MusicOn.png");
+	MenuItemToggle *toggleItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(MenuScene::menuMusicCallBack, this), music_button, pause_button, NULL);
+	toggleItem->setScale(0.7f);
+	toggleItem->setPosition(Point(origin.x + visibleSize.width * 0.9, origin.y + visibleSize.height * 0.1));
+	auto menu = Menu::create(toggleItem, NULL);
+	menu->setPosition(Point::ZERO);
+	this->addChild(menu);
 	return true;
 }
 
-//´´½¨³¡¾°
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 Scene * MenuScene::createScene()
 {
 	auto scene = Scene::create();
@@ -24,17 +35,31 @@ Scene * MenuScene::createScene()
 	scene->addChild(layer);
 	return scene;
 }
+void MenuScene::menuMusicCallBack(cocos2d::Ref* pSender)
+{
 
-//Ìí¼Ó³¡¾°±³¾°
+	if (is_paused == false)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+		is_paused = true;
+	}
+	else
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+		is_paused = false;
+	}
+}
+
+//ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void MenuScene::addBackgroundSprite()
 {
-	//Ìí¼Ó±³¾°Í¼Æ¬
+	//ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½Í¼Æ¬
 	Sprite * MenuBackgroundSprite = Sprite::create(MENU_BACKGROUND);
-	//³¡¾°×îÖÐÑëÏÔÊ¾Í¼Æ¬
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Í¼Æ¬
 	MenuBackgroundSprite->setPosition(ccp(visibleSize.width / 2, visibleSize.height / 2));
-	//ÉèÖÃÃªµãÔÚ×îÖÐÑë
+	//ï¿½ï¿½ï¿½ï¿½Ãªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	MenuBackgroundSprite->setAnchorPoint(ccp(0.5, 0.5));
-	//ÉèÖÃ±³¾°´óÐ¡£¬ÓëÆÁÄ»°´±ÈÀýÊÊÅä
+	//ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Size WinSize = CCDirector::sharedDirector()->getWinSize();
 	float winx = WinSize.width;
 	float winy = WinSize.height;
@@ -42,109 +67,130 @@ void MenuScene::addBackgroundSprite()
 	float backgroundy = MenuBackgroundSprite->getTextureRect().getMaxY();
 	MenuBackgroundSprite->setScaleX(winx / backgroundx);
 	MenuBackgroundSprite->setScaleY(winy / backgroundy);
-	//Ìí¼Ó±³¾°ÖÁ³¡¾°
+	//ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	this->addChild(MenuBackgroundSprite);
 }
 
-//Ìí¼ÓMenu
+//ï¿½ï¿½ï¿½ï¿½Menu
 void MenuScene::addMenuSprites()
 {
 	//1 start game
-	//ÉèÖÃ²Ëµ¥µÄÕý³£Í¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * NormalButton1 = Scale9Sprite::create(NORMAL_MENU);
-	//ÉèÖÃ²Ëµ¥°´ÏÂÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * PressButton1 = Scale9Sprite::create(PRESS_MENU);
-	//´´½¨²Ëµ¥ËùÐèÒªµÄLabel¶ÔÏó
-	LabelTTF * startGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("¿ªÊ¼ÓÎÏ·"), "»ªÎÄÐÐ¿¬", 25);
-	//´´½¨controlButton
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Labelï¿½ï¿½ï¿½ï¿½
+	LabelTTF * startGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ï¿½ï¿½Ê¼ï¿½ï¿½Ï·"), "ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½", 25);
+	//ï¿½ï¿½ï¿½ï¿½controlButton
 	ControlButton * startGameBtn = ControlButton::create(startGameTTF, NormalButton1);
-	//Ìí¼ÓsingleButton²Ëµ¥°´ÏÂµÄÐ§¹ûÍ¼Æ¬
+	//ï¿½ï¿½ï¿½ï¿½singleButtonï¿½Ëµï¿½ï¿½ï¿½ï¿½Âµï¿½Ð§ï¿½ï¿½Í¼Æ¬
 	startGameBtn->setBackgroundSpriteForState(PressButton1, Control::State::SELECTED);
-	//ÉèÖÃµ¥»úÓÎÏ·²Ëµ¥ÏîµÄÎ»ÖÃ
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	startGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.58);
-	//ÉèÖÃµã»÷µÄ»Øµ÷·½·¨
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	startGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
-	//ÉèÖÃ²Ëµ¥°´Å¥µÄTag
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½Å¥ï¿½ï¿½Tag
 	startGameBtn->setTag(STRAT_GAME);
-	//Ìí¼ÓMenuµ½³¡¾°
+	//ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addChild(startGameBtn);
 
 	//2 introdunction
-	//ÉèÖÃ²Ëµ¥µÄÕý³£Í¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * NormalButton2 = Scale9Sprite::create(NORMAL_MENU);
-	//ÉèÖÃ²Ëµ¥°´ÏÂÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * PressButton2 = Scale9Sprite::create(PRESS_MENU);
-	//´´½¨²Ëµ¥ËùÐèÒªµÄLabel¶ÔÏó
-	LabelTTF * introGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ÓÎÏ·½éÉÜ"), "»ªÎÄÐÐ¿¬", 25);
-	//´´½¨controlButton
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Labelï¿½ï¿½ï¿½ï¿½
+	LabelTTF * introGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½"), "ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½", 25);
+	//ï¿½ï¿½ï¿½ï¿½controlButton
 	ControlButton * introGameBtn = ControlButton::create(introGameTTF, NormalButton2);
-	//Ìí¼ÓsingleButton²Ëµ¥°´ÏÂµÄÐ§¹ûÍ¼Æ¬
+	//ï¿½ï¿½ï¿½ï¿½singleButtonï¿½Ëµï¿½ï¿½ï¿½ï¿½Âµï¿½Ð§ï¿½ï¿½Í¼Æ¬
 	introGameBtn->setBackgroundSpriteForState(PressButton2, Control::State::SELECTED);
-	//ÉèÖÃµ¥»úÓÎÏ·²Ëµ¥ÏîµÄÎ»ÖÃ
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	introGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.45);
-	//ÉèÖÃµã»÷µÄ»Øµ÷·½·¨
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	introGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
-	//ÉèÖÃ²Ëµ¥°´Å¥µÄTag
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½Å¥ï¿½ï¿½Tag
 	introGameBtn->setTag(INTRODUCTION);
-	//Ìí¼ÓMenuµ½³¡¾°
+	//ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addChild(introGameBtn);
 
 	//3 quit game
-	//ÉèÖÃ²Ëµ¥µÄÕý³£Í¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * NormalButton3 = Scale9Sprite::create(NORMAL_MENU);
-	//ÉèÖÃ²Ëµ¥°´ÏÂÍ¼Æ¬
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
 	Scale9Sprite * PressButton3 = Scale9Sprite::create(PRESS_MENU);
-	//´´½¨²Ëµ¥ËùÐèÒªµÄLabel¶ÔÏó
-	LabelTTF * quitGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ÍË³öÓÎÏ·"), "»ªÎÄÐÐ¿¬", 25);
-	//´´½¨controlButton
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Labelï¿½ï¿½ï¿½ï¿½
+	LabelTTF * quitGameTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ï¿½Ë³ï¿½ï¿½ï¿½Ï·"), "ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½", 25);
+	//ï¿½ï¿½ï¿½ï¿½controlButton
 	ControlButton * quitGameBtn = ControlButton::create(quitGameTTF, NormalButton3);
-	//Ìí¼ÓsingleButton²Ëµ¥°´ÏÂµÄÐ§¹ûÍ¼Æ¬
+	//ï¿½ï¿½ï¿½ï¿½singleButtonï¿½Ëµï¿½ï¿½ï¿½ï¿½Âµï¿½Ð§ï¿½ï¿½Í¼Æ¬
 	quitGameBtn->setBackgroundSpriteForState(PressButton3, Control::State::SELECTED);
-	//ÉèÖÃµ¥»úÓÎÏ·²Ëµ¥ÏîµÄÎ»ÖÃ
-	quitGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.32);
-	//ÉèÖÃµã»÷µÄ»Øµ÷·½·¨
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+	quitGameBtn->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.19);
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	quitGameBtn->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
-	//ÉèÖÃ²Ëµ¥°´Å¥µÄTag
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½Å¥ï¿½ï¿½Tag
 	quitGameBtn->setTag(QUIT_GAME);
-	//Ìí¼ÓMenuµ½³¡¾°
+	//ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	addChild(quitGameBtn);
+
+	//4 settings
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
+	Scale9Sprite * NormalButton4 = Scale9Sprite::create(NORMAL_MENU);
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
+	Scale9Sprite * PressButton4 = Scale9Sprite::create(PRESS_MENU);
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Labelï¿½ï¿½ï¿½ï¿½
+	LabelTTF * settingsTTF = LabelTTF::create(MyUtility::gbk_2_utf8("ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½"), "ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½", 25);
+	//ï¿½ï¿½ï¿½ï¿½controlButton
+	ControlButton * settingsBTN = ControlButton::create(settingsTTF, NormalButton4);
+	//ï¿½ï¿½ï¿½ï¿½singleButtonï¿½Ëµï¿½ï¿½ï¿½ï¿½Âµï¿½Ð§ï¿½ï¿½Í¼Æ¬
+	settingsBTN->setBackgroundSpriteForState(PressButton4, Control::State::SELECTED);
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+	settingsBTN->setPosition(visibleSize.width * 0.84, visibleSize.height * 0.32);
+	//ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½
+	settingsBTN->addTargetWithActionForControlEvents(this, cccontrol_selector(MenuScene::menuTouchDown), Control::EventType::TOUCH_DOWN);
+	//ï¿½ï¿½ï¿½Ã²Ëµï¿½ï¿½ï¿½Å¥ï¿½ï¿½Tag
+	settingsBTN->setTag(SETTINGS);
+	//ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	addChild(settingsBTN);
+
 }
 
 
 
 void MenuScene::popupQuitLayer()
 {
-	//¸ù¾Ý±³¾°´´½¨¶Ô»°¿ò
+	//ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½
 	PopupLayer* popDialog = PopupLayer::create(DIALOG_BG);
-	//ÉèÖÃ¶Ô»°¿ò´óÐ¡
+	//ï¿½ï¿½ï¿½Ã¶Ô»ï¿½ï¿½ï¿½ï¿½Ð¡
 	popDialog->setContentSize(CCSizeMake(350,200));
-	//ÉèÖÃ¶Ô»°¿ò±êÌâ£¬ÏÔÊ¾ÄÚÈÝ
-	popDialog->setTitle("ÌáÊ¾",18);
-	popDialog->setContentText("È·ÈÏÍË³öÓÎÏ·£¿",22,20,100);
-	//ÔÚ¶Ô»°¿òÖÐÌí¼ÓÈ·¶¨ºÍÈ¡ÏûµÄMenu°´¼ü£¬²¢ÉèÖÃ¸÷×ÔµÄtag
-	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON2, "ÊÇ", 1);
-	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON2, "·ñ", 0);
-	//ÉèÖÃ¶Ô»°¿òµÄ°´¼üÏàÓ¦·½·¨
+	//ï¿½ï¿½ï¿½Ã¶Ô»ï¿½ï¿½ï¿½ï¿½ï¿½â£¬ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+	popDialog->setTitle("ï¿½ï¿½Ê¾",18);
+	popDialog->setContentText("È·ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½Ï·ï¿½ï¿½",22,20,100);
+	//ï¿½Ú¶Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½Ôµï¿½tag
+	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON2, "ï¿½ï¿½", 1);
+	popDialog->addButton(DIALOG_BUTTON, DIALOG_BUTTON2, "ï¿½ï¿½", 0);
+	//ï¿½ï¿½ï¿½Ã¶Ô»ï¿½ï¿½ï¿½Ä°ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
 	popDialog->setCallbackFunc(this, callfuncN_selector(MenuScene::quitButtonCallback));
 	this->addChild(popDialog);
 }
 
 void MenuScene::quitButtonCallback(Node* pNode)
 {
-	//¸ù¾Ý°´¼üµÄtagµ÷ÓÃÏàÓ¦µÄ·½·¨
+	//ï¿½ï¿½ï¿½Ý°ï¿½ï¿½ï¿½ï¿½ï¿½tagï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ä·ï¿½ï¿½ï¿½
 	if (pNode->getTag() == 1)
 	{
-		//µã»÷È·¶¨£¬ÔòÍË³ö
+		//ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½
 		Director::getInstance()->end();
 	}
 	else
 	{
-		//µã»÷È¡Ïû£¬Ôò¹Ø±Õ¶Ô»°¿ò
+		//ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±Õ¶Ô»ï¿½ï¿½ï¿½
 		pNode->getParent()->removeFromParent();
 	}
 }
 
-//Menuµã»÷»Øµ÷·½·¨
+//Menuï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
 void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
 {
 	ControlButton * button = (ControlButton*)pSender;
@@ -161,6 +207,12 @@ void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
 		scheduleOnce(schedule_selector(MenuScene::jumpToIntroduction), 0.5);
 		break;
 	}
+	case SETTINGS:
+	{
+		auto transition = TransitionSlideInL::create(0.5, AudioControl::createScene());
+		Director::getInstance()->replaceScene(transition);
+		break;
+	}
 	case QUIT_GAME:
 	{
 		popupQuitLayer();
@@ -170,16 +222,16 @@ void MenuScene::menuTouchDown(Object *pSender, Control::EventType event)
 	}
 }
 
-//Ìø×ªµ½IntroScene
+//ï¿½ï¿½×ªï¿½ï¿½IntroScene
 void MenuScene::jumpToIntroduction(float dt)
 {
-	//´ýÌî
+	//ï¿½ï¿½ï¿½ï¿½
 	/*auto sc = IntroScene::createScene();
 	auto reScene = TransitionFadeTR::create(0.5f, sc);
 	Director::getInstance()->pushScene(reScene);*/
 }
 
-//Ìø×ªµ½RoomScene
+//ï¿½ï¿½×ªï¿½ï¿½RoomScene
 void MenuScene::jumpToRoomScene(float dt)
 {
 	auto sc = RoomScene::createScene();

@@ -9,12 +9,12 @@ PopupLayer::~PopupLayer()
 }
 bool PopupLayer::init()
 {
-	//Èô³õÊ¼»¯Ê§°Ü£¬·µ»Øfalse
+	//ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½false
 	if (!Layer::init())
 	{
 		return false;
 	}
-	//³õÊ¼»¯Ä¬ÈÏÖµ
+	//ï¿½ï¿½Ê¼ï¿½ï¿½Ä¬ï¿½ï¿½Öµ
 	m_pMenu = NULL;
 	m_callback = NULL;
 	m_sfBackGround = NULL;
@@ -22,11 +22,11 @@ bool PopupLayer::init()
 	m_ltContentText = NULL;
 	m_ltTitle = NULL;
 	this->setContentSize(Size::ZERO);
-	//³õÊ¼»¯ĞèÒªµÄMenu,Ëæºó¸ù¾İ²ÎÊıÏòMenuÖĞÌí¼ÓMenuItemÑ¡Ïî
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Menu,ï¿½ï¿½ï¿½ï¿½ï¿½İ²ï¿½ï¿½ï¿½ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½ï¿½ï¿½MenuItemÑ¡ï¿½ï¿½
 	Menu* menu = Menu::create();
 	menu->setPosition(Point::ZERO);
 	setMenuButton(menu);
-	//Ìí¼Ó´¥ÃşÏìÓ¦
+	//ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [](Touch * t,Event *e)
 	{
@@ -34,7 +34,7 @@ bool PopupLayer::init()
 		return true;
 	};
 	listener->setSwallowTouches(true);
-	//ÆÁ±ÎÏÂ²ãÊÂ¼şÏàÓ¦£¬´ïµ½Ä£Ì¬Ğ§¹û 
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Â²ï¿½ï¿½Â¼ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ïµ½Ä£Ì¬Ğ§ï¿½ï¿½ 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	return true;
 }
@@ -49,7 +49,7 @@ PopupLayer* PopupLayer::create(const char* backgroundImage)
 
 void PopupLayer::setTitle(const char * title, int fontsize)
 {
-	LabelTTF *ltfTitle = LabelTTF::create(MyUtility::gbk_2_utf8(title), "»ªÎÄĞĞ¿¬", fontsize);
+	LabelTTF *ltfTitle = LabelTTF::create(MyUtility::gbk_2_utf8(title), "ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¿ï¿½", fontsize);
 	setLabelTitle(ltfTitle);
 }
 
@@ -60,7 +60,7 @@ void PopupLayer::setPopType(POP_TYPE type)
 
 void PopupLayer::setContentText(const char *text, int fontsize, int padding, int paddingTop)
 {
-	LabelTTF *ltf = LabelTTF::create(MyUtility::gbk_2_utf8(text), "»ªÎÄĞĞ¿¬", fontsize);
+	LabelTTF *ltf = LabelTTF::create(MyUtility::gbk_2_utf8(text), "ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¿ï¿½", fontsize);
 	setLabelContentText(ltf);
 	m_contentPadding = padding;
 	m_contentPaddingTop = paddingTop;
@@ -69,15 +69,16 @@ void PopupLayer::setContentText(const char *text, int fontsize, int padding, int
 bool PopupLayer::addButton(const char*normalImage, const char*selectedImage, const char*title, int tag)
 {
 	Size winSize = Director::getInstance()->getWinSize();
-	//´´½¨MenuItem°´Å¥£¬²¢ÉèÖÃ°´Å¥tag£¬Î»ÖÃÒÔ¼°»Øµ÷·½·¨ÎªbuttonCallback
+	//ï¿½ï¿½ï¿½ï¿½MenuItemï¿½ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½Å¥tagï¿½ï¿½Î»ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ÎªbuttonCallback
 	auto  menuImage = MenuItemImage::create(normalImage, selectedImage, CC_CALLBACK_1(PopupLayer::buttonCallBack, this));
+	menuImage->setScale(0.6);
 	menuImage->setTag(tag);
 	menuImage->setPosition(ccp(winSize.width / 2, winSize.height / 2));
-	//¸øMenuItemÌí¼ÓÎÄ×Ö£¬ÉèÖÃÑÕÉ«£¬Î»ÖÃ
+	//ï¿½ï¿½MenuItemï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½Î»ï¿½ï¿½
 	Size imenu = menuImage->getContentSize();
-	LabelTTF *ttf = LabelTTF::create(MyUtility::gbk_2_utf8(title), "»ªÎÄĞĞ¿¬", 20);
+	LabelTTF *ttf = LabelTTF::create(MyUtility::gbk_2_utf8(title), "ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¿ï¿½", 25);
 	ttf->setColor(ccc3(0, 0, 0));
-	//ÉèÖÃÎÄ×ÖÔÚMenuItemÖĞµÄÎ»ÖÃ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½MenuItemï¿½Ğµï¿½Î»ï¿½ï¿½
 	ttf->setPosition(ccp(imenu.width / 2, imenu.height / 2));
 	menuImage->addChild(ttf);
 	getMenuButton()->addChild(menuImage,3);
@@ -97,7 +98,7 @@ void PopupLayer::buttonCallBack(CCObject *pSender)
 	if (m_callback && m_callbackListener)
 	{
 		log("[buttonCallBack]touch tag:%d",node->getTag());
-		//»áµ÷ÓÃsetCallbackFunc·½·¨´«ÈëµÄMenuScene¶ÔÏóµÄquitButtonCallback·½·¨
+		//ï¿½ï¿½ï¿½ï¿½ï¿½setCallbackFuncï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½MenuSceneï¿½ï¿½ï¿½ï¿½ï¿½quitButtonCallbackï¿½ï¿½ï¿½ï¿½
 		(m_callbackListener->*m_callback)(node);
 	}
 	this->removeFromParentAndCleanup(true);
@@ -107,16 +108,16 @@ void PopupLayer::onEnter()
 {
 	Layer::onEnter();
 	Size winSize = Director::getInstance()->getWinSize();
-	//¸ù¾İ¶Ô»°¿ò´óĞ¡ÉèÖÃ¾Å¹¬¸ñ±³¾°Í¼Æ¬
+	//ï¿½ï¿½ï¿½İ¶Ô»ï¿½ï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½Ã¾Å¹ï¿½ï¿½ñ±³¾ï¿½Í¼Æ¬
 	Scale9Sprite *background = getSprite9BackGround();
 	background->setContentSize(getContentSize());
 	background->setPosition(ccp(winSize.width / 2, winSize.height / 2));
 	this->addChild(background, 0, 0);
 	_contentSize = getContentSize();
-	//Ìí¼Ó°´Å¥£¬²¢ÉèÖÃÆäÎ»ÖÃ
+	//ï¿½ï¿½ï¿½Ó°ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	this->addChild(getMenuButton());
 	float btnWidth = _contentSize.width / (getMenuButton()->getChildrenCount() + 1);
-	//´ÓMenuÏîÖĞÈ¡µÃ×Ó²Ëµ¥Ïî
+	//ï¿½ï¿½Menuï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ó²Ëµï¿½ï¿½ï¿½
 	Vector<Node*>vecArray = getMenuButton()->getChildren();
 	int j = 0;
 	for (auto it = vecArray.begin(); it != vecArray.end(); it++)
@@ -127,12 +128,12 @@ void PopupLayer::onEnter()
 	}
 	if (getLabelTitle())
 	{
-		//ÏÔÊ¾¶Ô»°¿ò±êÌâ
+		//ï¿½ï¿½Ê¾ï¿½Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		getLabelTitle()->setPosition(ccpAdd(ccp(winSize.width/2,winSize.height/2), ccp(0, _contentSize.height / 2 - 20)));
 		getLabelTitle()->setColor(ccc3(255, 255, 255));
 		this->addChild(getLabelTitle());
 	}
-	//¸ù¾İ¶Ô»°¿òÀàĞÍ£¬ÉèÖÃ¶Ô»°¿òÄÚÈİ
+	//ï¿½ï¿½ï¿½İ¶Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½Ã¶Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	switch (pop_type)
 	{
 	case QUIT:
@@ -145,7 +146,7 @@ void PopupLayer::onEnter()
 			this->addChild(ltf);
 		}
 	}
-	//¶Ô»°¿òµ¯³öĞ§¹û£¬ÓÉ´ó±äĞ¡£¬ÔÙÓÉĞ¡±ä´ó
+	//ï¿½Ô»ï¿½ï¿½òµ¯³ï¿½Ğ§ï¿½ï¿½ï¿½ï¿½ï¿½É´ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½
 	Action *popupactions = Sequence::create(ScaleTo::create(0.0, 0.0), ScaleTo::create(0.15, 1.05), ScaleTo::create(0.08, 0.95), ScaleTo::create(0.08, 1.0),NULL);
 	this->runAction(popupactions);
 }
